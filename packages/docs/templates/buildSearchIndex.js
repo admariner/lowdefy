@@ -26,7 +26,7 @@ import stripMarkdown from './search/stripMarkdown.js';
 function buildSearchIndex(pages, vars) {
   const sectionMap = resolveSections(pages, vars.menus);
 
-  const documents = pages.map((page) => {
+  const documents = pages.filter(Boolean).map((page) => {
     const text = extractPageContent(page);
     const section = sectionMap.get(page.id);
     const plainText = stripMarkdown(text);

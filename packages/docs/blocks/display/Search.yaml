@@ -24,6 +24,6 @@ _ref:
     schema: ../plugins/blocks/blocks-antd/src/blocks/Search/meta.js
     gallery: ../plugins/blocks/blocks-antd/src/blocks/Search/gallery.yaml
     description: >
-      A full-text search command palette with keyboard navigation, result highlighting,
-      and grouped results. Uses MiniSearch for the search engine and antd Modal for the overlay.
-      Supports pre-built index files via indexUrl or runtime client-side indexing via documents.
+      A full-text search command palette (Cmd+K / Ctrl+K) with keyboard navigation, result highlighting, and grouped results. Uses [MiniSearch](https://lucaong.github.io/minisearch/) for the search engine and antd Modal for the overlay. Two ways to provide data: pre-built index file via `indexUrl` (generated at build time, best for static content), or runtime `documents` array (indexed client-side, good for dynamic content). See the guide and examples below.
+    guide:
+      _ref: blocks/display/SearchGuide.md

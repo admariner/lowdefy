@@ -26,4 +26,165 @@ _ref:
     schema: ../plugins/blocks/blocks-antd/src/blocks/MasonryList/meta.js
     gallery: ../plugins/blocks/blocks-antd/src/blocks/MasonryList/gallery.yaml
     description: >
-      Masonry-style grid layout for list items.
+      Masonry-style grid layout for list data. Items flow into columns and stack
+      vertically, filling gaps left by shorter items. Provide an array in state
+      and use _state operators in the template to access each item's data.
+    onInit:
+      - id: init_masonry_data
+        type: SetState
+        params:
+          ml_basic:
+            - ml_basic_title: Getting Started
+              ml_basic_desc: A quick intro to the platform.
+              ml_basic_bg: bg-blue-50
+            - ml_basic_title: Authentication
+              ml_basic_desc: Set up login providers, configure session handling, manage user roles and permissions, and integrate with external identity services like Auth0 and Okta.
+              ml_basic_bg: bg-purple-50
+            - ml_basic_title: API Reference
+              ml_basic_desc: Full endpoint documentation with request and response examples.
+              ml_basic_bg: bg-green-50
+            - ml_basic_title: Deployment Guide
+              ml_basic_desc: Step-by-step deployment to Docker, Vercel, and Node.js. Covers environment variables, build configuration, CI/CD pipelines, secrets management, and production monitoring setup.
+              ml_basic_bg: bg-orange-50
+            - ml_basic_title: Theming
+              ml_basic_desc: Colors, fonts, and tokens.
+              ml_basic_bg: bg-cyan-50
+            - ml_basic_title: FAQ
+              ml_basic_desc: Answers to common questions about setup, configuration, limits, and troubleshooting. Covers billing, rate limits, version compatibility, and migration between major releases.
+              ml_basic_bg: bg-pink-50
+            - ml_basic_title: Changelog
+              ml_basic_desc: What's new in each release.
+              ml_basic_bg: bg-yellow-50
+            - ml_basic_title: Security
+              ml_basic_desc: Best practices for securing your Lowdefy application in production, including HTTPS, CSP headers, secret management, and input validation.
+              ml_basic_bg: bg-red-50
+            - ml_basic_title: Plugins
+              ml_basic_desc: Extend Lowdefy with custom blocks, actions, operators, and connections.
+              ml_basic_bg: bg-indigo-50
+          ml_two:
+            - ml_two_title: Why We Rebuilt the Dashboard
+              ml_two_body: The old dashboard loaded 14 API requests on every page view. Users complained about 3-second load times on mobile. We moved to server-side aggregation, cut it to 2 requests, and dropped p95 latency from 3.1s to 400ms. The key insight was that 80% of the data never changed between page loads.
+              ml_two_bg: bg-blue-50
+            - ml_two_title: Release Notes v4.7
+              ml_two_body: New MasonryList block, Splitter block, and keyboard shortcuts on menu items.
+              ml_two_bg: bg-green-50
+            - ml_two_title: On-Call Runbook
+              ml_two_body: If the deploy pipeline fails, check the GitHub Actions log first. Nine times out of ten it's a flaky test. Retry the job. If it fails twice, check the Slack incidents channel for known issues before escalating. For database connection errors, verify the connection pool isn't exhausted — the monitoring dashboard is at grafana.internal/d/db-pools.
+              ml_two_bg: bg-orange-50
+            - ml_two_title: Hiring Update
+              ml_two_body: Senior full-stack role open.
+              ml_two_bg: bg-purple-50
+            - ml_two_title: Design System Migration
+              ml_two_body: Moving from custom CSS to Ant Design v6 component tokens. Every component gets a theme object for overrides. This eliminates 3,000 lines of custom CSS and gives us dark mode for free. Timeline is 6 weeks — 2 for core components, 2 for forms, 2 for testing.
+              ml_two_bg: bg-cyan-50
+          ml_gutter_tight:
+            - ml_gt_label: Alpha
+            - ml_gt_label: Bravo
+            - ml_gt_label: Charlie
+            - ml_gt_label: Delta
+            - ml_gt_label: Echo
+            - ml_gt_label: Foxtrot
+          ml_gutter_wide:
+            - ml_gw_label: Alpha
+            - ml_gw_label: Bravo
+            - ml_gw_label: Charlie
+            - ml_gw_label: Delta
+            - ml_gw_label: Echo
+            - ml_gw_label: Foxtrot
+          ml_notes:
+            - ml_notes_title: Sprint Goals
+              ml_notes_body: Finish dropdown blocks, update docs, run e2e tests. Ship by Friday.
+              ml_notes_tag: Work
+              ml_notes_color: blue
+              ml_notes_bg: bg-blue-50
+            - ml_notes_title: Grocery List
+              ml_notes_body: Milk, bread, eggs.
+              ml_notes_tag: Personal
+              ml_notes_color: green
+              ml_notes_bg: bg-green-50
+            - ml_notes_title: Bug Report
+              ml_notes_body: The Affix gallery throws a ConfigError because the _if test receives undefined instead of boolean. The _event operator returns undefined in gallery context where no event fires. Fixed by wrapping with _eq to guarantee a boolean result.
+              ml_notes_tag: Bug
+              ml_notes_color: red
+              ml_notes_bg: bg-red-50
+            - ml_notes_title: Meeting Notes
+              ml_notes_body: Agreed on the MasonryList API. Four columns for team directory, three for notes. Sequential mode for timeline-style content. Ship it next week.
+              ml_notes_tag: Work
+              ml_notes_color: blue
+              ml_notes_bg: bg-blue-50
+            - ml_notes_title: Read Later
+              ml_notes_body: Shape Up.
+              ml_notes_tag: Personal
+              ml_notes_color: green
+              ml_notes_bg: bg-green-50
+            - ml_notes_title: Deploy Checklist
+              ml_notes_body: Run tests. Check bundle size. Verify env vars. Tag release. Monitor error rate for 30 minutes. Roll back if p99 latency exceeds 2s.
+              ml_notes_tag: Ops
+              ml_notes_color: orange
+              ml_notes_bg: bg-orange-50
+            - ml_notes_title: Idea
+              ml_notes_body: What if we added a gallery page for every block that auto-generates from a YAML file? One source of truth for docs and live examples.
+              ml_notes_tag: Feature
+              ml_notes_color: purple
+              ml_notes_bg: bg-purple-50
+          ml_team:
+            - ml_team_name: Sarah Chen
+              ml_team_initials: SC
+              ml_team_role: Engineering Lead
+              ml_team_bg: '#1677ff'
+            - ml_team_name: Marcus Johnson
+              ml_team_initials: MJ
+              ml_team_role: Product Manager
+              ml_team_bg: '#722ed1'
+            - ml_team_name: Aisha Patel
+              ml_team_initials: AP
+              ml_team_role: Senior Engineer
+              ml_team_bg: '#13c2c2'
+            - ml_team_name: Tom Andersen
+              ml_team_initials: TA
+              ml_team_role: Designer
+              ml_team_bg: '#fa8c16'
+            - ml_team_name: Lina Morales
+              ml_team_initials: LM
+              ml_team_role: QA Engineer
+              ml_team_bg: '#52c41a'
+            - ml_team_name: James O'Brien
+              ml_team_initials: JO
+              ml_team_role: DevOps
+              ml_team_bg: '#f5222d'
+            - ml_team_name: Yuki Tanaka
+              ml_team_initials: YT
+              ml_team_role: Frontend Engineer
+              ml_team_bg: '#eb2f96'
+            - ml_team_name: David Kim
+              ml_team_initials: DK
+              ml_team_role: Backend Engineer
+              ml_team_bg: '#2f54eb'
+          ml_seq:
+            - ml_seq_title: Getting Started
+              ml_seq_desc: A quick intro to the platform.
+              ml_seq_bg: bg-blue-50
+            - ml_seq_title: Authentication
+              ml_seq_desc: Set up login providers, configure session handling, manage user roles and permissions, and integrate with external identity services like Auth0 and Okta.
+              ml_seq_bg: bg-purple-50
+            - ml_seq_title: API Reference
+              ml_seq_desc: Full endpoint documentation with request and response examples.
+              ml_seq_bg: bg-green-50
+            - ml_seq_title: Deployment Guide
+              ml_seq_desc: Step-by-step deployment to Docker, Vercel, and Node.js. Covers environment variables, build configuration, CI/CD pipelines, secrets management, and production monitoring setup.
+              ml_seq_bg: bg-orange-50
+            - ml_seq_title: Theming
+              ml_seq_desc: Colors, fonts, and tokens.
+              ml_seq_bg: bg-cyan-50
+            - ml_seq_title: FAQ
+              ml_seq_desc: Answers to common questions about setup, configuration, limits, and troubleshooting. Covers billing, rate limits, version compatibility, and migration between major releases.
+              ml_seq_bg: bg-pink-50
+            - ml_seq_title: Changelog
+              ml_seq_desc: What's new in each release.
+              ml_seq_bg: bg-yellow-50
+            - ml_seq_title: Security
+              ml_seq_desc: Best practices for securing your Lowdefy application in production, including HTTPS, CSP headers, secret management, and input validation.
+              ml_seq_bg: bg-red-50
+            - ml_seq_title: Plugins
+              ml_seq_desc: Extend Lowdefy with custom blocks, actions, operators, and connections.
+              ml_seq_bg: bg-indigo-50

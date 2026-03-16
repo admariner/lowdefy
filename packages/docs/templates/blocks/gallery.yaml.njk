@@ -76,6 +76,13 @@ _ref:
           showIcon: true
           message: {{ note }}
 {% endif %}
+{% if guide %}
+      - id: gallery_guide
+        type: MarkdownWithCode
+        properties:
+          content:
+            _var: guide
+{% endif %}
 {% if wrapperType %}
       - id: gallery_wrapper
         type: {{ wrapperType }}

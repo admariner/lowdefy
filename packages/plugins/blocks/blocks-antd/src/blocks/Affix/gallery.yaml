@@ -142,7 +142,9 @@
               content:
                 _if:
                   test:
-                    _event: affixed
+                    _eq:
+                      - _event: affixed
+                      - true
                   then: Affix is now fixed to the viewport.
                   else: Affix returned to its original position.
               duration: 3
@@ -230,24 +232,6 @@
             title: Shadow + Rounded
             color: primary
             variant: solid
-            size: small
-    - id: affix_css_bg
-      type: Affix
-      layout:
-        flex: 0 0 auto
-      class:
-        element: bg-blue-50 p-2 rounded-md
-      properties:
-        offsetTop: 10
-      blocks:
-        - id: affix_css_bg_btn
-          type: Button
-          layout:
-            flex: 0 0 auto
-          properties:
-            title: Blue Background
-            color: primary
-            variant: outlined
             size: small
     - id: affix_css_ring
       type: Affix

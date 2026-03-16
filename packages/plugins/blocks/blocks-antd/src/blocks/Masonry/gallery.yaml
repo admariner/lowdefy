@@ -425,6 +425,51 @@
               properties:
                 content: All children inherit the color overrides, keeping text, borders, and backgrounds harmonized.
 
+    - id: mas_theme_motion
+      type: Masonry
+      properties:
+        columns: 3
+        gutter: 16
+        theme:
+          motionDurationSlow: '2s'
+          motionDurationFast: '1s'
+          motionEaseOut: ease-in-out
+      blocks:
+        - id: mas_theme_motion_c1
+          type: Card
+          properties:
+            title: Slow Transitions
+            size: small
+          blocks:
+            - id: mas_theme_motion_c1_p
+              type: Paragraph
+              properties:
+                content: The motionDurationSlow token controls how long items take to reposition and appear. Set to 2s here for a dramatic effect.
+        - id: mas_theme_motion_c2
+          type: Card
+          properties:
+            title: Custom Easing
+            size: small
+          blocks:
+            - id: mas_theme_motion_c2_p
+              type: Paragraph
+              properties:
+                content: The motionEaseOut token changes the easing curve. Here we use ease-in-out instead of the default cubic-bezier.
+            - id: mas_theme_motion_c2_p2
+              type: Paragraph
+              properties:
+                content: Resize the browser to see the slowed-down position transitions as items reflow between columns.
+        - id: mas_theme_motion_c3
+          type: Card
+          properties:
+            title: Leave Duration
+            size: small
+          blocks:
+            - id: mas_theme_motion_c3_p
+              type: Paragraph
+              properties:
+                content: The motionDurationFast token controls fade-out speed when items are removed. Set to 1s here.
+
 - title: Styled Masonry (Tailwind CSS)
   fullWidth: true
   blocks:

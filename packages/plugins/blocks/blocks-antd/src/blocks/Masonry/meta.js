@@ -55,6 +55,24 @@ export default {
           'Antd design token overrides for this block. See <a href="https://ant.design/components/overview#design-token">antd design tokens</a>.',
         docs: {
           displayType: 'yaml',
+          link: 'https://ant.design/components/masonry#design-token',
+        },
+        properties: {
+          motionDurationSlow: {
+            type: 'string',
+            default: '0.3s',
+            description: 'Duration for item position transitions and appear animations.',
+          },
+          motionDurationFast: {
+            type: 'string',
+            default: '0.1s',
+            description: 'Duration for item leave animations.',
+          },
+          motionEaseOut: {
+            type: 'string',
+            default: 'cubic-bezier(0.215, 0.61, 0.355, 1)',
+            description: 'Easing function for item transitions.',
+          },
         },
       },
     },
