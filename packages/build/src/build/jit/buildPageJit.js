@@ -250,6 +250,7 @@ async function buildPageJit({ pageId, pageRegistry, context, directories, logger
         type: w.name ?? 'ConfigWarning',
         message: w.message,
         source: w.source ?? null,
+        stack: w.stack ?? null,
       }));
     }
 

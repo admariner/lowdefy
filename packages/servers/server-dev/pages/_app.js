@@ -73,6 +73,7 @@ function App({ Component }) {
         type: error.type ?? error.name,
         message: error.message,
         source: error.source,
+        stack: error.stack,
       },
     ]);
   }, []);

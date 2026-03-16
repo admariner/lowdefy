@@ -39,6 +39,7 @@ async function handler({ context, req, res }) {
         type: err.name ?? 'Error',
         message: err.message,
         source: err.source ?? null,
+        stack: err.stack ?? null,
       });
     }
     res.status(500).json({
