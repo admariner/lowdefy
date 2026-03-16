@@ -52,8 +52,8 @@ test.describe('EChart Block', () => {
   test('renders with custom width', async ({ page }) => {
     const block = getBlock(page, 'echart_width');
     await expect(block).toBeVisible();
-    // The width property is set on the inner div, not the Lowdefy wrapper
-    const innerDiv = block.locator('div').first();
+    // The width is on the inner div rendered by EChart, not the Lowdefy wrapper
+    const innerDiv = block.locator('> div[style*="width"]');
     const box = await innerDiv.boundingBox();
     expect(box.width).toBeCloseTo(400, -1);
   });

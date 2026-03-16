@@ -136,7 +136,7 @@ blocks:
             aggridinputalpinedark_row_clicked:
               _event: row.name
 
-  - id: row_click_display
+  - id: aggridinputalpinedark_row_click_display
     type: Span
     properties:
       content:
@@ -167,7 +167,7 @@ blocks:
             aggridinputalpinedark_cell_clicked:
               _event: cell.value
 
-  - id: cell_click_display
+  - id: aggridinputalpinedark_cell_click_display
     type: Span
     properties:
       content:
@@ -199,7 +199,7 @@ blocks:
             aggridinputalpinedark_row_selected:
               _event: row.name
 
-  - id: row_selected_display
+  - id: aggridinputalpinedark_row_selected_display
     type: Span
     properties:
       content:
@@ -235,7 +235,7 @@ blocks:
           params:
             aggridinputalpinedark_sort_changed: true
 
-  - id: sort_changed_display
+  - id: aggridinputalpinedark_sort_changed_display
     type: Span
     properties:
       content:
@@ -264,7 +264,7 @@ blocks:
           params:
             aggridinputalpinedark_filter_changed: true
 
-  - id: filter_changed_display
+  - id: aggridinputalpinedark_filter_changed_display
     type: Span
     properties:
       content:
@@ -299,7 +299,7 @@ blocks:
             aggridinputalpinedark_cell_old_value:
               _event: oldValue
 
-  - id: cell_value_changed_display
+  - id: aggridinputalpinedark_cell_value_changed_display
     type: Span
     properties:
       content:
@@ -314,7 +314,7 @@ blocks:
               - _state: aggridinputalpinedark_cell_new_value
           else: ''
 
-  - id: old_value_display
+  - id: aggridinputalpinedark_old_value_display
     type: Span
     properties:
       content:
@@ -349,7 +349,7 @@ blocks:
           params:
             aggridinputalpinedark_drag_ended: true
 
-  - id: row_drag_display
+  - id: aggridinputalpinedark_row_drag_display
     type: Span
     properties:
       content:

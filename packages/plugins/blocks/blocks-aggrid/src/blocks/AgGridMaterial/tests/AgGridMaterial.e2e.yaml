@@ -104,7 +104,7 @@ blocks:
             aggridmaterial_row_clicked:
               _event: row.name
 
-  - id: row_click_display
+  - id: aggridmaterial_row_click_display
     type: Span
     properties:
       content:
@@ -140,7 +140,7 @@ blocks:
             aggridmaterial_cell_clicked:
               _event: cell.value
 
-  - id: cell_click_display
+  - id: aggridmaterial_cell_click_display
     type: Span
     properties:
       content:
@@ -177,7 +177,7 @@ blocks:
             aggridmaterial_row_selected:
               _event: row.name
 
-  - id: row_selected_display
+  - id: aggridmaterial_row_selected_display
     type: Span
     properties:
       content:
@@ -220,7 +220,7 @@ blocks:
           params:
             aggridmaterial_sort_changed: true
 
-  - id: sort_changed_display
+  - id: aggridmaterial_sort_changed_display
     type: Span
     properties:
       content:
@@ -256,7 +256,7 @@ blocks:
           params:
             aggridmaterial_filter_changed: true
 
-  - id: filter_changed_display
+  - id: aggridmaterial_filter_changed_display
     type: Span
     properties:
       content:
