@@ -24,7 +24,11 @@ const navigateToYear = async (dropdown, targetYear) => {
   const headerView = dropdown.locator('.ant-picker-header-view');
   while (true) {
     const headerText = await headerView.textContent();
-    const currentYear = parseInt(headerText.match(/\d{4}/)[0]);
+    const yearMatch = headerText.match(/\d{4}/);
+    if (!yearMatch) {
+      throw new Error(`Could not parse year from picker header: "${headerText}"`);
+    }
+    const currentYear = parseInt(yearMatch[0], 10);
     if (currentYear === targetYear) break;
     if (currentYear > targetYear) {
       await dropdown.locator('.ant-picker-header-super-prev-btn').click();

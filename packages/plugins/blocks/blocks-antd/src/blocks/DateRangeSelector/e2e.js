@@ -42,7 +42,11 @@ const navigateToMonth = async (dropdown, targetYear, targetMonth) => {
   const headerView = dropdown.locator('.ant-picker-header-view').first();
   while (true) {
     const headerText = await headerView.textContent();
-    const currentYear = parseInt(headerText.match(/\d{4}/)[0]);
+    const yearMatch = headerText.match(/\d{4}/);
+    if (!yearMatch) {
+      throw new Error(`Could not parse year from picker header: "${headerText}"`);
+    }
+    const currentYear = parseInt(yearMatch[0], 10);
     if (currentYear === targetYear) break;
     if (currentYear > targetYear) {
       await dropdown.locator('.ant-picker-header-super-prev-btn').first().click();
@@ -53,6 +57,9 @@ const navigateToMonth = async (dropdown, targetYear, targetMonth) => {
   while (true) {
     const headerText = await headerView.textContent();
     const currentMonthName = monthNames.find((m) => headerText.includes(m));
+    if (!currentMonthName) {
+      throw new Error(`Could not parse month from picker header: "${headerText}"`);
+    }
     const currentMonth = monthNames.indexOf(currentMonthName) + 1;
     if (currentMonth === targetMonth) break;
     if (currentMonth > targetMonth) {
