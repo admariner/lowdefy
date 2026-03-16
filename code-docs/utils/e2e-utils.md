@@ -125,7 +125,6 @@ ldf.mock.request('id', { response }); // Inline mocking
 | `index.js`           | CLI entry point (`npx @lowdefy/e2e-utils`)  |
 | `detectApps.js`      | Finds Lowdefy apps in `app/` or `apps/`     |
 | `generateFiles.js`   | Creates e2e folder structure from templates |
-| `installDeps.js`     | Package manager detection and install       |
 | `updateGitignore.js` | Adds test artifacts to .gitignore           |
 
 ### Config (`src/config.js`)
@@ -499,7 +498,6 @@ src/
 │   ├── index.js                # CLI entry
 │   ├── detectApps.js
 │   ├── generateFiles.js
-│   ├── installDeps.js
 │   ├── updateGitignore.js
 │   └── templates/
 │       ├── playwright.config.js.template
