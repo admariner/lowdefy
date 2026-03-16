@@ -366,6 +366,9 @@
             onClick:
               - id: login_validate
                 type: Validate
+                params:
+                  - login_username
+                  - login_password
               - id: login_success_message
                 type: DisplayMessage
                 params:

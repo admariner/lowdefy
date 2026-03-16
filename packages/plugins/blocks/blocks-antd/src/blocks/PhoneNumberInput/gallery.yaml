@@ -597,6 +597,10 @@
                 onClick:
                   - id: contact_validate
                     type: Validate
+                    params:
+                      - contact_name
+                      - contact_email
+                      - contact_phone
                   - id: contact_success
                     type: DisplayMessage
                     params:
@@ -668,6 +672,10 @@
                 onClick:
                   - id: register_validate
                     type: Validate
+                    params:
+                      - register_phone
+                      - register_password
+                      - register_terms
                   - id: register_success
                     type: DisplayMessage
                     params:

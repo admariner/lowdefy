@@ -526,6 +526,10 @@
                 onClick:
                   - id: label_reg_submit_validate
                     type: Validate
+                    params:
+                      - label_reg_name
+                      - label_reg_email
+                      - label_reg_password
                   - id: label_reg_submit_msg
                     type: DisplayMessage
                     params:
@@ -747,6 +751,10 @@
                 onClick:
                   - id: label_data_publish_validate
                     type: Validate
+                    params:
+                      - label_data_name
+                      - label_data_price
+                      - label_data_category
                   - id: label_data_publish_msg
                     type: DisplayMessage
                     params:

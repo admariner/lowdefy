@@ -699,6 +699,7 @@
             onClick:
               - id: vacation_validate_action
                 type: Validate
+                params: applied3_vacation_dates
               - id: vacation_submit_message
                 type: DisplayMessage
                 params:

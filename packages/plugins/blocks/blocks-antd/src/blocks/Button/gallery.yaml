@@ -654,6 +654,10 @@
                 onClick:
                   - id: submit_validate
                     type: Validate
+                    params:
+                      - contact_name
+                      - contact_email
+                      - contact_message
                   - id: submit_msg
                     type: DisplayMessage
                     params:

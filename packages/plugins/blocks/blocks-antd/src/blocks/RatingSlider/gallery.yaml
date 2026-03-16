@@ -530,6 +530,7 @@
       blocks:
         - id: applied_product_review_rating
           type: RatingSlider
+          required: true
           properties:
             title: Product Rating
             min: 1
@@ -568,6 +569,7 @@
             onClick:
               - id: applied_product_review_validate
                 type: Validate
+                params: applied_product_review_rating
               - id: applied_product_review_message
                 type: DisplayMessage
                 params:

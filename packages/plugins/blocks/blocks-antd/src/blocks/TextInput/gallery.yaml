@@ -498,6 +498,11 @@
             onClick:
               - id: submit_validate
                 type: Validate
+                params:
+                  - reg_name
+                  - reg_email
+                  - reg_password
+                  - reg_username
               - id: submit_msg
                 type: DisplayMessage
                 params:
