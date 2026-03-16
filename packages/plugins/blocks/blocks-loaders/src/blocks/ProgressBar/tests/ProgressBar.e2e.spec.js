@@ -47,4 +47,24 @@ test.describe('ProgressBar Block', () => {
     const shadow = getShadow(page, 'progressbar_no_shadow');
     await expect(shadow).toHaveCount(0);
   });
+
+  test('renders with custom progress value', async ({ page }) => {
+    const block = getBlock(page, 'progressbar_progress');
+    await expect(block).toBeVisible();
+    const container = getContainer(page, 'progressbar_progress');
+    await expect(container).toBeVisible();
+    // CSS variables are on the inner div rendered by the block component
+    const inner = page.locator('#progressbar_progress');
+    const progressVar = await inner.evaluate((el) => el.style.getPropertyValue('--progress'));
+    expect(progressVar).toBe('75%');
+  });
+
+  test('renders with custom height', async ({ page }) => {
+    const block = getBlock(page, 'progressbar_height');
+    await expect(block).toBeVisible();
+    // CSS variables are on the inner div rendered by the block component
+    const inner = page.locator('#progressbar_height');
+    const heightVar = await inner.evaluate((el) => el.style.getPropertyValue('--height'));
+    expect(heightVar).toBe('10px');
+  });
 });

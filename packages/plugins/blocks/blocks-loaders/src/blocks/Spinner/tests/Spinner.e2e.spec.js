@@ -36,13 +36,17 @@ test.describe('Spinner Block', () => {
     await expect(svg).toHaveClass(/spinner/);
   });
 
-  test('renders small size', async ({ page }) => {
-    const block = getBlock(page, 'spinner_small');
-    await expect(block).toBeVisible();
+  test('renders small size with correct dimensions', async ({ page }) => {
+    const svg = getSpinnerSvg(page, 'spinner_small');
+    await expect(svg).toBeVisible();
+    const width = await svg.getAttribute('width');
+    expect(Number(width)).toBe(20);
   });
 
-  test('renders large size', async ({ page }) => {
-    const block = getBlock(page, 'spinner_large');
-    await expect(block).toBeVisible();
+  test('renders large size with correct dimensions', async ({ page }) => {
+    const svg = getSpinnerSvg(page, 'spinner_large');
+    await expect(svg).toBeVisible();
+    const width = await svg.getAttribute('width');
+    expect(Number(width)).toBe(32);
   });
 });

@@ -314,6 +314,21 @@ blocks:
               - _state: aggridinputbalham_cell_new_value
           else: ''
 
+  - id: old_value_display
+    type: Span
+    properties:
+      content:
+        _if:
+          test:
+            _ne:
+              - _state: aggridinputbalham_cell_old_value
+              - null
+          then:
+            _string.concat:
+              - 'Old: '
+              - _state: aggridinputbalham_cell_old_value
+          else: ''
+
   # ============================================
   # INPUT-SPECIFIC: ROW DRAGGING
   # ============================================

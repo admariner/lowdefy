@@ -85,4 +85,21 @@ test.describe('EChart Block', () => {
     const canvas = getCanvas(page, 'echart_empty_dataset');
     await expect(canvas).toBeVisible();
   });
+
+  // ============================================
+  // EVENT TESTS
+  // ============================================
+
+  test('click event fires when chart element is clicked', async ({ page }) => {
+    const block = getBlock(page, 'echart_onclick');
+    const svg = getSvg(page, 'echart_onclick');
+    await expect(svg).toBeVisible();
+    // Click on a rendered bar path element in the SVG
+    const bar = block.locator('path[fill="#5470c6"]').first();
+    await expect(bar).toBeVisible();
+    await bar.click({ force: true });
+
+    const display = getBlock(page, 'echart_click_display');
+    await expect(display).toHaveText('Chart clicked');
+  });
 });

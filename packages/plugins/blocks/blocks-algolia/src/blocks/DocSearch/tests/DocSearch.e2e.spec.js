@@ -81,4 +81,11 @@ test.describe('DocSearch Block', () => {
     const searchInput = page.locator('.DocSearch-Input');
     await expect(searchInput).toHaveValue('lowdefy');
   });
+
+  test('renders with disableUserPersonalization', async ({ page }) => {
+    const block = getBlock(page, 'docsearch_no_personalization');
+    await expect(block).toBeVisible();
+    const button = getSearchButton(page, 'docsearch_no_personalization');
+    await expect(button).toBeVisible();
+  });
 });

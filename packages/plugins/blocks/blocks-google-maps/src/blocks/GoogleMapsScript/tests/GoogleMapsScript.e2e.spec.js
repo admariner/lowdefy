@@ -39,4 +39,9 @@ test.describe('GoogleMapsScript Block', () => {
     const block = getBlock(page, 'gmheatmap_basic');
     await expect(block).toBeVisible();
   });
+
+  test('GoogleMaps block renders with custom style height', async ({ page }) => {
+    const block = getBlock(page, 'gm_with_style');
+    await expect(block).toBeVisible();
+  });
 });
