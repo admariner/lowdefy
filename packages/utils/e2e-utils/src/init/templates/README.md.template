@@ -324,7 +324,7 @@ Copy `.env.e2e` to `.env.e2e.local` and set your values:
 cp e2e/.env.e2e e2e/.env.e2e.local
 ```
 
-For MongoDB testing, set `MDB_E2E_URI` to a dedicated test database (data will be cleared during tests).
+For MongoDB testing, set `LOWDEFY_E2E_MONGODB_URI` to a dedicated test database (data will be cleared during tests). If using `@lowdefy/community-plugin-e2e-mdb` with `configureMdb()`, the URI is set automatically.
 
 ## More Information
 
