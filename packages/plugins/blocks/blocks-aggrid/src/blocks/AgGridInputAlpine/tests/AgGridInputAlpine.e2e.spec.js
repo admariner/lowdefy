@@ -176,4 +176,27 @@ test.describe('AgGridInputAlpine Block', () => {
     const dragHandle = block.locator('.ag-row[row-index="0"] .ag-drag-handle');
     await expect(dragHandle).toBeVisible();
   });
+
+  test('onRowDragEnd event fires when row is dragged', async ({ page }) => {
+    const block = getBlock(page, 'aggridinputalpine_rowdrag');
+    const sourceHandle = block.locator('.ag-row[row-index="0"] .ag-drag-handle');
+    const targetRow = block.locator('.ag-row[row-index="2"]');
+    await sourceHandle.dragTo(targetRow);
+
+    const display = getBlock(page, 'row_drag_display');
+    await expect(display).toHaveText('Drag ended');
+  });
+
+  test('onCellValueChanged captures old value', async ({ page }) => {
+    const block = getBlock(page, 'aggridinputalpine_editable');
+    const nameCell = block.locator('.ag-row[row-index="0"] .ag-cell').first();
+    await nameCell.dblclick();
+
+    const cellEditor = block.locator('.ag-cell-editor input');
+    await cellEditor.fill('Updated Alice');
+    await cellEditor.press('Enter');
+
+    const display = getBlock(page, 'old_value_display');
+    await expect(display).toHaveText('Old: Alice');
+  });
 });

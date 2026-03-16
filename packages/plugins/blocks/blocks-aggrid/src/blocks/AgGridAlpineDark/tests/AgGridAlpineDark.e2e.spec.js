@@ -22,7 +22,6 @@ import { getBlock, navigateToTestPage } from '@lowdefy/block-dev-e2e';
 const getGrid = (page, blockId) => getBlock(page, blockId).locator('.ag-root-wrapper');
 const getHeaderCells = (page, blockId) => getBlock(page, blockId).locator('.ag-header-cell-text');
 const getRows = (page, blockId) => getBlock(page, blockId).locator('.ag-row');
-const getCells = (page, blockId) => getBlock(page, blockId).locator('.ag-cell');
 
 test.describe('AgGridAlpineDark Block', () => {
   test.beforeEach(async ({ page }) => {
