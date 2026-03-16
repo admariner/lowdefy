@@ -451,6 +451,9 @@
         - id: Divider
           type: MenuLink
           pageId: Divider
+        - id: DropdownButton
+          type: MenuLink
+          pageId: DropdownButton
         - id: EChart
           type: MenuLink
           pageId: EChart
@@ -569,6 +572,9 @@
         - id: Drawer
           type: MenuLink
           pageId: Drawer
+        - id: DropdownMenu
+          type: MenuLink
+          pageId: DropdownMenu
         - id: Flex
           type: MenuLink
           pageId: Flex

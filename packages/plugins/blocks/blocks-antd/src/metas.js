@@ -38,6 +38,8 @@ export { default as DateTimeSelector } from './blocks/DateTimeSelector/meta.js';
 export { default as Descriptions } from './blocks/Descriptions/meta.js';
 export { default as Divider } from './blocks/Divider/meta.js';
 export { default as Drawer } from './blocks/Drawer/meta.js';
+export { default as DropdownButton } from './blocks/DropdownButton/meta.js';
+export { default as DropdownMenu } from './blocks/DropdownMenu/meta.js';
 export { default as Flex } from './blocks/Flex/meta.js';
 export { default as FloatButton } from './blocks/FloatButton/meta.js';
 export { default as Footer } from './blocks/Footer/meta.js';
