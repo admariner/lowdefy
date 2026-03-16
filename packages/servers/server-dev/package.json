@@ -51,6 +51,7 @@
     "@lowdefy/blocks-antd": "4.7.0",
     "@lowdefy/blocks-basic": "4.7.0",
     "@lowdefy/blocks-echarts": "4.7.0",
+    "@lowdefy/blocks-google-maps": "4.7.0",
     "@lowdefy/blocks-loaders": "4.7.0",
     "@lowdefy/blocks-markdown": "4.7.0",
     "@lowdefy/blocks-qr": "4.7.0",

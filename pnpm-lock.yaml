@@ -1739,6 +1739,9 @@ importers:
       '@lowdefy/blocks-echarts':
         specifier: 4.7.0
         version: link:../../plugins/blocks/blocks-echarts
+      '@lowdefy/blocks-google-maps':
+        specifier: 4.7.0
+        version: link:../../plugins/blocks/blocks-google-maps
       '@lowdefy/blocks-loaders':
         specifier: 4.7.0
         version: link:../../plugins/blocks/blocks-loaders
