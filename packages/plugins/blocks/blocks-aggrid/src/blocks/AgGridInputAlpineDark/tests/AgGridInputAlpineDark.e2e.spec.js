@@ -89,7 +89,7 @@ test.describe('AgGridInputAlpineDark Block', () => {
     const block = getBlock(page, 'aggridinputalpinedark_onrowclick');
     const firstRow = block.locator('.ag-row[row-index="0"] .ag-cell').first();
     await firstRow.click();
-    const display = getBlock(page, 'row_click_display');
+    const display = getBlock(page, 'aggridinputalpinedark_row_click_display');
     await expect(display).toHaveText('Row: Alice');
   });
 
@@ -97,7 +97,7 @@ test.describe('AgGridInputAlpineDark Block', () => {
     const block = getBlock(page, 'aggridinputalpinedark_oncellclick');
     const nameCell = block.locator('.ag-row[row-index="1"] .ag-cell').first();
     await nameCell.click();
-    const display = getBlock(page, 'cell_click_display');
+    const display = getBlock(page, 'aggridinputalpinedark_cell_click_display');
     await expect(display).toHaveText('Cell: Bob');
   });
 
@@ -105,7 +105,7 @@ test.describe('AgGridInputAlpineDark Block', () => {
     const block = getBlock(page, 'aggridinputalpinedark_onrowselected');
     const firstRow = block.locator('.ag-row[row-index="0"] .ag-cell').first();
     await firstRow.click();
-    const display = getBlock(page, 'row_selected_display');
+    const display = getBlock(page, 'aggridinputalpinedark_row_selected_display');
     await expect(display).toHaveText('Selected: Alice');
   });
 
@@ -118,7 +118,7 @@ test.describe('AgGridInputAlpineDark Block', () => {
     const nameHeader = block.locator('.ag-header-cell-text').nth(0);
     await nameHeader.click();
 
-    const display = getBlock(page, 'sort_changed_display');
+    const display = getBlock(page, 'aggridinputalpinedark_sort_changed_display');
     await expect(display).toHaveText('Sort changed');
 
     const firstRowName = block.locator('.ag-row[row-index="0"] .ag-cell').first();
@@ -138,7 +138,7 @@ test.describe('AgGridInputAlpineDark Block', () => {
     const filterInput = filterPopup.locator('input').first();
     await filterInput.fill('Alice');
 
-    const display = getBlock(page, 'filter_changed_display');
+    const display = getBlock(page, 'aggridinputalpinedark_filter_changed_display');
     await expect(display).toHaveText('Filter changed');
 
     const rows = getRows(page, 'aggridinputalpinedark_filterable');
@@ -163,7 +163,7 @@ test.describe('AgGridInputAlpineDark Block', () => {
     await cellEditor.press('Enter');
 
     // Verify onCellValueChanged event fired
-    const display = getBlock(page, 'cell_value_changed_display');
+    const display = getBlock(page, 'aggridinputalpinedark_cell_value_changed_display');
     await expect(display).toHaveText('New: Updated Alice');
   });
 
@@ -183,7 +183,7 @@ test.describe('AgGridInputAlpineDark Block', () => {
     const targetRow = block.locator('.ag-row[row-index="2"]');
     await sourceHandle.dragTo(targetRow);
 
-    const display = getBlock(page, 'row_drag_display');
+    const display = getBlock(page, 'aggridinputalpinedark_row_drag_display');
     await expect(display).toHaveText('Drag ended');
   });
 
@@ -196,7 +196,7 @@ test.describe('AgGridInputAlpineDark Block', () => {
     await cellEditor.fill('Updated Alice');
     await cellEditor.press('Enter');
 
-    const display = getBlock(page, 'old_value_display');
+    const display = getBlock(page, 'aggridinputalpinedark_old_value_display');
     await expect(display).toHaveText('Old: Alice');
   });
 });

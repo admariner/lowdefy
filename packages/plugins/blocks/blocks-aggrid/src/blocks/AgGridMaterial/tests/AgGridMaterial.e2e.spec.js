@@ -96,7 +96,7 @@ test.describe('AgGridMaterial Block', () => {
     const block = getBlock(page, 'aggridmaterial_onrowclick');
     const firstRow = block.locator('.ag-row[row-index="0"] .ag-cell').first();
     await firstRow.click();
-    const display = getBlock(page, 'row_click_display');
+    const display = getBlock(page, 'aggridmaterial_row_click_display');
     await expect(display).toHaveText('Row: Alice');
   });
 
@@ -104,7 +104,7 @@ test.describe('AgGridMaterial Block', () => {
     const block = getBlock(page, 'aggridmaterial_oncellclick');
     const nameCell = block.locator('.ag-row[row-index="1"] .ag-cell').first();
     await nameCell.click();
-    const display = getBlock(page, 'cell_click_display');
+    const display = getBlock(page, 'aggridmaterial_cell_click_display');
     await expect(display).toHaveText('Cell: Bob');
   });
 
@@ -112,7 +112,7 @@ test.describe('AgGridMaterial Block', () => {
     const block = getBlock(page, 'aggridmaterial_onrowselected');
     const firstRow = block.locator('.ag-row[row-index="0"] .ag-cell').first();
     await firstRow.click();
-    const display = getBlock(page, 'row_selected_display');
+    const display = getBlock(page, 'aggridmaterial_row_selected_display');
     await expect(display).toHaveText('Selected: Alice');
   });
 
@@ -127,7 +127,7 @@ test.describe('AgGridMaterial Block', () => {
     await nameHeader.click();
 
     // Verify sort changed event fired
-    const display = getBlock(page, 'sort_changed_display');
+    const display = getBlock(page, 'aggridmaterial_sort_changed_display');
     await expect(display).toHaveText('Sort changed');
 
     // Verify rows are sorted alphabetically
@@ -152,7 +152,7 @@ test.describe('AgGridMaterial Block', () => {
     await filterInput.fill('Alice');
 
     // Verify filter changed event fired
-    const display = getBlock(page, 'filter_changed_display');
+    const display = getBlock(page, 'aggridmaterial_filter_changed_display');
     await expect(display).toHaveText('Filter changed');
 
     // Verify filtered results
