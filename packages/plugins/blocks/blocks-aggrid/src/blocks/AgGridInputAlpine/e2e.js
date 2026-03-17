@@ -14,42 +14,6 @@
   limitations under the License.
 */
 
-import { createBlockHelper, escapeId } from '@lowdefy/e2e-utils';
-import { expect } from '@playwright/test';
+import createAgGridInputHelper from '../../createAgGridInputHelper.js';
 
-const locator = (page, blockId) => page.locator(`#${escapeId(blockId)} .ag-root-wrapper`);
-
-export default createBlockHelper({
-  locator,
-  do: {
-    clickRow: (page, blockId, rowIndex) =>
-      locator(page, blockId).locator(`.ag-row[row-index="${rowIndex}"] .ag-cell`).first().click(),
-    clickHeader: (page, blockId, colIndex) =>
-      locator(page, blockId).locator('.ag-header-cell-text').nth(colIndex).click(),
-    editCell: (page, blockId, rowIndex, colIndex) =>
-      locator(page, blockId)
-        .locator(`.ag-row[row-index="${rowIndex}"] .ag-cell`)
-        .nth(colIndex)
-        .dblclick(),
-    dragRow: (page, blockId, fromIndex, toIndex) =>
-      locator(page, blockId)
-        .locator(`.ag-row[row-index="${fromIndex}"] .ag-drag-handle`)
-        .dragTo(locator(page, blockId).locator(`.ag-row[row-index="${toIndex}"]`)),
-  },
-  expect: {
-    rowCount: (page, blockId, count) =>
-      expect(locator(page, blockId).locator('.ag-row')).toHaveCount(count),
-    headerCount: (page, blockId, count) =>
-      expect(locator(page, blockId).locator('.ag-header-cell-text')).toHaveCount(count),
-    cellText: (page, blockId, rowIndex, colIndex, text) =>
-      expect(
-        locator(page, blockId).locator(`.ag-row[row-index="${rowIndex}"] .ag-cell`).nth(colIndex)
-      ).toHaveText(text),
-    themeClass: (page, blockId) =>
-      expect(page.locator(`#${escapeId(blockId)}`)).toHaveClass(/ag-theme-alpine/),
-    dragHandle: (page, blockId, rowIndex) =>
-      expect(
-        locator(page, blockId).locator(`.ag-row[row-index="${rowIndex}"] .ag-drag-handle`)
-      ).toBeVisible(),
-  },
-});
+export default createAgGridInputHelper('alpine');
