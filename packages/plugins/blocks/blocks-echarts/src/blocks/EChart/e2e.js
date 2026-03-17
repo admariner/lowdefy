@@ -22,10 +22,19 @@ const locator = (page, blockId) => page.locator(`#bl-${escapeId(blockId)}`);
 export default createBlockHelper({
   locator,
   do: {
-    click: (page, blockId) => locator(page, blockId).locator('canvas').click(),
+    click: (page, blockId) =>
+      locator(page, blockId).locator('canvas, svg').first().click(),
   },
   expect: {
     hasCanvas: (page, blockId) => expect(locator(page, blockId).locator('canvas')).toBeVisible(),
     hasSvg: (page, blockId) => expect(locator(page, blockId).locator('svg')).toBeVisible(),
+    height: async (page, blockId, value) => {
+      const box = await locator(page, blockId).locator('> div').first().boundingBox();
+      expect(box.height).toBeCloseTo(value, -1);
+    },
+    width: async (page, blockId, value) => {
+      const box = await locator(page, blockId).locator('> div').first().boundingBox();
+      expect(box.width).toBeCloseTo(value, -1);
+    },
   },
 });
