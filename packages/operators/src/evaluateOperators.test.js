@@ -16,6 +16,7 @@
 
 import { jest } from '@jest/globals';
 import { ConfigError, OperatorError } from '@lowdefy/errors';
+import { serializer } from '@lowdefy/helpers';
 
 import evaluateOperators from './evaluateOperators.js';
 
@@ -307,4 +308,73 @@ test('nested type boundaries each reset independently', () => {
   expect(res.output['~dyn']).toBeUndefined();
   expect(res.output.areas.content.blocks[0]['~dyn']).toBeUndefined();
   expect(res.output.areas.content.blocks[0].label['~dyn']).toBe(true);
+});
+
+test('_build.function callback template is not mutated across repeated invocations', () => {
+  // Mock _args: resolves dot-path into args array (e.g. '0.id' → args[0].id)
+  const _args = jest.fn(({ args, params }) => {
+    if (!args) return undefined;
+    if (params === true) return args;
+    let val = args;
+    for (const k of String(params).split('.')) {
+      val = val?.[k];
+    }
+    return val;
+  });
+
+  // Mock _function: same closure pattern as the real operator —
+  // captures params by reference, deep-clones before each parser.parse call
+  const _function = jest.fn(({ params, parser, operatorPrefix }) => {
+    return (...args) => {
+      const { output, errors } = parser.parse({
+        args,
+        input: serializer.copy(params),
+        operatorPrefix: `_${operatorPrefix}`,
+      });
+      if (errors.length > 0) throw errors[0];
+      return output;
+    };
+  });
+
+  // Mock _array: .map invokes callback for each item
+  const _array = jest.fn(({ params, methodName }) => {
+    if (methodName === 'map') {
+      return (params.on ?? []).map(params.callback);
+    }
+  });
+
+  const ops = { _args, _array, _function };
+
+  const input = {
+    items: {
+      '_build.array.map': {
+        on: [
+          { id: 'alpha', label: 'Alpha' },
+          { id: 'beta', label: 'Beta' },
+          { id: 'gamma', label: 'Gamma' },
+        ],
+        callback: {
+          '_build.function': {
+            value: { '__build.args': '0.id' },
+            title: { '__build.args': '0.label' },
+          },
+        },
+      },
+    },
+  };
+
+  const res = evaluateOperators({
+    input,
+    operators: ops,
+    operatorPrefix: '_build.',
+  });
+
+  // Each callback invocation should resolve its own args independently.
+  // Without serializer.copy, all 3 items would be { value: 'alpha', title: 'Alpha' }
+  // because evaluateOperators mutates the callback template in-place.
+  expect(res.output.items).toEqual([
+    { value: 'alpha', title: 'Alpha' },
+    { value: 'beta', title: 'Beta' },
+    { value: 'gamma', title: 'Gamma' },
+  ]);
 });
