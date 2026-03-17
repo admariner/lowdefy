@@ -33,7 +33,6 @@ function getBlockDefaultIcons({ blocks, context, icons, regex }) {
 function buildIconImports({ blocks, components, context, defaults = {} }) {
   const iconImports = [];
   Object.entries(iconPackages).forEach(([iconPackage, regex]) => {
-    defaults;
     const icons = new Set(defaults[iconPackage]);
     getConfigIcons({ components, icons, regex });
     getBlockDefaultIcons({ blocks, context, icons, regex });
