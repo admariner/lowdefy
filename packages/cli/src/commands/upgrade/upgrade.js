@@ -88,8 +88,7 @@ async function upgrade({ context }) {
     const codemodCount = phase.codemods.length;
     logger.info(`  Phase ${i + 1}: v${phase.version} — ${codemodCount} codemod(s)`);
     phase.codemods.forEach((c) => {
-      const icon = c.category === 'A' ? '✓' : c.category === 'B' ? '⚡' : '◇';
-      logger.info(`    ${icon} ${c.description} (${c.category})`);
+      logger.info(`    • ${c.description}`);
     });
     logger.info('');
   });
@@ -99,13 +98,10 @@ async function upgrade({ context }) {
   }
 
   // Confirm
-  const dryRun = context.options.dryRun;
-  if (!dryRun) {
-    const answer = await askQuestion('Proceed? [Y/n] ');
-    if (answer && answer.toLowerCase() !== 'y') {
-      logger.info('Upgrade cancelled.');
-      return;
-    }
+  const answer = await askQuestion('Proceed? [Y/n] ');
+  if (answer && answer.toLowerCase() !== 'y') {
+    logger.info('Upgrade cancelled.');
+    return;
   }
 
   // Execute
@@ -113,10 +109,8 @@ async function upgrade({ context }) {
     chain,
     targetDirectory: configDirectory,
     codemodsDirectory,
-    apply: !dryRun,
     logger,
     resume,
-    scriptsOnly: context.options.scriptsOnly,
   });
 
   // Telemetry

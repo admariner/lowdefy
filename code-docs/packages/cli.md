@@ -112,7 +112,7 @@ lowdefy init-vercel [options]
 
 ### `lowdefy upgrade`
 
-Upgrade a Lowdefy app by running codemods that handle breaking changes between versions.
+Upgrade a Lowdefy app by walking through migration prompts that handle breaking changes between versions.
 
 ```bash
 lowdefy upgrade [options]
@@ -123,8 +123,6 @@ lowdefy upgrade [options]
 |--------|-------------|---------|
 | `--to` | Target version | Latest stable |
 | `--plan` | Show upgrade plan without executing | - |
-| `--dry-run` | Run scripts without writing files | - |
-| `--scripts-only` | Skip AI-guided codemods | - |
 | `--resume` | Resume interrupted upgrade | - |
 | `--config-directory` | Config directory path | Current directory |
 | `--log-level` | Log level | info |
@@ -134,7 +132,7 @@ lowdefy upgrade [options]
 1. Reads current version from `lowdefy.yaml`
 2. Fetches `@lowdefy/codemods@latest` from npm (reuses `fetchNpmTarball`)
 3. Resolves the version chain via `resolveChain.js`
-4. Executes codemods phase by phase via `executePhase.js`
+4. Presents migration prompts phase by phase via `executePhase.js`
 5. Updates `lowdefy.yaml` version after each phase
 6. Suggests git commit between phases
 
@@ -161,18 +159,15 @@ lowdefy upgrade [options]
          ▼
 ┌──────────────────────┐
 │  executePhase.js     │  For each phase in the chain:
-│                      │  runs Cat A → Cat B → Cat C
+│                      │  presents prompts in order
 └────────┬─────────────┘
          │
-    ┌────┴────┐
-    ▼         ▼
-┌────────┐ ┌──────────────┐
-│runScript│ │handlePrompt  │
-│  .js   │ │  .js         │
-│        │ │              │
-│fork()  │ │clipboard /   │
-│scripts │ │AI detection  │
-└────────┘ └──────────────┘
+         ▼
+┌──────────────────┐
+│  handlePrompt.js │  Reads .md prompt, presents options:
+│                  │  clipboard / view / skip
+│                  │  AI tool detection
+└────────┬─────────┘
          │
          ▼
 ┌──────────────────────┐
@@ -185,26 +180,25 @@ lowdefy upgrade [options]
 
 | Module                             | Purpose                                                                  |
 | ---------------------------------- | ------------------------------------------------------------------------ |
-| `commands/upgrade/upgrade.js`      | Command entry point — startUp, fetch codemods, orchestrate               |
+| `commands/upgrade/upgrade.js`      | Command entry point — fetch codemods, orchestrate                        |
 | `commands/upgrade/resolveChain.js` | Version chain resolution from registry.json using semver ranges          |
-| `commands/upgrade/executePhase.js` | Phase orchestrator — runs codemods in category order (A→B→C)             |
-| `commands/upgrade/runScript.js`    | Executes `.mjs` scripts via `child_process.fork()`                       |
-| `commands/upgrade/handlePrompt.js` | Presents Category C options — clipboard, AI detection, manual guide      |
+| `commands/upgrade/executePhase.js` | Phase orchestrator — presents prompts in order                           |
+| `commands/upgrade/handlePrompt.js` | Presents prompt options — clipboard, AI detection, manual guide          |
 | `commands/upgrade/upgradeState.js` | Reads/writes `.lowdefy/upgrade-state.json` for resume and build warnings |
 
 #### Integration points
 
 - **`fetchNpmTarball`** — Reused from the existing server download flow to fetch `@lowdefy/codemods@latest`.
 - **`validateVersion.js`** — Extended to check for `.lowdefy/upgrade-state.json` and warn about pending codemods during `build` and `dev`.
-- **`@lowdefy/codemods`** — External package containing all migration scripts and registry. See [codemods.md](./codemods.md).
+- **`@lowdefy/codemods`** — External package containing all migration prompts and registry. See [codemods.md](./codemods.md).
 
 #### Design decisions
 
 **Why `@lowdefy/codemods@latest`:** The codemods package contains the full migration history for all versions. Fetching `@latest` ensures the chain resolver has complete coverage. The `--to` flag controls the target version, not the codemods package version. This mirrors how `getServer.js` decouples CLI version from server version.
 
-**Why `fork()` for scripts:** Codemod scripts use `process.argv` via `_utils.mjs`'s `parseArgs()` and `process.exit()` for flow control. Running them as forked child processes preserves this execution model without coupling scripts to the CLI's process.
+**Why prompts instead of scripts:** AI tools execute find-and-replace reliably from markdown prompts. Prompts can be updated after publishing (they're just text), work with any AI tool, and one format eliminates the need for script execution infrastructure (child_process.fork, backup logic, etc.).
 
-**Why lazy AI detection:** The CLI checks for AI tool environment indicators only when a Category C codemod is reached. Detection never blocks the upgrade flow — it adds an option to the menu if detected, falls back to clipboard/manual otherwise.
+**Why lazy AI detection:** The CLI checks for AI tool environment indicators only when presenting a prompt. Detection never blocks the upgrade flow — it may add options in future, falls back to clipboard/manual otherwise.
 
 ## Environment Variables
 

@@ -22,21 +22,19 @@ const registry = {
       version: '4.8.0',
       from: '>=4.0.0 <4.8.0',
       description: 'Antd v6 upgrade',
-      codemods: [{ id: 'rename-areas', category: 'A', description: 'Rename areas to slots' }],
+      codemods: [{ id: 'rename-areas', description: 'Rename areas to slots' }],
     },
     {
       version: '5.0.0',
       from: '>=4.8.0 <5.0.0',
       description: 'Dayjs migration',
-      codemods: [{ id: 'rename-moment', category: 'A', description: 'Rename _moment to _dayjs' }],
+      codemods: [{ id: 'rename-moment', description: 'Rename _moment to _dayjs' }],
     },
     {
       version: '6.0.0',
       from: '>=5.0.0 <6.0.0',
       description: 'Plugin types update',
-      codemods: [
-        { id: 'update-plugins', category: 'A', description: 'Update plugin declarations' },
-      ],
+      codemods: [{ id: 'update-plugins', description: 'Update plugin declarations' }],
     },
   ],
 };

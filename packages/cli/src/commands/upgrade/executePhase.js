@@ -18,7 +18,6 @@ import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
 
-import runScript from './runScript.js';
 import handlePrompt from './handlePrompt.js';
 import { askQuestion } from './handlePrompt.js';
 
@@ -41,21 +40,13 @@ function isGitRepo(directory) {
   }
 }
 
-async function executePhase({
-  phase,
-  targetDirectory,
-  codemodsDirectory,
-  apply,
-  scriptsOnly,
-  logger,
-}) {
+async function executePhase({ phase, targetDirectory, codemodsDirectory, logger }) {
   logger.info(`\nPhase: Upgrading to v${phase.version} — ${phase.description}`);
 
   const results = [];
 
-  // Execute codemods in registry order (numbering determines sequence)
   for (const codemod of phase.codemods) {
-    const label = `[${codemod.category}] ${codemod.description}`;
+    const label = codemod.description;
 
     if (!codemod.path) {
       logger.warn(`  ${label} — no path defined, skipping.`);
@@ -63,62 +54,30 @@ async function executePhase({
       continue;
     }
 
-    if (codemod.category === 'C' && scriptsOnly) {
-      logger.info(`  ${label} — skipped (--scripts-only)`);
-      results.push({ id: codemod.id, status: 'skipped' });
-      continue;
-    }
-
     const codemodPath = path.join(codemodsDirectory, codemod.path);
-    const isScript = codemod.path.endsWith('.mjs');
 
-    if (isScript) {
-      logger.info(`  ${label}`);
-      const result = await runScript({ scriptPath: codemodPath, targetDirectory, apply });
-
-      if (result.success) {
-        logger.info(`    ✓ Done`);
-      } else {
-        logger.warn(`    ✗ Script failed`);
-      }
-
-      if (codemod.category === 'B' && apply) {
-        const reportDir = path.join(targetDirectory, '.codemod-reports');
-        const reportFile = path.join(reportDir, `${codemod.id}.md`);
-        if (fs.existsSync(reportFile)) {
-          logger.info(`    ⚠ Review report: ${reportFile}`);
-          await askQuestion('    Review the report and press Enter to continue...');
-        }
-      }
-
-      results.push({ id: codemod.id, status: result.success ? 'completed' : 'failed' });
-    } else {
-      // Category C — prompt/guide markdown file
-      logger.info(`  ${label}`);
-      const result = await handlePrompt({
-        path: codemodPath,
-        codemodId: codemod.id,
-        logger,
-      });
-      results.push({ id: codemod.id, status: result.status });
-    }
+    logger.info(`  ${label}`);
+    const result = await handlePrompt({
+      path: codemodPath,
+      codemodId: codemod.id,
+      logger,
+    });
+    results.push({ id: codemod.id, status: result.status });
   }
 
-  if (apply) {
-    updateLowdefyVersion(targetDirectory, phase.version);
-    logger.info(`\n  Updated lowdefy.yaml: lowdefy: '${phase.version}'`);
+  updateLowdefyVersion(targetDirectory, phase.version);
+  logger.info(`\n  Updated lowdefy.yaml: lowdefy: '${phase.version}'`);
 
-    if (isGitRepo(targetDirectory)) {
-      const answer = await askQuestion(`  Commit this phase? [Y/n] `);
-      if (answer === '' || answer.toLowerCase() === 'y') {
-        try {
-          execSync(`git add -A && git commit -m "chore: upgrade to lowdefy v${phase.version}"`, {
-            cwd: targetDirectory,
-            stdio: 'inherit',
-          });
-        } catch {
-          logger.warn('  Git commit failed. You can commit manually.');
-        }
+  if (isGitRepo(targetDirectory)) {
+    const answer = await askQuestion(`  Commit this phase? [Y/n] `);
+    if (answer === '' || answer.toLowerCase() === 'y') {
+      try {
+        execSync(`git add -A && git commit -m "chore: upgrade to lowdefy v${phase.version}"`, {
+          cwd: targetDirectory,
+          stdio: 'inherit',
+        });
+      } catch {
+        logger.warn('  Git commit failed. You can commit manually.');
       }
     }
   }

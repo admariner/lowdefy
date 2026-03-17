@@ -17,15 +17,7 @@
 import { readUpgradeState, writeUpgradeState, clearUpgradeState } from './upgradeState.js';
 import executePhase from './executePhase.js';
 
-async function runUpgrade({
-  chain,
-  targetDirectory,
-  codemodsDirectory,
-  apply,
-  logger,
-  resume,
-  scriptsOnly,
-}) {
+async function runUpgrade({ chain, targetDirectory, codemodsDirectory, logger, resume }) {
   let phases;
 
   if (resume) {
@@ -63,7 +55,6 @@ async function runUpgrade({
   };
   writeUpgradeState(targetDirectory, state);
 
-  let totalFiles = 0;
   let skippedCount = 0;
 
   for (let i = 0; i < phases.length; i++) {
@@ -79,8 +70,6 @@ async function runUpgrade({
       phase,
       targetDirectory,
       codemodsDirectory,
-      apply,
-      scriptsOnly,
       logger,
     });
 

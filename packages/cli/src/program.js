@@ -155,8 +155,6 @@ program
   .addOption(options.logLevel)
   .addOption(new Option('--to <version>', 'Target version. Default: latest stable.'))
   .addOption(new Option('--plan', 'Show upgrade plan without executing.'))
-  .addOption(new Option('--dry-run', 'Run scripts in dry-run mode (no file changes).'))
-  .addOption(new Option('--scripts-only', 'Skip AI-guided codemods.'))
   .addOption(new Option('--resume', 'Resume a previously interrupted upgrade.'))
   .action(runCommand({ cliVersion, handler: upgrade }));
 
