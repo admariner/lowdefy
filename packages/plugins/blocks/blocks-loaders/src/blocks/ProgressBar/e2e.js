@@ -26,5 +26,10 @@ export default createBlockHelper({
       expect(locator(page, blockId).locator('.progress-bar-shadow')).toBeVisible(),
     noShadow: (page, blockId) =>
       expect(locator(page, blockId).locator('.progress-bar-shadow')).toHaveCount(0),
+    progress: async (page, blockId, value) => {
+      const el = page.locator(`#${escapeId(blockId)}`);
+      const progressVar = await el.evaluate((node) => node.style.getPropertyValue('--progress'));
+      expect(progressVar).toBe(value);
+    },
   },
 });

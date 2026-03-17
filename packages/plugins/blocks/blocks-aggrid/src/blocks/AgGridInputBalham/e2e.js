@@ -31,6 +31,10 @@ export default createBlockHelper({
         .locator(`.ag-row[row-index="${rowIndex}"] .ag-cell`)
         .nth(colIndex)
         .dblclick(),
+    dragRow: (page, blockId, fromIndex, toIndex) =>
+      locator(page, blockId)
+        .locator(`.ag-row[row-index="${fromIndex}"] .ag-drag-handle`)
+        .dragTo(locator(page, blockId).locator(`.ag-row[row-index="${toIndex}"]`)),
   },
   expect: {
     rowCount: (page, blockId, count) =>

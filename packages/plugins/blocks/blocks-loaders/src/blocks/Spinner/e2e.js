@@ -23,5 +23,7 @@ export default createBlockHelper({
   locator,
   expect: {
     spinnerClass: (page, blockId) => expect(locator(page, blockId)).toHaveClass(/spinner/),
+    size: (page, blockId, width) =>
+      expect(locator(page, blockId)).toHaveAttribute('width', String(width)),
   },
 });
