@@ -133,7 +133,7 @@ test('detectMissingIcons detects icon in nested block property', () => {
   expect(result).toEqual([{ icon: 'FaRocket', package: 'react-icons/fa' }]);
 });
 
-test('detectMissingIcons returns empty array when iconImports is empty', () => {
+test('detectMissingIcons detects icons when iconImports is empty', () => {
   const page = {
     id: 'home',
     type: 'Box',
@@ -147,7 +147,7 @@ test('detectMissingIcons returns empty array when iconImports is empty', () => {
   };
 
   const result = detectMissingIcons({ page, iconImports: [] });
-  expect(result).toEqual([]);
+  expect(result).toContainEqual({ icon: 'IoAddCircle', package: 'react-icons/io5' });
 });
 
 test('detectMissingIcons does not return duplicate icons when same icon appears multiple times', () => {

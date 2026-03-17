@@ -17,10 +17,6 @@
 import iconPackages from '../buildImports/iconPackages.js';
 
 function detectMissingIcons({ page, iconImports }) {
-  if (iconImports.length === 0) {
-    return [];
-  }
-
   const pageJson = JSON.stringify(page);
   const newIcons = [];
 
