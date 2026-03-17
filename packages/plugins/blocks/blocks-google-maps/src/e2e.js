@@ -14,6 +14,4 @@
   limitations under the License.
 */
 
-export { default as GoogleMaps } from './blocks/GoogleMaps/e2e.js';
-export { default as GoogleMapsHeatmap } from './blocks/GoogleMapsHeatmap/e2e.js';
 export { default as GoogleMapsScript } from './blocks/GoogleMapsScript/e2e.js';
