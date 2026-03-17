@@ -46,6 +46,8 @@ function createAgGridDisplayHelper(theme) {
         expect(page.locator(`#${escapeId(blockId)}`)).toHaveClass(
           new RegExp(`ag-theme-${theme}`)
         ),
+      emptyOverlay: (page, blockId) =>
+        expect(locator(page, blockId).locator('.ag-overlay-no-rows-center')).toBeVisible(),
     },
   });
 }

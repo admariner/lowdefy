@@ -55,6 +55,8 @@ function createAgGridInputHelper(theme) {
         expect(page.locator(`#${escapeId(blockId)}`)).toHaveClass(
           new RegExp(`ag-theme-${theme}`)
         ),
+      emptyOverlay: (page, blockId) =>
+        expect(locator(page, blockId).locator('.ag-overlay-no-rows-center')).toBeVisible(),
       dragHandle: (page, blockId, rowIndex) =>
         expect(
           locator(page, blockId).locator(`.ag-row[row-index="${rowIndex}"] .ag-drag-handle`)
