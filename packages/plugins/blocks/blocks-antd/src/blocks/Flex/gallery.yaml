@@ -446,7 +446,7 @@
       type: Flex
       class: bg-gray-50 p-2 rounded
       style:
-        --element:
+        /element:
           minHeight: 80px
       properties:
         align: flex-start
@@ -486,7 +486,7 @@
       type: Flex
       class: bg-gray-50 p-2 rounded
       style:
-        --element:
+        /element:
           minHeight: 80px
       properties:
         align: center
@@ -526,7 +526,7 @@
       type: Flex
       class: bg-gray-50 p-2 rounded
       style:
-        --element:
+        /element:
           minHeight: 80px
       properties:
         align: flex-end
@@ -566,7 +566,7 @@
       type: Flex
       class: bg-gray-50 p-2 rounded
       style:
-        --element:
+        /element:
           minHeight: 80px
       properties:
         align: stretch
@@ -886,7 +886,7 @@
     - id: flex_style_inline
       type: Flex
       style:
-        --element:
+        /element:
           backgroundColor: '#f0f5ff'
           padding: 16px
           borderRadius: 8px
@@ -915,7 +915,7 @@
     - id: flex_style_dark
       type: Flex
       style:
-        --element:
+        /element:
           backgroundColor: '#1f1f1f'
           padding: 20px
           borderRadius: 12px

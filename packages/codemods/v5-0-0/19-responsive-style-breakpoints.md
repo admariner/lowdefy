@@ -86,7 +86,7 @@ Grep: `sm:|md:|lg:|xl:|2xl:|xxl:` (within `style:` blocks on Lowdefy blocks)
 - id: card
   type: Card
   style:
-    --element:
+    /element:
       borderRadius: 8
       fontSize: 24
       sm:
@@ -99,7 +99,7 @@ Grep: `sm:|md:|lg:|xl:|2xl:|xxl:` (within `style:` blocks on Lowdefy blocks)
 - id: card
   type: Card
   style:
-    --element:
+    /element:
       borderRadius: 8
   class: text-2xl sm:text-base
 ```

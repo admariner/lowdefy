@@ -748,10 +748,10 @@
       properties:
         title: Styled Modal
       style:
-        --body:
+        /body:
           backgroundColor: '#f6ffed'
           padding: 24px
-        --mask:
+        /mask:
           backgroundColor: 'rgba(0, 100, 0, 0.15)'
       blocks:
         - id: modal_styled_body_content
@@ -780,9 +780,9 @@
       properties:
         title: Custom Wrapper Style
       style:
-        --element:
+        /element:
           borderRadius: 20px
-        --wrapper:
+        /wrapper:
           backdropFilter: blur(2px)
       blocks:
         - id: modal_styled_wrapper_content

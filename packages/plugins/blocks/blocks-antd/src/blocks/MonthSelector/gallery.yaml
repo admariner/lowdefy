@@ -391,7 +391,7 @@
     - id: month_style_element
       type: MonthSelector
       style:
-        --element:
+        /element:
           background: '#f0f5ff'
       properties:
         title: Custom Background
@@ -400,7 +400,7 @@
     - id: month_style_label
       type: MonthSelector
       style:
-        --label:
+        /label:
           color: '#531dab'
           fontWeight: bold
       properties:

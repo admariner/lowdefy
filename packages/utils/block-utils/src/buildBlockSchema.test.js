@@ -58,13 +58,13 @@ test('container block includes blocks and areas', () => {
   expect(schema.properties.areas).toEqual({ type: 'object' });
 });
 
-test('no cssKeys produces only --block in class/style properties', () => {
+test('no cssKeys produces only /block in class/style properties', () => {
   const meta = { category: 'display' };
   const schema = buildBlockSchema(meta);
   const classObj = schema.properties.class.oneOf[3];
-  expect(Object.keys(classObj.properties)).toEqual(['--block']);
+  expect(Object.keys(classObj.properties)).toEqual(['/block']);
   const styleObj = schema.properties.style.oneOf[1];
-  expect(Object.keys(styleObj.properties)).toEqual(['--block']);
+  expect(Object.keys(styleObj.properties)).toEqual(['/block']);
 });
 
 test('no events produces empty event properties', () => {
@@ -90,18 +90,18 @@ test('class: array passes', () => {
   expect(valid).toBe(true);
 });
 
-test('class: object with --block key passes', () => {
+test('class: object with /block key passes', () => {
   const { valid } = validate(
     { category: 'display' },
-    { id: 'b1', type: 'Box', class: { '--block': 'a' } }
+    { id: 'b1', type: 'Box', class: { '/block': 'a' } }
   );
   expect(valid).toBe(true);
 });
 
-test('class: object with unknown --key fails', () => {
+test('class: object with unknown /key fails', () => {
   const { valid } = validate(
     { category: 'display' },
-    { id: 'b1', type: 'Box', class: { '--unknown': 'a' } }
+    { id: 'b1', type: 'Box', class: { '/unknown': 'a' } }
   );
   expect(valid).toBe(false);
 });
@@ -122,10 +122,10 @@ test('style: operator passes', () => {
   expect(valid).toBe(true);
 });
 
-test('style: --block keyed object passes', () => {
+test('style: /block keyed object passes', () => {
   const { valid } = validate(
     { category: 'display' },
-    { id: 'b1', type: 'Box', style: { '--block': { marginTop: 20 } } }
+    { id: 'b1', type: 'Box', style: { '/block': { marginTop: 20 } } }
   );
   expect(valid).toBe(true);
 });
@@ -138,10 +138,10 @@ test('style: flat CSS object passes', () => {
   expect(valid).toBe(true);
 });
 
-test('style: unknown --key fails', () => {
+test('style: unknown /key fails', () => {
   const { valid } = validate(
     { category: 'display' },
-    { id: 'b1', type: 'Box', style: { '--unknown': {} } }
+    { id: 'b1', type: 'Box', style: { '/unknown': {} } }
   );
   expect(valid).toBe(false);
 });

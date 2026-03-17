@@ -289,12 +289,12 @@
         value: 0.12
         suffix: '%'
       style:
-        --element:
+        /element:
           padding: 16px 24px
           borderRadius: 8px
           backgroundColor: '#fff2f0'
           border: 1px solid #ffa39e
-        --value:
+        /value:
           color: '#cf1322'
           fontSize: 28
 

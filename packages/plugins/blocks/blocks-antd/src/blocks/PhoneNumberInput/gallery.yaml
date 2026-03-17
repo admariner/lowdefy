@@ -361,7 +361,7 @@
     - id: css_custom_bg
       type: PhoneNumberInput
       style:
-        --element:
+        /element:
           backgroundColor: '#f0f5ff'
           borderColor: '#adc6ff'
       properties:

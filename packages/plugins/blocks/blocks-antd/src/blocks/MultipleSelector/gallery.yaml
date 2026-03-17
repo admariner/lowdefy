@@ -783,7 +783,7 @@
     - id: style_border
       type: MultipleSelector
       style:
-        --element:
+        /element:
           border: 2px solid '#1677ff'
           borderRadius: 8
       properties:
@@ -800,7 +800,7 @@
     - id: style_background
       type: MultipleSelector
       style:
-        --element:
+        /element:
           backgroundColor: '#f0f5ff'
       properties:
         title: Custom Background

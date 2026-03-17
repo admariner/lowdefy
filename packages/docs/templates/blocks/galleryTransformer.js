@@ -84,16 +84,21 @@ function buildPropertiesTable(properties) {
 
 function buildEventsTable(events) {
   if (!events) return 'No events defined.';
-  // meta.js format: { onClick: 'description' }
+  // meta.js string format: { onClick: 'description' }
+  // meta.js object format: { onChange: { description: '...', event: { value: '...' } } }
   // old schema.js format: { properties: { onClick: { description: '...' } } }
   const entries = events.properties
-    ? Object.entries(events.properties).map(([name, def]) => [name, def.description ?? ''])
-    : Object.entries(events);
+    ? Object.entries(events.properties).map(([name, def]) => [name, def.description ?? '', null])
+    : Object.entries(events).map(([name, def]) => {
+        if (typeof def === 'string') return [name, def, null];
+        return [name, def.description ?? '', def.event ?? null];
+      });
   if (entries.length === 0) return 'No events defined.';
-  const rows = entries.map(([name, desc]) => {
-    return `| \`${name}\` | ${(desc ?? '').replace(/\|/g, '\\|')} |`;
+  const rows = entries.map(([name, desc, eventData]) => {
+    const dataCell = eventData ? `\`{ ${Object.keys(eventData).join(', ')} }\`` : '\\-';
+    return `| \`${name}\` | ${dataCell} | ${(desc ?? '').replace(/\|/g, '\\|')} |`;
   });
-  return `| Event | Description |\n| --- | --- |\n${rows.join('\n')}`;
+  return `| Event | Event Data | Description |\n| --- | --- | --- |\n${rows.join('\n')}`;
 }
 
 function buildCssKeysTable(cssKeys) {
@@ -101,12 +106,12 @@ function buildCssKeysTable(cssKeys) {
   // meta.js format: { element: 'description', icon: 'description' }
   // old schema.js format: ['element', 'icon']
   const entries = Array.isArray(cssKeys)
-    ? cssKeys.map((key) => [key, `Target via \`style.--${key}\` or \`class.--${key}\`.`])
+    ? cssKeys.map((key) => [key, `Target via \`style./${key}\` or \`class./${key}\`.`])
     : Object.entries(cssKeys);
   if (entries.length === 0) return 'No CSS keys defined.';
-  const rows = ['| `block` | Outer block wrapper (always available). |'];
+  const rows = ['| `/block` | Outer block wrapper (always available). |'];
   entries.forEach(([key, desc]) => {
-    rows.push(`| \`${key}\` | ${(desc ?? '').replace(/\|/g, '\\|')} |`);
+    rows.push(`| \`/${key}\` | ${(desc ?? '').replace(/\|/g, '\\|')} |`);
   });
   return `| Key | Target |\n| --- | --- |\n${rows.join('\n')}`;
 }

@@ -133,7 +133,7 @@ test('normalizeClassAndStyles keeps class object with plain keys unchanged', () 
   });
 });
 
-test('normalizeClassAndStyles strips -- prefix from class object keys', () => {
+test('normalizeClassAndStyles strips / prefix from class object keys', () => {
   const components = {
     pages: [
       {
@@ -144,7 +144,7 @@ test('normalizeClassAndStyles strips -- prefix from class object keys', () => {
           {
             id: 'block_1',
             type: 'Input',
-            class: { '--block': 'a', '--element': 'b' },
+            class: { '/block': 'a', '/element': 'b' },
           },
         ],
       },
@@ -186,7 +186,7 @@ test('normalizeClassAndStyles moves properties.style to style.element', () => {
   expect(get(res, 'pages.0.slots.content.blocks.0.properties.title')).toEqual('Test');
 });
 
-test('normalizeClassAndStyles handles -- prefixed keys in style', () => {
+test('normalizeClassAndStyles handles / prefixed keys in style', () => {
   const components = {
     pages: [
       {
@@ -197,7 +197,7 @@ test('normalizeClassAndStyles handles -- prefixed keys in style', () => {
           {
             id: 'block_1',
             type: 'Input',
-            style: { '--element': { color: 'red' }, '--block': { marginTop: 20 } },
+            style: { '/element': { color: 'red' }, '/block': { marginTop: 20 } },
           },
         ],
       },
@@ -211,7 +211,7 @@ test('normalizeClassAndStyles handles -- prefixed keys in style', () => {
 });
 
 
-test('normalizeClassAndStyles merges properties.style and --element (--element overrides)', () => {
+test('normalizeClassAndStyles merges properties.style and /element (/element overrides)', () => {
   const components = {
     pages: [
       {
@@ -225,7 +225,7 @@ test('normalizeClassAndStyles merges properties.style and --element (--element o
             properties: {
               style: { color: 'red', fontSize: 14 },
             },
-            style: { '--element': { fontSize: 16, fontWeight: 'bold' } },
+            style: { '/element': { fontSize: 16, fontWeight: 'bold' } },
           },
         ],
       },
@@ -305,7 +305,7 @@ test('normalizeClassAndStyles throws for nested object in flat style', () => {
   );
 });
 
-test('normalizeClassAndStyles throws for nested object in --block slot', () => {
+test('normalizeClassAndStyles throws for nested object in /block slot', () => {
   const components = {
     pages: [
       {
@@ -316,7 +316,7 @@ test('normalizeClassAndStyles throws for nested object in --block slot', () => {
           {
             id: 'block_1',
             type: 'Input',
-            style: { '--block': { color: 'red', typography: { fontSize: 14 } } },
+            style: { '/block': { color: 'red', typography: { fontSize: 14 } } },
           },
         ],
       },
@@ -327,7 +327,7 @@ test('normalizeClassAndStyles throws for nested object in --block slot', () => {
   );
 });
 
-test('normalizeClassAndStyles throws for nested object in --element slot', () => {
+test('normalizeClassAndStyles throws for nested object in /element slot', () => {
   const components = {
     pages: [
       {
@@ -338,7 +338,7 @@ test('normalizeClassAndStyles throws for nested object in --element slot', () =>
           {
             id: 'block_1',
             type: 'Input',
-            style: { '--element': { padding: 10, wrapper: { margin: 5 } } },
+            style: { '/element': { padding: 10, wrapper: { margin: 5 } } },
           },
         ],
       },
@@ -360,7 +360,7 @@ test('normalizeClassAndStyles allows operator object as style value', () => {
           {
             id: 'block_1',
             type: 'Input',
-            style: { '--block': { color: { _state: 'theme.color' } } },
+            style: { '/block': { color: { _state: 'theme.color' } } },
           },
         ],
       },
@@ -384,7 +384,7 @@ test('normalizeClassAndStyles allows operator as entire slot value', () => {
             id: 'block_1',
             type: 'Input',
             style: {
-              '--block': {
+              '/block': {
                 _if: { test: true, then: { color: 'red' }, else: { color: 'blue' } },
               },
             },
@@ -410,7 +410,7 @@ test('normalizeClassAndStyles does not treat _id as an operator in style validat
           {
             id: 'block_1',
             type: 'Input',
-            style: { '--block': { color: 'red', nested: { _id: 'some_id' } } },
+            style: { '/block': { color: 'red', nested: { _id: 'some_id' } } },
           },
         ],
       },

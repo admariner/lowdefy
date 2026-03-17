@@ -344,7 +344,7 @@
     - id: css_custom_bg
       type: TextInput
       style:
-        --element:
+        /element:
           backgroundColor: '#f0f5ff'
           borderColor: '#adc6ff'
       properties:
@@ -353,7 +353,7 @@
     - id: css_full_custom
       type: TextInput
       style:
-        --element:
+        /element:
           backgroundColor: '#fff7e6'
           borderColor: '#ffa940'
           borderRadius: 12

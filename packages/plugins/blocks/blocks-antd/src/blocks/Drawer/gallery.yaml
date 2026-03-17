@@ -659,10 +659,10 @@
       properties:
         title: Styled Drawer
       style:
-        --header:
+        /header:
           backgroundColor: '#e6f4ff'
           borderBottom: 1px solid #91caff
-        --body:
+        /body:
           backgroundColor: '#f0f5ff'
       blocks:
         - id: drawer_inline_style_content

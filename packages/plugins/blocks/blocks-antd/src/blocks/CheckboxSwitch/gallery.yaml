@@ -225,7 +225,7 @@
     - id: style_background
       type: CheckboxSwitch
       style:
-        --element:
+        /element:
           padding: 12px
           backgroundColor: '#f6ffed'
           borderRadius: 8px
@@ -238,7 +238,7 @@
     - id: style_warning_bg
       type: CheckboxSwitch
       style:
-        --element:
+        /element:
           padding: 10px
           backgroundColor: '#fff7e6'
           borderRadius: 6px
@@ -251,7 +251,7 @@
     - id: style_bold_label
       type: CheckboxSwitch
       style:
-        --label:
+        /label:
           fontWeight: bold
           color: '#1677ff'
       properties:

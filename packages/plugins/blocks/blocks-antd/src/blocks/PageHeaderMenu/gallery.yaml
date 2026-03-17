@@ -427,11 +427,11 @@
     - id: phm_css_keys
       type: PageHeaderMenu
       style:
-        --header:
+        /header:
           borderBottom: 3px solid #722ed1
-        --content:
+        /content:
           backgroundColor: '#f9f0ff'
-        --breadcrumb:
+        /breadcrumb:
           padding: 8px 0
       properties:
         header:

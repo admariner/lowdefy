@@ -734,7 +734,7 @@
       layout:
         flex: 0 0 auto
       style:
-        --element:
+        /element:
           padding: 4px
           background: '#f0f5ff'
           borderRadius: 8
@@ -1050,7 +1050,7 @@
               layout:
                 flex: 0 0 auto
               style:
-                --element:
+                /element:
                   color: white
               properties:
                 content: '**ShopNow**'

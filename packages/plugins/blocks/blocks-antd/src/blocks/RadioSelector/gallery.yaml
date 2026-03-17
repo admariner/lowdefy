@@ -506,7 +506,7 @@
     - id: style_border
       type: RadioSelector
       style:
-        --element:
+        /element:
           border: 1px solid #d9d9d9
           borderRadius: 8
           padding: 16
@@ -524,7 +524,7 @@
     - id: style_background
       type: RadioSelector
       style:
-        --element:
+        /element:
           backgroundColor: '#f0f5ff'
           padding: 12
           borderRadius: 6
