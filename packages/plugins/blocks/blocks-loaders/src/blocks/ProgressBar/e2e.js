@@ -31,5 +31,10 @@ export default createBlockHelper({
         'style',
         new RegExp(`--progress:\\s*${value}`)
       ),
+    height: (page, blockId, value) =>
+      expect(page.locator(`#${escapeId(blockId)}`)).toHaveAttribute(
+        'style',
+        new RegExp(`--height:\\s*${value}`)
+      ),
   },
 });

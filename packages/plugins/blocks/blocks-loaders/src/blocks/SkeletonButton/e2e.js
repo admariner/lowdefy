@@ -22,6 +22,7 @@ const locator = (page, blockId) => page.locator(`#bl-${escapeId(blockId)} .skele
 export default createBlockHelper({
   locator,
   expect: {
+    width: (page, blockId, width) => expect(locator(page, blockId)).toHaveCSS('width', width),
     height: (page, blockId, height) => expect(locator(page, blockId)).toHaveCSS('height', height),
   },
 });

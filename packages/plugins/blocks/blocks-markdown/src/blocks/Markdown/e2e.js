@@ -23,5 +23,7 @@ export default createBlockHelper({
   locator,
   expect: {
     containsText: (page, blockId, text) => expect(locator(page, blockId)).toContainText(text),
+    containsHtml: (page, blockId, selector) =>
+      expect(locator(page, blockId).locator(selector)).toBeVisible(),
   },
 });
