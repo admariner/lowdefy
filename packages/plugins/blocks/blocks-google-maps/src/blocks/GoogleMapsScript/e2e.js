@@ -20,7 +20,4 @@ const locator = (page, blockId) => page.locator(`#bl-${escapeId(blockId)}`);
 
 export default createBlockHelper({
   locator,
-  do: {
-    click: (page, blockId) => locator(page, blockId).click(),
-  },
 });
