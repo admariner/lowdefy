@@ -41,10 +41,10 @@ test.describe('ColorSelector Block', () => {
     const trigger = block.locator('.ant-color-picker-trigger');
     await trigger.click();
 
-    // Click inside the color panel to change the color
+    // Click inside the saturation area to change the color
     const panel = page.locator('.ant-color-picker-panel');
     await expect(panel).toBeVisible();
-    await panel.locator('.ant-color-picker-palette').click();
+    await panel.locator('.ant-color-picker-saturation').click();
 
     const display = getBlock(page, 'cs_change_display');
     await expect(display).toHaveText('Changed!');

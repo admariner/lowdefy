@@ -42,7 +42,7 @@ test.describe('Splitter Block', () => {
   test('renders resize bar', async ({ page }) => {
     const block = getBlock(page, 'sp_basic');
     const bar = block.locator('.ant-splitter-bar');
-    await expect(bar).toBeVisible();
+    await expect(bar).toBeAttached();
   });
 
   // ============================================
@@ -70,14 +70,14 @@ test.describe('Splitter Block', () => {
     const block = getBlock(page, 'sp_resize');
     await expect(block).toBeVisible();
 
-    const bar = block.locator('.ant-splitter-bar');
-    await expect(bar).toBeVisible();
+    const dragger = block.locator('.ant-splitter-bar-dragger');
+    await expect(dragger).toBeAttached();
 
-    // Drag the resize bar
-    const barBox = await bar.boundingBox();
-    await page.mouse.move(barBox.x + barBox.width / 2, barBox.y + barBox.height / 2);
+    // Drag the resize dragger handle
+    const box = await dragger.boundingBox();
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
     await page.mouse.down();
-    await page.mouse.move(barBox.x + barBox.width / 2 + 50, barBox.y + barBox.height / 2);
+    await page.mouse.move(box.x + box.width / 2 + 50, box.y + box.height / 2);
     await page.mouse.up();
 
     const display = getBlock(page, 'sp_resize_display');

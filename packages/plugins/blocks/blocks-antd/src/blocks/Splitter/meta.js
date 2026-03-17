@@ -22,10 +22,22 @@ export default {
     element: 'The Splitter element.',
   },
   events: {
-    onCollapse: 'Trigger action when a panel is collapsed or expanded.',
-    onResize: 'Trigger action when panel sizes change during resize.',
-    onResizeEnd: 'Trigger action when resize ends.',
-    onResizeStart: 'Trigger action when resize starts.',
+    onCollapse: {
+      description: 'Trigger action when a panel is collapsed or expanded.',
+      event: { collapsed: 'Whether the panel is collapsed.', sizes: 'The panel sizes array.' },
+    },
+    onResize: {
+      description: 'Trigger action when panel sizes change during resize.',
+      event: { sizes: 'The panel sizes array.' },
+    },
+    onResizeEnd: {
+      description: 'Trigger action when resize ends.',
+      event: { sizes: 'The panel sizes array.' },
+    },
+    onResizeStart: {
+      description: 'Trigger action when resize starts.',
+      event: { sizes: 'The panel sizes array.' },
+    },
   },
   properties: {
     type: 'object',

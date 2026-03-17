@@ -28,9 +28,28 @@ export default {
     arrow: 'Dropdown arrow indicator.',
   },
   events: {
-    onClick: 'Trigger action when a menu item is clicked.',
-    onSelect: 'Trigger action when a menu item is selected.',
-    onOpenChange: 'Trigger action when dropdown opens or closes.',
+    onClick: {
+      description: 'Trigger action when a menu item is clicked.',
+      event: {
+        key: 'The menu item key.',
+        keyPath: 'The key path of the menu item.',
+        pageId: 'The page id of the menu item.',
+        url: 'The url of the menu item.',
+      },
+    },
+    onSelect: {
+      description: 'Trigger action when a menu item is selected.',
+      event: {
+        key: 'The selected menu item key.',
+        selectedKeys: 'All selected menu item keys.',
+        pageId: 'The page id of the selected item.',
+        url: 'The url of the selected item.',
+      },
+    },
+    onOpenChange: {
+      description: 'Trigger action when dropdown opens or closes.',
+      event: { open: 'Whether the dropdown is open.' },
+    },
   },
   properties: {
     type: 'object',

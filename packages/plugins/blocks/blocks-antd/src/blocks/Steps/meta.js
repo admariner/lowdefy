@@ -23,8 +23,10 @@ export default {
     icon: 'The icon in the Steps.',
   },
   events: {
-    onChange:
-      'Triggered when a step is clicked. Provides the clicked step index as current in event args.',
+    onChange: {
+      description: 'Triggered when a step is clicked.',
+      event: { current: 'The index of the clicked step.' },
+    },
   },
   properties: {
     type: 'object',

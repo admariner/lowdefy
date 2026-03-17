@@ -34,11 +34,20 @@ export default {
     highlight: 'Highlighted match text (<mark> elements).',
     empty: 'The empty state message.',
   },
+  methods: {
+    toggleOpen: 'Toggle the search modal open or closed.',
+    setOpen: 'Open or close the search modal. Accepts { open: boolean }.',
+  },
   events: {
-    onSelect:
-      'Trigger actions when a search result is selected. Passes the result item fields, plus `query` (the search term) and `resultCount` (total results for that query).',
-    onSearch:
-      'Trigger actions when the search query changes. Passes `value` (the search term) and `resultCount` (number of matching results).',
+    onSelect: {
+      description:
+        'Trigger actions when a search result is selected. Result item stored fields are spread into the event object.',
+      event: { query: 'The search term.', resultCount: 'Total results for the query.' },
+    },
+    onSearch: {
+      description: 'Trigger actions when the search query changes.',
+      event: { value: 'The search term.', resultCount: 'Number of matching results.' },
+    },
     onOpen: 'Trigger actions when the search modal opens.',
     onClose: 'Trigger actions when the search modal closes.',
   },

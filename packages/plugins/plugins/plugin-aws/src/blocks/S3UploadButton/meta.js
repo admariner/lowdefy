@@ -23,10 +23,22 @@ export default {
   },
   events: {
     onChange: 'Triggered when the upload state is changing.',
-    onProgress: 'Triggered when the upload state is in progress.',
-    onSuccess: 'Triggered when the upload state is done uploading.',
-    onRemove: 'Triggered when the upload has been removed.',
-    onError: 'Triggered when the upload has failed.',
+    onProgress: {
+      description: 'Triggered when the upload state is in progress.',
+      event: { file: 'The file being uploaded.', fileList: 'The full list of files.' },
+    },
+    onSuccess: {
+      description: 'Triggered when the upload state is done uploading.',
+      event: { file: 'The uploaded file.', fileList: 'The full list of files.' },
+    },
+    onRemove: {
+      description: 'Triggered when the upload has been removed.',
+      event: { file: 'The removed file.', fileList: 'The full list of files.' },
+    },
+    onError: {
+      description: 'Triggered when the upload has failed.',
+      event: { file: 'The file that failed.', fileList: 'The full list of files.' },
+    },
     onClick: 'Triggered when the upload button is clicked.',
   },
   properties: {
@@ -40,7 +52,8 @@ export default {
       },
       button: {
         type: 'object',
-        description: 'Button block properties.',
+        description:
+          'Button block properties. See <a href="/Button">Button</a> for all properties.',
         default: {
           icon: 'UploadOutlined',
           title: 'Upload',
@@ -48,6 +61,41 @@ export default {
         },
         docs: {
           displayType: 'button',
+        },
+        properties: {
+          title: {
+            type: 'string',
+            description: 'Button title text.',
+          },
+          icon: {
+            type: ['string', 'object'],
+            description: 'Button icon name or Icon block properties.',
+            docs: {
+              displayType: 'icon',
+            },
+          },
+          type: {
+            type: 'string',
+            enum: ['default', 'primary', 'dashed', 'text', 'link'],
+            default: 'default',
+            description: 'Button type.',
+          },
+          danger: {
+            type: 'boolean',
+            default: false,
+            description: 'Set button style to danger.',
+          },
+          disabled: {
+            type: 'boolean',
+            default: false,
+            description: 'Disable the button.',
+          },
+          size: {
+            type: 'string',
+            enum: ['small', 'default', 'large'],
+            default: 'default',
+            description: 'Button size.',
+          },
         },
       },
       disabled: {

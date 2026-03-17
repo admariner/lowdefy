@@ -22,6 +22,17 @@ export default {
     element: 'The Tour element.',
     mask: 'The Tour mask.',
   },
+  events: {
+    onChange: {
+      description: 'Triggered when the current step changes.',
+      event: { current: 'The index of the current step.' },
+    },
+    onClose: {
+      description: 'Triggered when the tour is closed.',
+      event: { current: 'The index of the step when closed.' },
+    },
+    onFinish: 'Triggered when the tour is finished.',
+  },
   properties: {
     type: 'object',
     additionalProperties: false,

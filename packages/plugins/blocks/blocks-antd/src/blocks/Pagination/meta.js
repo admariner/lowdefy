@@ -25,8 +25,22 @@ export default {
     element: 'The Pagination element.',
   },
   events: {
-    onSizeChange: 'Triggered when page size is changed.',
-    onChange: 'Triggered when current page is changed.',
+    onSizeChange: {
+      description: 'Triggered when page size is changed.',
+      event: {
+        current: 'The current page number.',
+        pageSize: 'The page size.',
+        skip: 'The number of items to skip.',
+      },
+    },
+    onChange: {
+      description: 'Triggered when current page is changed.',
+      event: {
+        current: 'The current page number.',
+        pageSize: 'The page size.',
+        skip: 'The number of items to skip.',
+      },
+    },
   },
   properties: {
     type: 'object',

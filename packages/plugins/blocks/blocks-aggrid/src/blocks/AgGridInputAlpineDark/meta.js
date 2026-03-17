@@ -22,14 +22,57 @@ export default {
     element: 'The AgGridInputAlpineDark element.',
   },
   events: {
-    onCellClick: 'Trigger event when a cell is clicked.',
-    onFilterChanged: 'Trigger event when the filter changes.',
-    onRowClick: 'Trigger event when a row is clicked.',
-    onRowSelected: 'Trigger event when a row is selected.',
-    onSelectionChanged: 'Triggered when the selected rows are changed.',
-    onSortChanged: 'Trigger event when the sort changes.',
-    onCellValueChanged: 'Triggered when a cell value is changed on the grid.',
-    onRowDragEnd: 'Triggered when a row is dragged to another position in the grid.',
+    onCellClick: {
+      description: 'Trigger event when a cell is clicked.',
+      event: {
+        cell: 'The clicked cell with column and value.',
+        colId: 'The column id.',
+        row: 'The row data.',
+        rowIndex: 'The row index.',
+        selected: 'All selected rows.',
+      },
+    },
+    onFilterChanged: {
+      description: 'Trigger event when the filter changes.',
+      event: { rows: 'The displayed rows after filtering.', filter: 'The filter model.' },
+    },
+    onRowClick: {
+      description: 'Trigger event when a row is clicked.',
+      event: { row: 'The row data.', selected: 'All selected rows.', rowIndex: 'The row index.' },
+    },
+    onRowSelected: {
+      description: 'Trigger event when a row is selected.',
+      event: { row: 'The row data.', rowIndex: 'The row index.', selected: 'All selected rows.' },
+    },
+    onSelectionChanged: {
+      description: 'Triggered when the selected rows are changed.',
+      event: { selected: 'All selected rows.' },
+    },
+    onSortChanged: {
+      description: 'Trigger event when the sort changes.',
+      event: { rows: 'The displayed rows after sorting.', sort: 'The sort column state.' },
+    },
+    onCellValueChanged: {
+      description: 'Triggered when a cell value is changed on the grid.',
+      event: {
+        field: 'The column field name.',
+        newRowData: 'All row data after the change.',
+        newValue: 'The new cell value.',
+        oldValue: 'The previous cell value.',
+        rowData: 'The changed row data.',
+        rowIndex: 'The row index.',
+      },
+    },
+    onRowDragEnd: {
+      description: 'Triggered when a row is dragged to another position in the grid.',
+      event: {
+        fromData: 'The dragged row data.',
+        toData: 'The target row data.',
+        fromIndex: 'The original row index.',
+        toIndex: 'The new row index.',
+        newRowData: 'All row data after reorder.',
+      },
+    },
   },
   properties: {
     type: 'object',

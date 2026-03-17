@@ -29,10 +29,16 @@ export default {
   },
   events: {
     onBlur: 'Trigger action event occurs when selector loses focus.',
-    onChange: 'Trigger actions when selection is changed.',
+    onChange: {
+      description: 'Trigger actions when selection is changed.',
+      event: { value: 'The selected value.' },
+    },
     onFocus: 'Trigger action when an selector gets focus.',
     onClear: 'Trigger action when selector gets cleared.',
-    onSearch: 'Called when searching items.',
+    onSearch: {
+      description: 'Called when searching items.',
+      event: { value: 'The search input value.' },
+    },
   },
   properties: {
     type: 'object',

@@ -24,9 +24,18 @@ export default {
     editableIcon: 'The editable icon in the TitleInput.',
   },
   events: {
-    onExpand: 'Trigger action when ellipse expand is clicked.',
-    onCopy: 'Trigger action when copy text is clicked.',
-    onChange: 'Trigger action when title is changed.',
+    onExpand: {
+      description: 'Trigger action when ellipse expand is clicked.',
+      event: { ellipsis: 'The ellipsis state.' },
+    },
+    onCopy: {
+      description: 'Trigger action when copy text is clicked.',
+      event: { value: 'The copied text value.' },
+    },
+    onChange: {
+      description: 'Trigger action when title is changed.',
+      event: { value: 'The new title value.' },
+    },
   },
   properties: {
     type: 'object',

@@ -28,7 +28,10 @@ export default {
   },
   events: {
     onBlur: 'Trigger action event occurs when text input loses focus.',
-    onChange: 'Trigger action when text input is changed.',
+    onChange: {
+      description: 'Trigger action when text input is changed.',
+      event: { value: 'The current input value.' },
+    },
     onFocus: 'Trigger action when text input gets focus.',
     onPressEnter: 'Trigger action when enter is pressed while text input is focused.',
   },

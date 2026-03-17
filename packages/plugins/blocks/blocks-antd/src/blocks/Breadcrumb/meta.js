@@ -23,7 +23,10 @@ export default {
     icon: 'The icon in the Breadcrumb.',
   },
   events: {
-    onClick: 'Triggered when breadcrumb item is clicked. Provides clicked link and index as args.',
+    onClick: {
+      description: 'Triggered when breadcrumb item is clicked.',
+      event: { link: 'The clicked breadcrumb link.', index: 'The index of the clicked item.' },
+    },
   },
   properties: {
     type: 'object',

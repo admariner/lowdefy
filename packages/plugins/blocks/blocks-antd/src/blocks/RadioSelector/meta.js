@@ -27,7 +27,10 @@ export default {
     feedback: 'The RadioSelector validation feedback.',
   },
   events: {
-    onChange: 'Trigger action when selection is changed.',
+    onChange: {
+      description: 'Trigger action when selection is changed.',
+      event: { value: 'The selected value.' },
+    },
   },
   properties: {
     type: 'object',

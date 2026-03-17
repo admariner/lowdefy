@@ -29,7 +29,10 @@ export default {
     suffixIcon: 'The suffix icon in the WeekSelector.',
   },
   events: {
-    onChange: 'Trigger action when week is changed.',
+    onChange: {
+      description: 'Trigger action when week is changed.',
+      event: { value: 'The selected week value.' },
+    },
   },
   properties: {
     type: 'object',

@@ -25,7 +25,10 @@ export default {
     content: 'The Collapse content.',
   },
   events: {
-    onChange: 'Trigger actions when collapse item is toggled.',
+    onChange: {
+      description: 'Trigger actions when collapse item is toggled.',
+      event: { activeKey: 'The key of the active panel.' },
+    },
   },
   properties: {
     type: 'object',

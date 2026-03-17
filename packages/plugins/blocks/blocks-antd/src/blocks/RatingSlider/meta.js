@@ -29,7 +29,10 @@ export default {
     maxIcon: 'The max icon in the RatingSlider.',
   },
   events: {
-    onChange: 'Trigger action when rating is changed.',
+    onChange: {
+      description: 'Trigger action when rating is changed.',
+      event: { value: 'The selected rating value.' },
+    },
   },
   properties: {
     type: 'object',

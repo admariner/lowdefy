@@ -87,6 +87,23 @@ function SearchBlock({
   }, [methods]);
 
   useEffect(() => {
+    methods.registerMethod('toggleOpen', () => {
+      if (open) {
+        handleClose();
+      } else {
+        handleOpen();
+      }
+    });
+    methods.registerMethod('setOpen', ({ open: newOpen }) => {
+      if (newOpen) {
+        handleOpen();
+      } else {
+        handleClose();
+      }
+    });
+  });
+
+  useEffect(() => {
     const parsed = parseShortcut(properties.shortcut ?? 'mod+k');
     function handleKeyDown(e) {
       if (matchesShortcut(e, parsed)) {

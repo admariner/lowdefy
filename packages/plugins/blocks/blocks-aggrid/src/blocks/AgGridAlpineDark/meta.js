@@ -22,12 +22,36 @@ export default {
     element: 'The AgGridAlpineDark element.',
   },
   events: {
-    onCellClick: 'Trigger event when a cell is clicked.',
-    onFilterChanged: 'Trigger event when the filter changes.',
-    onRowClick: 'Trigger event when a row is clicked.',
-    onRowSelected: 'Trigger event when a row is selected.',
-    onSelectionChanged: 'Triggered when the selected rows are changed.',
-    onSortChanged: 'Trigger event when the sort changes.',
+    onCellClick: {
+      description: 'Trigger event when a cell is clicked.',
+      event: {
+        cell: 'The clicked cell with column and value.',
+        colId: 'The column id.',
+        row: 'The row data.',
+        rowIndex: 'The row index.',
+        selected: 'All selected rows.',
+      },
+    },
+    onFilterChanged: {
+      description: 'Trigger event when the filter changes.',
+      event: { rows: 'The displayed rows after filtering.', filter: 'The filter model.' },
+    },
+    onRowClick: {
+      description: 'Trigger event when a row is clicked.',
+      event: { row: 'The row data.', selected: 'All selected rows.', rowIndex: 'The row index.' },
+    },
+    onRowSelected: {
+      description: 'Trigger event when a row is selected.',
+      event: { row: 'The row data.', rowIndex: 'The row index.', selected: 'All selected rows.' },
+    },
+    onSelectionChanged: {
+      description: 'Triggered when the selected rows are changed.',
+      event: { selected: 'All selected rows.' },
+    },
+    onSortChanged: {
+      description: 'Trigger event when the sort changes.',
+      event: { rows: 'The displayed rows after sorting.', sort: 'The sort column state.' },
+    },
   },
   properties: {
     type: 'object',

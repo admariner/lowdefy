@@ -29,7 +29,10 @@ export default {
     suffixIcon: 'The suffix icon in the DateRangeSelector.',
   },
   events: {
-    onChange: 'Trigger actions when selection is changed.',
+    onChange: {
+      description: 'Trigger actions when selection is changed.',
+      event: { value: 'The selected date range value.' },
+    },
   },
   properties: {
     type: 'object',

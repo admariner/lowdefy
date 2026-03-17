@@ -25,9 +25,18 @@ export default {
     item: 'The Menu item.',
   },
   events: {
-    onSelect: 'Trigger action when menu item is selected.',
-    onClick: 'Trigger action when menu item is clicked.',
-    onToggleMenuGroup: 'Trigger action when mobile menu group is opened.',
+    onSelect: {
+      description: 'Trigger action when menu item is selected.',
+      event: { key: 'The selected menu item key.' },
+    },
+    onClick: {
+      description: 'Trigger action when menu item is clicked.',
+      event: { key: 'The clicked menu item key.' },
+    },
+    onToggleMenuGroup: {
+      description: 'Trigger action when mobile menu group is opened.',
+      event: { openKeys: 'The keys of currently open menu groups.' },
+    },
   },
   properties: {
     type: 'object',

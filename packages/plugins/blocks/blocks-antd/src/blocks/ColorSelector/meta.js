@@ -27,11 +27,23 @@ export default {
     feedback: 'The ColorSelector validation feedback.',
   },
   events: {
-    onChange: 'Trigger actions when the color is changed.',
-    onChangeComplete: 'Trigger actions when the color change is complete.',
+    onChange: {
+      description: 'Trigger actions when the color is changed.',
+      event: { value: 'The selected color hex value.' },
+    },
+    onChangeComplete: {
+      description: 'Trigger actions when the color change is complete.',
+      event: { value: 'The final color hex value.' },
+    },
     onClear: 'Trigger actions when the color is cleared.',
-    onFormatChange: 'Trigger actions when the color format is changed.',
-    onOpenChange: 'Trigger actions when the color picker popup open state changes.',
+    onFormatChange: {
+      description: 'Trigger actions when the color format is changed.',
+      event: { format: 'The new color format.' },
+    },
+    onOpenChange: {
+      description: 'Trigger actions when the color picker popup open state changes.',
+      event: { open: 'Whether the popup is open.' },
+    },
   },
   properties: {
     type: 'object',

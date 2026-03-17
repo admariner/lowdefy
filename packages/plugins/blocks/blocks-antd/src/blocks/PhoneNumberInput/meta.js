@@ -33,7 +33,12 @@ export default {
   events: {
     onInputChange: 'Trigger action when text input is changed.',
     onCodeChange: 'Trigger action when the selector is changed.',
-    onChange: 'Trigger action when the number is changed.',
+    onChange: {
+      description: 'Trigger action when the number is changed.',
+      event: {
+        value: 'The phone number value object with input, region, and phone_number fields.',
+      },
+    },
     onBlur: 'Trigger action event occurs when input loses focus.',
     onFocus: 'Trigger action when input gets focus.',
     onPressEnter: 'Trigger action when enter is pressed while text input is focused.',

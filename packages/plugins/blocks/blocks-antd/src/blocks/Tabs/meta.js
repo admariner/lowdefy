@@ -26,9 +26,18 @@ export default {
     inkBar: 'The Tabs ink bar.',
   },
   events: {
-    onChange: 'Trigger action on tab change.',
-    onTabScroll: 'Trigger action on tab scroll.',
-    onTabClick: 'Trigger action on tab click.',
+    onChange: {
+      description: 'Trigger action on tab change.',
+      event: { activeKey: 'The key of the active tab.' },
+    },
+    onTabScroll: {
+      description: 'Trigger action on tab scroll.',
+      event: { direction: 'The scroll direction.' },
+    },
+    onTabClick: {
+      description: 'Trigger action on tab click.',
+      event: { key: 'The key of the clicked tab.' },
+    },
   },
   properties: {
     type: 'object',

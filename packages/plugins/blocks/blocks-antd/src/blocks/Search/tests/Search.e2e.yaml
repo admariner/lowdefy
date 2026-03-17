@@ -118,7 +118,7 @@ blocks:
     type: Search
     properties:
       label: Custom Shortcut
-      shortcut: mod+j
+      shortcut: mod+.
       showShortcut: true
       documents: []
       fields:

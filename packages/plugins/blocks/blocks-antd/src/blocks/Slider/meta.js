@@ -27,7 +27,10 @@ export default {
     feedback: 'The Slider validation feedback.',
   },
   events: {
-    onChange: 'Trigger action when the slider value changes.',
+    onChange: {
+      description: 'Trigger action when the slider value changes.',
+      event: { value: 'The current slider value.' },
+    },
   },
   properties: {
     type: 'object',

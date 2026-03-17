@@ -23,7 +23,10 @@ export default {
     element: 'The TreeSelector element.',
   },
   events: {
-    onChange: 'Trigger action when selection is changed.',
+    onChange: {
+      description: 'Trigger action when selection is changed.',
+      event: { value: 'The selected value.' },
+    },
   },
   properties: {
     type: 'object',

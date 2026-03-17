@@ -27,7 +27,10 @@ export default {
     feedback: 'The CheckboxSwitch validation feedback.',
   },
   events: {
-    onChange: 'Trigger actions when selection is changed.',
+    onChange: {
+      description: 'Trigger actions when selection is changed.',
+      event: { value: 'The checkbox value.' },
+    },
   },
   properties: {
     type: 'object',

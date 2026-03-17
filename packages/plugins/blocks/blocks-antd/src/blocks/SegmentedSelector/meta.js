@@ -28,7 +28,10 @@ export default {
     feedback: 'The SegmentedSelector validation feedback.',
   },
   events: {
-    onChange: 'Trigger actions when selection is changed.',
+    onChange: {
+      description: 'Trigger actions when selection is changed.',
+      event: { value: 'The selected value.' },
+    },
   },
   properties: {
     type: 'object',

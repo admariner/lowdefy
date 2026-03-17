@@ -29,7 +29,10 @@ export default {
     uncheckedIcon: 'The unchecked icon in the Switch.',
   },
   events: {
-    onChange: 'Trigger action when switch is changed.',
+    onChange: {
+      description: 'Trigger action when switch is changed.',
+      event: { value: 'The switch value.' },
+    },
   },
   properties: {
     type: 'object',
