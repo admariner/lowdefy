@@ -27,10 +27,6 @@ export default createBlockHelper({
     clickHeader: (page, blockId, colIndex) =>
       locator(page, blockId).locator('.ag-header-cell-text').nth(colIndex).click(),
   },
-  get: {
-    headerCells: (page, blockId) => locator(page, blockId).locator('.ag-header-cell-text'),
-    rows: (page, blockId) => locator(page, blockId).locator('.ag-row'),
-  },
   expect: {
     rowCount: (page, blockId, count) =>
       expect(locator(page, blockId).locator('.ag-row')).toHaveCount(count),

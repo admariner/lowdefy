@@ -21,10 +21,6 @@ const locator = (page, blockId) => page.locator(`#${escapeId(blockId)} .progress
 
 export default createBlockHelper({
   locator,
-  get: {
-    loader: (page, blockId) => locator(page, blockId).locator('.progress-bar-loader'),
-    shadow: (page, blockId) => locator(page, blockId).locator('.progress-bar-shadow'),
-  },
   expect: {
     shadow: (page, blockId) =>
       expect(locator(page, blockId).locator('.progress-bar-shadow')).toBeVisible(),

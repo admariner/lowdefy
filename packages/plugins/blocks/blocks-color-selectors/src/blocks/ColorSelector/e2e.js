@@ -26,9 +26,6 @@ export default createBlockHelper({
     fill: (page, blockId, value) =>
       page.locator(`#bl-${escapeId(blockId)} .color-picker-input`).fill(value),
   },
-  get: {
-    input: (page, blockId) => page.locator(`#bl-${escapeId(blockId)} .color-picker-input`),
-  },
   expect: {
     color: (page, blockId, rgb) =>
       expect(locator(page, blockId)).toHaveCSS('background-color', rgb),

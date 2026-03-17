@@ -24,10 +24,6 @@ export default createBlockHelper({
   do: {
     click: (page, blockId) => locator(page, blockId).locator('canvas').click(),
   },
-  get: {
-    canvas: (page, blockId) => locator(page, blockId).locator('canvas'),
-    svg: (page, blockId) => locator(page, blockId).locator('svg'),
-  },
   expect: {
     hasCanvas: (page, blockId) => expect(locator(page, blockId).locator('canvas')).toBeVisible(),
     hasSvg: (page, blockId) => expect(locator(page, blockId).locator('svg')).toBeVisible(),

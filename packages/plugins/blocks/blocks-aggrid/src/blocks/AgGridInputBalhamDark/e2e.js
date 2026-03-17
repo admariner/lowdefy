@@ -32,11 +32,6 @@ export default createBlockHelper({
         .nth(colIndex)
         .dblclick(),
   },
-  get: {
-    headerCells: (page, blockId) => locator(page, blockId).locator('.ag-header-cell-text'),
-    rows: (page, blockId) => locator(page, blockId).locator('.ag-row'),
-    cellEditor: (page, blockId) => locator(page, blockId).locator('.ag-cell-editor input'),
-  },
   expect: {
     rowCount: (page, blockId, count) =>
       expect(locator(page, blockId).locator('.ag-row')).toHaveCount(count),

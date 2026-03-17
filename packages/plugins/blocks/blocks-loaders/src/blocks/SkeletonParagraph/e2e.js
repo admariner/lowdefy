@@ -21,9 +21,6 @@ const locator = (page, blockId) => page.locator(`#bl-${escapeId(blockId)} .skele
 
 export default createBlockHelper({
   locator,
-  get: {
-    skeletons: (page, blockId) => page.locator(`#bl-${escapeId(blockId)} .skeleton`),
-  },
   expect: {
     lineCount: (page, blockId, count) =>
       expect(page.locator(`#bl-${escapeId(blockId)} .skeleton`)).toHaveCount(count),
