@@ -191,3 +191,52 @@ blocks:
           eventName: onCSV
         - title: PDF
           eventName: onPDF
+
+  # ============================================
+  # SHORTCUT TESTS
+  # ============================================
+
+  - id: db_shortcut
+    type: DropdownButton
+    properties:
+      title: Shortcuts
+      items:
+        - title: Quick Save
+          eventName: onQuickSave
+          shortcut: mod+j
+        - title: Quick Export
+          eventName: onQuickExport
+          shortcut: mod+;
+        - title: No Shortcut
+          eventName: onNoShortcut
+    events:
+      onQuickSave:
+        - id: db_sc_save_set
+          type: SetState
+          params:
+            db_shortcut_result: quick_save
+      onQuickExport:
+        - id: db_sc_export_set
+          type: SetState
+          params:
+            db_shortcut_result: quick_export
+      onNoShortcut:
+        - id: db_sc_none_set
+          type: SetState
+          params:
+            db_shortcut_result: no_shortcut
+
+  - id: db_shortcut_display
+    type: Span
+    properties:
+      content:
+        _if:
+          test:
+            _ne:
+              - _state: db_shortcut_result
+              - null
+          then:
+            _string.concat:
+              - 'result:'
+              - _state: db_shortcut_result
+          else: ''

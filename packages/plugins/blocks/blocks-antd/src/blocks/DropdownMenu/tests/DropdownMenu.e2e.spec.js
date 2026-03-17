@@ -51,7 +51,7 @@ test.describe('DropdownMenu Block', () => {
     const dropdown = page.locator('.ant-dropdown').filter({ hasText: 'With Icon' });
     await expect(dropdown).toBeVisible();
     const iconItem = dropdown.locator('.ant-dropdown-menu-item').filter({ hasText: 'With Icon' });
-    await expect(iconItem.locator('.anticon, svg')).toBeVisible();
+    await expect(iconItem.locator('.anticon')).toBeVisible();
   });
 
   test('fires onClick with correct key', async ({ page }) => {
@@ -107,5 +107,42 @@ test.describe('DropdownMenu Block', () => {
     await trigger.click();
     const dangerItem = page.locator('.ant-dropdown-menu-item').filter({ hasText: 'Danger Item' });
     await expect(dangerItem).toHaveClass(/ant-dropdown-menu-item-danger/);
+  });
+
+  // ============================================
+  // SHORTCUT TESTS
+  // ============================================
+
+  test('renders shortcut badges on menu links with shortcuts', async ({ page }) => {
+    const trigger = getBlock(page, 'dm_shortcut_trigger');
+    await trigger.scrollIntoViewIfNeeded();
+    await trigger.click();
+    const dropdown = page.locator('.ant-dropdown').filter({ hasText: 'Home' });
+    await expect(dropdown).toBeVisible();
+
+    // Links with shortcuts should have kbd elements
+    const homeItem = dropdown.locator('.ant-dropdown-menu-item').filter({ hasText: 'Home' });
+    await expect(homeItem.locator('kbd').first()).toBeAttached();
+    expect(await homeItem.locator('kbd').count()).toBeGreaterThanOrEqual(1);
+
+    // Link without shortcut should have no kbd elements
+    const noShortcutItem = dropdown
+      .locator('.ant-dropdown-menu-item')
+      .filter({ hasText: 'No Shortcut' });
+    await expect(noShortcutItem.locator('kbd')).toHaveCount(0);
+  });
+
+  test('fires onClick when menu link shortcut is pressed', async ({ page }) => {
+    const mod = process.platform === 'darwin' ? 'Meta' : 'Control';
+    const display = getBlock(page, 'dm_shortcut_display');
+    await expect(display).not.toHaveText('clicked:dm_sc_home');
+
+    // Press mod+j to trigger Home shortcut
+    await page.keyboard.press(`${mod}+j`);
+    await expect(display).toHaveText('clicked:dm_sc_home');
+
+    // Press mod+; to trigger Settings shortcut
+    await page.keyboard.press(`${mod}+;`);
+    await expect(display).toHaveText('clicked:dm_sc_settings');
   });
 });

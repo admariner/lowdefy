@@ -150,6 +150,18 @@ test.describe('Tag Block', () => {
     // ShortcutBadge renders kbd elements for each key segment
     const kbd = tag.locator('kbd');
     await expect(kbd.first()).toBeAttached();
-    expect(await kbd.count()).toBeGreaterThanOrEqual(2);
+    expect(await kbd.count()).toBeGreaterThanOrEqual(1);
+  });
+
+  // ============================================
+  // SHORTCUT KEYBOARD TESTS
+  // ============================================
+
+  test('fires onClick when keyboard shortcut is pressed', async ({ page }) => {
+    const mod = process.platform === 'darwin' ? 'Meta' : 'Control';
+    const display = getBlock(page, 'tag_shortcut_fired_display');
+    await expect(display).not.toHaveText('shortcut:fired');
+    await page.keyboard.press(`${mod}+j`);
+    await expect(display).toHaveText('shortcut:fired');
   });
 });

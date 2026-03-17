@@ -310,3 +310,61 @@ blocks:
             type: Span
             properties:
               content: No shortcut content
+
+  # ============================================
+  # SHORTCUT KEYBOARD TESTS
+  # ============================================
+
+  - id: tabs_shortcut_fires
+    type: Tabs
+    properties:
+      tabs:
+        - key: sk_tab1
+          title: Tab A
+          shortcut: mod+j
+        - key: sk_tab2
+          title: Tab B
+          shortcut: mod+;
+        - key: sk_tab3
+          title: Tab C
+    events:
+      onChange:
+        - id: set_tab_shortcut_key
+          type: SetState
+          params:
+            tabs_shortcut_active_key:
+              _event: activeKey
+    slots:
+      sk_tab1:
+        blocks:
+          - id: tabs_sk_tab1_content
+            type: Span
+            properties:
+              content: Tab A content
+      sk_tab2:
+        blocks:
+          - id: tabs_sk_tab2_content
+            type: Span
+            properties:
+              content: Tab B content
+      sk_tab3:
+        blocks:
+          - id: tabs_sk_tab3_content
+            type: Span
+            properties:
+              content: Tab C content
+
+  - id: tabs_shortcut_fired_display
+    type: Span
+    properties:
+      content:
+        _if:
+          test:
+            _ne:
+              - _state: tabs_shortcut_active_key
+              - null
+          then:
+            _string.concat:
+              - 'active:'
+              - _state: tabs_shortcut_active_key
+          else: ''

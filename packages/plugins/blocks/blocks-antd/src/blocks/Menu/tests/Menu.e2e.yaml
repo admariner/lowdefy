@@ -439,3 +439,46 @@ blocks:
               - 'Selected: '
               - _state: shortcut_selected_key
           else: ''
+
+  # ============================================
+  # SHORTCUT KEYBOARD TESTS
+  # ============================================
+
+  - id: menu_shortcut_fires
+    type: Menu
+    properties:
+      mode: vertical
+      theme: light
+      links:
+        - id: sk_home
+          type: MenuLink
+          properties:
+            title: Home
+            shortcut: mod+j
+        - id: sk_settings
+          type: MenuLink
+          properties:
+            title: Settings
+            shortcut: mod+;
+    events:
+      onSelect:
+        - id: set_sk_key
+          type: SetState
+          params:
+            menu_shortcut_fired_key:
+              _event: key
+
+  - id: menu_shortcut_fired_display
+    type: Span
+    properties:
+      content:
+        _if:
+          test:
+            _ne:
+              - _state: menu_shortcut_fired_key
+              - null
+          then:
+            _string.concat:
+              - 'selected:'
+              - _state: menu_shortcut_fired_key
+          else: ''

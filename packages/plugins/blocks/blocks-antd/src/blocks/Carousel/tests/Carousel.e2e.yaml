@@ -172,6 +172,8 @@ blocks:
 
   - id: carousel_afterchange
     type: Carousel
+    properties:
+      waitForAnimate: true
     events:
       afterChange:
         - id: set_afterchange

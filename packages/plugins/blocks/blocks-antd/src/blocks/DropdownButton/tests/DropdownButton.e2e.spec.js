@@ -85,7 +85,46 @@ test.describe('DropdownButton Block', () => {
     const block = getBlock(page, 'db_icon');
     await block.scrollIntoViewIfNeeded();
     await expect(block.locator('.ant-btn')).toContainText('Export');
-    await expect(block.locator('.ant-btn .anticon, .ant-btn svg')).toBeVisible();
+    await expect(block.locator('.ant-btn .anticon')).toBeVisible();
+  });
+});
+
+test.describe('DropdownButton shortcuts', () => {
+  test.beforeEach(async ({ page }) => {
+    await navigateToTestPage(page, 'dropdown_button');
+  });
+
+  test('renders shortcut badges on items with shortcuts', async ({ page }) => {
+    const block = getBlock(page, 'db_shortcut');
+    await block.scrollIntoViewIfNeeded();
+    await block.locator('.ant-btn').click();
+    const dropdown = page.locator('.ant-dropdown').first();
+    await expect(dropdown).toBeVisible();
+
+    // Items with shortcuts should have kbd elements
+    const saveItem = dropdown.locator('.ant-dropdown-menu-item').filter({ hasText: 'Quick Save' });
+    await expect(saveItem.locator('kbd').first()).toBeAttached();
+    expect(await saveItem.locator('kbd').count()).toBeGreaterThanOrEqual(1);
+
+    // Item without shortcut should have no kbd elements
+    const noShortcutItem = dropdown
+      .locator('.ant-dropdown-menu-item')
+      .filter({ hasText: 'No Shortcut' });
+    await expect(noShortcutItem.locator('kbd')).toHaveCount(0);
+  });
+
+  test('fires item event when shortcut is pressed', async ({ page }) => {
+    const mod = process.platform === 'darwin' ? 'Meta' : 'Control';
+    const display = getBlock(page, 'db_shortcut_display');
+    await expect(display).not.toHaveText('result:quick_save');
+
+    // Press mod+j to trigger Quick Save
+    await page.keyboard.press(`${mod}+j`);
+    await expect(display).toHaveText('result:quick_save');
+
+    // Press mod+; to trigger Quick Export
+    await page.keyboard.press(`${mod}+;`);
+    await expect(display).toHaveText('result:quick_export');
   });
 });
 
