@@ -39,6 +39,15 @@ function createAgGridInputHelper(theme) {
         locator(page, blockId)
           .locator(`.ag-row[row-index="${fromIndex}"] .ag-drag-handle`)
           .dragTo(locator(page, blockId).locator(`.ag-row[row-index="${toIndex}"]`)),
+      fillCell: async (page, blockId, rowIndex, colIndex, value) => {
+        await locator(page, blockId)
+          .locator(`.ag-row[row-index="${rowIndex}"] .ag-cell`)
+          .nth(colIndex)
+          .dblclick();
+        await locator(page, blockId).locator('.ag-cell-editor input').fill(value);
+      },
+      confirmEdit: (page, blockId) =>
+        locator(page, blockId).locator('.ag-cell-editor input').press('Enter'),
     },
     expect: {
       rowCount: (page, blockId, count) =>
