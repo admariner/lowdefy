@@ -35,6 +35,7 @@ function flattenProperties(properties, prefix, rows) {
     let desc =
       description
         .replace(/<a\s+href="([^"]*)"[^>]*>([^<]*)<\/a>/gi, '[$2]($1)')
+        .replace(/\\/g, '\\\\')
         .replace(/\|/g, '\\|')
         .replace(/<[^>]*>/g, '') + enumVals;
     if (def.docs?.link) {
