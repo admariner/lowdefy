@@ -104,7 +104,7 @@ _ref:
                 path:
                   _var: gallery
                 transformer: templates/blocks/galleryExampleTransformer.js
-{% if section == 'Input Blocks' %}
+{% if section == 'Input Blocks' or section == 'List Blocks' %}
                 vars:
                   showState: true
 {% endif %}
@@ -124,7 +124,7 @@ _ref:
             path:
               _var: gallery
             transformer: templates/blocks/galleryExampleTransformer.js
-{% if section == 'Input Blocks' %}
+{% if section == 'Input Blocks' or section == 'List Blocks' %}
             vars:
               showState: true
 {% endif %}

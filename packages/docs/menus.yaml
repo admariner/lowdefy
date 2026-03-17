@@ -520,6 +520,9 @@
         - id: Statistic
           type: MenuLink
           pageId: Statistic
+        - id: Steps
+          type: MenuLink
+          pageId: Steps
         - id: Tag
           type: MenuLink
           pageId: Tag

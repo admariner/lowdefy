@@ -44,7 +44,7 @@ _ref:
 
             Lowdefy follows [semantic versioning](https://semver.org/). Major versions (4.0 → 5.0) contain breaking changes. Minor and patch versions are backwards-compatible.
 
-            When breaking changes ship, the `@lowdefy/codemods` package is updated with migration scripts and guides for the new version. The `lowdefy upgrade` command uses this package to automate the migration.
+            When breaking changes ship, the `@lowdefy/codemods` package is updated with migration prompts for the new version. The `lowdefy upgrade` command uses this package to guide the migration.
 
             ## The `lowdefy upgrade` command
 
@@ -52,9 +52,9 @@ _ref:
 
             1. Reads your current version from `lowdefy.yaml`.
             2. Queries npm for the latest stable Lowdefy version (or uses `--to`).
-            3. Fetches `@lowdefy/codemods@latest` — a single package containing all migrations for all versions.
+            3. Fetches `@lowdefy/codemods@latest` — a single package containing all migration prompts for all versions.
             4. Resolves the upgrade chain — which intermediate versions need codemods.
-            5. Executes codemods phase by phase.
+            5. Presents migration prompts phase by phase.
             6. Updates `lowdefy.yaml` after each phase and suggests a git commit.
 
             ### Options
@@ -63,8 +63,6 @@ _ref:
             |---|---|---|
             | `--to <version>` | Target version to upgrade to | Latest stable |
             | `--plan` | Show the upgrade plan without executing | |
-            | `--dry-run` | Run scripts in dry-run mode (no file changes) | |
-            | `--scripts-only` | Skip AI-guided codemods (automated scripts only) | |
             | `--resume` | Resume a previously interrupted upgrade | |
             | `--config-directory` | Change config directory | `.` |
             | `--log-level` | Log level (debug, info, warn, error) | `info` |
@@ -79,50 +77,27 @@ _ref:
             4.5.0 → 5.0.0 → 6.0.0
             ```
 
-            Each step in the chain is a **phase**. The command runs all codemods for phase 1, updates `lowdefy.yaml`, suggests a commit, then moves to phase 2. This gives you clean git history per version jump.
+            Each step in the chain is a **phase**. The command walks you through all prompts for phase 1, updates `lowdefy.yaml`, suggests a commit, then moves to phase 2. This gives you clean git history per version jump.
 
             The version chain is computed from `registry.json` in the `@lowdefy/codemods` package. Each entry specifies a target version and a `from` semver range. The resolver walks the entries in order until the current version reaches the target.
 
-            ## Codemod categories
+            ## How prompts work
 
-            Each codemod falls into one of three categories:
-
-            ### Category A — Automated
-
-            Deterministic transformations. Renames, restructures, syntax changes. The script reads files, transforms content, and writes output. No human judgment needed.
-
-            **Examples:** `areas` → `slots`, `_moment` → `_dayjs`, `gutter` → `gap`
-
-            ### Category B — Semi-automated
-
-            Scripts that transform files and generate a review report. The transformation handles the common case, but edge cases need human review. The CLI pauses after running and asks you to review the report before continuing.
-
-            **Examples:** `bordered` → `variant` (multiple possible mappings), `button type/danger` → `color/variant`
-
-            ### Category C — AI-guided
-
-            Changes that require understanding intent, not just syntax. A script can't reliably determine the right transformation.
-
-            The CLI presents options:
+            Every codemod is a self-contained markdown prompt. For each codemod, the CLI presents three options:
 
             1. **Copy prompt to clipboard** — paste into Claude Code, ChatGPT, Cursor, or any AI coding tool.
-            2. **View manual guide** — step-by-step instructions to follow without AI.
-            3. **Skip** — mark as pending. Return later with `--resume`.
+            2. **View migration guide** — read the step-by-step instructions and apply changes manually.
+            3. **Skip for now** — mark as pending. Return later with `--resume`.
 
-            If Claude Code is detected, an additional option to run the migration directly is offered.
-
-            **Examples:** Responsive breakpoint migration, Comment block replacement
-
-            ## Using AI tools for migrations
-
-            Category C codemods include self-contained markdown prompts. Each prompt includes:
+            Each prompt includes:
 
             - What changed and why
             - Before/after YAML examples
-            - How to find affected files
+            - How to find affected files (glob patterns, grep patterns)
             - Edge cases to watch for
+            - Verification steps
 
-            This format works with any AI coding tool. Copy the prompt, paste it into your tool of choice, and let it scan your project and apply changes.
+            This format works with any AI coding tool. Copy the prompt, paste it into your tool of choice, and let it scan your project and apply changes. Prompts can also be followed manually without any AI tool.
 
             ## Resuming interrupted upgrades
 
@@ -134,7 +109,7 @@ _ref:
 
             The command reads `.lowdefy/upgrade-state.json` — a file that tracks which phases and codemods have completed — and picks up where you left off.
 
-            If you skip Category C codemods, the build warns about pending migrations:
+            If you skip codemods, the build warns about pending migrations:
 
             ```
             ⚠ Warning: 2 codemod(s) were skipped during upgrade.
@@ -154,10 +129,6 @@ _ref:
             4. Run `lowdefy dev` and fix any remaining issues.
 
             The upgrade command automates this process, but every change is documented in the migration guides for manual reference.
-
-            ## Backups
-
-            Automated codemods create backups in `.codemod-backup/` preserving the original file paths. Add this directory to `.gitignore` — between git history and the backup directory, you can always recover the original files.
 
       - _ref:
           path: templates/navigation_buttons.yaml

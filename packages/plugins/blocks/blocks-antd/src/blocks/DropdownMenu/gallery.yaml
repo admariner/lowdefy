@@ -360,13 +360,13 @@
             properties:
               title: New File
               icon: AiOutlineFileAdd
-              shortcut: mod+N
+              shortcut: mod+shift+N
           - id: dm_sc_save
             type: MenuLink
             properties:
               title: Save
               icon: AiOutlineSave
-              shortcut: mod+S
+              shortcut: mod+shift+S
           - id: dm_sc_div
             type: MenuDivider
           - id: dm_sc_close
@@ -374,7 +374,17 @@
             properties:
               title: Close
               icon: AiOutlineClose
-              shortcut: mod+W
+              shortcut: mod+shift+W
+      events:
+        onClick:
+          - id: dropdown_menu_shortcuts_msg
+            type: DisplayMessage
+            params:
+              content:
+                _string.concat:
+                  - 'Shortcut action: '
+                  - _event: key
+              duration: 2
       blocks:
         - id: dropdown_menu_shortcuts_btn
           type: Button

@@ -26,4 +26,67 @@ _ref:
     schema: ../plugins/blocks/blocks-antd/src/blocks/ControlledList/meta.js
     gallery: ../plugins/blocks/blocks-antd/src/blocks/ControlledList/gallery.yaml
     description: >
-      Dynamic list with add and remove item controls.
+      Dynamic list with built-in add and remove controls. Supports custom
+      add/remove buttons, conditional field visibility, nested lists, theme
+      tokens, and scoped validation. Use `addItemButton` and `removeItemIcon`
+      to customize controls, and `visible` with operators for conditional fields.
+    onInit:
+      - id: init_cl_data
+        type: SetState
+        params:
+          team:
+            - name: Alice Johnson
+              role: Developer
+              email: alice@example.com
+            - name: Bob Smith
+              role: Designer
+              email: bob@example.com
+          bookmarks:
+            - url: https://lowdefy.com
+              label: Lowdefy Docs
+            - url: https://ant.design
+              label: Ant Design
+            - url: https://github.com
+              label: GitHub
+          attendees:
+            - name: Jane Doe
+              type: Adult
+              email: jane@example.com
+              meal: Vegetarian
+            - name: Tommy Doe
+              type: Child
+              age: 8
+              supervision: true
+          expenses:
+            - date:
+                _date: '2026-03-10'
+              category: Travel
+              desc: Flight to NYC
+              amount: 450
+            - date:
+                _date: '2026-03-11'
+              category: Meals
+              desc: Client dinner
+              amount: 85.50
+            - date:
+                _date: '2026-03-12'
+              category: Software
+              desc: Figma license
+              amount: 15
+          projects:
+            - name: Website Redesign
+              status: Active
+              tasks:
+                - task: Update homepage layout
+                  done: true
+                - task: Add dark mode toggle
+                  done: false
+                - task: Optimize images
+                  done: false
+            - name: API v2
+              status: Planning
+              tasks:
+                - task: Design new endpoints
+                  done: false
+                - task: Write OpenAPI spec
+                  done: true

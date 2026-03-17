@@ -24,4 +24,51 @@ _ref:
     schema: ../plugins/blocks/blocks-basic/src/blocks/List/meta.js
     gallery: ../plugins/blocks/blocks-basic/src/blocks/List/gallery.yaml
     description: >
-      Basic list layout container for rendering repeated blocks.
+      Flex-based list container that renders a template block for each item in
+      an array. Supports column/row direction, wrapping, and scrolling. Use
+      `CallMethod` with `pushItem`, `removeItem`, `moveItemUp`, and
+      `moveItemDown` to manage items. Pair with `Validate` to validate
+      inputs across all list rows.
+    onInit:
+      - id: init_list_data
+        type: SetState
+        params:
+          notes:
+            - text: Pick up groceries
+            - text: Call dentist at 3pm
+            - text: Review PR #247
+          skills:
+            - label: React
+              color: blue
+            - label: TypeScript
+              color: cyan
+            - label: Node.js
+              color: green
+            - label: PostgreSQL
+              color: geekblue
+            - label: Docker
+              color: purple
+            - label: GraphQL
+              color: magenta
+            - label: AWS
+              color: orange
+            - label: Redis
+              color: red
+          tasks:
+            - name: Review pull request
+              priority: High
+            - name: Write unit tests
+              priority: Medium
+            - name: Update documentation
+              priority: Low
+          users: []
+          inv:
+            - desc: Web development
+              qty: 40
+              price: 150
+            - desc: UI design
+              qty: 20
+              price: 120
+            - desc: QA testing
+              qty: 10
+              price: 90

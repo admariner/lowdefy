@@ -12,233 +12,214 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- title: Basic Masonry Layout
-  fullWidth: true
+- title: 3 Columns (Default)
   blocks:
-    - id: mas_basic
+    - id: mas_3col
       type: Masonry
       properties:
         columns: 3
-        gutter: 16
+        gutter: 12
       blocks:
-        - id: mas_basic_card1
+        - id: mas_3col_c1
           type: Card
           properties:
-            title: Short Card
             size: small
+            title: Revenue
           blocks:
-            - id: mas_basic_card1_p
-              type: Paragraph
+            - id: mas_3col_c1_stat
+              type: Statistic
               properties:
-                content: A compact card in the masonry grid.
-        - id: mas_basic_card2
+                value: 128450
+                prefix: $
+        - id: mas_3col_c2
           type: Card
           properties:
-            title: Tall Card
             size: small
+            title: Active Users
           blocks:
-            - id: mas_basic_card2_p1
+            - id: mas_3col_c2_stat
+              type: Statistic
+              properties:
+                value: 3842
+            - id: mas_3col_c2_p
               type: Paragraph
               properties:
-                content: This card has more content to demonstrate how masonry handles varying heights.
-            - id: mas_basic_card2_p2
-              type: Paragraph
-              properties:
-                content: The layout fills gaps efficiently by placing items in the shortest column.
-        - id: mas_basic_card3
+                content: '<span style="color:#52c41a">+12.5%</span> vs last month'
+        - id: mas_3col_c3
           type: Card
           properties:
-            title: Medium Card
             size: small
+            title: Uptime
           blocks:
-            - id: mas_basic_card3_p
-              type: Paragraph
+            - id: mas_3col_c3_stat
+              type: Statistic
               properties:
-                content: Cards of different heights are arranged to minimize vertical gaps.
-        - id: mas_basic_card4
+                value: 99.97
+                suffix: '%'
+        - id: mas_3col_c4
           type: Card
           properties:
-            title: Another Short Card
             size: small
+            title: Top Region
           blocks:
-            - id: mas_basic_card4_p
-              type: Paragraph
-              properties:
-                content: Brief content here.
-        - id: mas_basic_card5
+            - id: mas_3col_c4_tags
+              type: Box
+              layout:
+                gap: 8
+                wrap: wrap
+              blocks:
+                - id: mas_3col_c4_t1
+                  type: Tag
+                  properties:
+                    title: North America
+                    color: blue
+                - id: mas_3col_c4_t2
+                  type: Tag
+                  properties:
+                    title: Europe
+                    color: green
+                - id: mas_3col_c4_t3
+                  type: Tag
+                  properties:
+                    title: Asia Pacific
+                    color: orange
+        - id: mas_3col_c5
           type: Card
           properties:
-            title: Extra Tall Card
             size: small
+            title: Conversion Rate
           blocks:
-            - id: mas_basic_card5_p1
+            - id: mas_3col_c5_stat
+              type: Statistic
+              properties:
+                value: 4.2
+                suffix: '%'
+            - id: mas_3col_c5_p1
               type: Paragraph
               properties:
-                content: This card is the tallest in the grid.
-            - id: mas_basic_card5_p2
-              type: Paragraph
+                content: Target is 5%. Campaigns are underperforming in APAC.
+            - id: mas_3col_c5_p2
+              type: Progress
               properties:
-                content: Multiple paragraphs increase its height.
-            - id: mas_basic_card5_p3
-              type: Paragraph
-              properties:
-                content: The masonry layout flows items around it naturally.
-        - id: mas_basic_card6
-          type: Card
-          properties:
-            title: Final Card
-            size: small
-          blocks:
-            - id: mas_basic_card6_p
-              type: Paragraph
-              properties:
-                content: Fills the remaining space in the grid.
+                percent: 84
 
-- title: Column Count Variations
-  fullWidth: true
+- title: 2 Columns
   blocks:
-    - id: mas_two_col
+    - id: mas_2col
       type: Masonry
       properties:
         columns: 2
-        gutter: 16
+        gutter: 12
       blocks:
-        - id: mas_two_col_card1
+        - id: mas_2col_c1
           type: Card
           properties:
-            title: Two-Column Layout
             size: small
+            title: Notifications
           blocks:
-            - id: mas_two_col_card1_p
-              type: Paragraph
+            - id: mas_2col_c1_alert
+              type: Alert
               properties:
-                content: A two-column masonry works well for medium-width containers and sidebar-like layouts.
-        - id: mas_two_col_card2
+                type: success
+                showIcon: true
+                message: Deployment completed
+            - id: mas_2col_c1_alert2
+              type: Alert
+              properties:
+                type: warning
+                showIcon: true
+                message: Disk usage at 85%
+        - id: mas_2col_c2
           type: Card
           properties:
-            title: Second Item
             size: small
+            title: Quick Stats
           blocks:
-            - id: mas_two_col_card2_p
-              type: Paragraph
+            - id: mas_2col_c2_stat
+              type: Statistic
               properties:
-                content: Each column fills independently, stacking items where there is the most available space.
-            - id: mas_two_col_card2_p2
-              type: Paragraph
-              properties:
-                content: Extra content to show height difference handling.
-        - id: mas_two_col_card3
-          type: Card
-          properties:
-            title: Third Item
-            size: small
-          blocks:
-            - id: mas_two_col_card3_p
-              type: Paragraph
-              properties:
-                content: Placed in the shortest column automatically.
+                value: 1024
+                suffix: requests/s
 
 - title: Responsive Columns
-  fullWidth: true
   blocks:
-    - id: mas_responsive
+    - id: mas_resp
       type: Masonry
       properties:
         columns:
           xs: 1
           sm: 2
           md: 3
-          lg: 4
-        gutter: 16
+        gutter: 12
       blocks:
         - id: mas_resp_c1
           type: Card
           properties:
-            title: Responsive Item 1
             size: small
+            title: xs:1 sm:2 md:3
           blocks:
             - id: mas_resp_c1_p
               type: Paragraph
               properties:
-                content: The columns property accepts a responsive breakpoint object. This grid shows 1 column on xs, 2 on sm, 3 on md, and 4 on lg screens.
+                content: Resize browser to see columns change at each breakpoint.
         - id: mas_resp_c2
           type: Card
           properties:
-            title: Responsive Item 2
             size: small
+            title: Responsive
           blocks:
-            - id: mas_resp_c2_p
-              type: Paragraph
+            - id: mas_resp_c2_stat
+              type: Statistic
               properties:
-                content: Resize the browser to see the column count change at each breakpoint.
+                value: 3
+                suffix: breakpoints
         - id: mas_resp_c3
           type: Card
           properties:
-            title: Responsive Item 3
             size: small
+            title: Mobile
           blocks:
             - id: mas_resp_c3_p
               type: Paragraph
               properties:
-                content: A shorter card to demonstrate responsive reflow.
-        - id: mas_resp_c4
-          type: Card
-          properties:
-            title: Responsive Item 4
-            size: small
-          blocks:
-            - id: mas_resp_c4_p
-              type: Paragraph
-              properties:
-                content: On large screens this appears in the fourth column. On mobile it stacks into a single column.
+                content: Stacks to a single column on small screens.
 
-- title: Gutter as Number
-  fullWidth: true
+- title: Wide Gutter (32px)
   blocks:
-    - id: mas_gutter_num
+    - id: mas_gutter
       type: Masonry
       properties:
-        columns: 3
+        columns: 2
         gutter: 32
       blocks:
-        - id: mas_gutter_num_c1
+        - id: mas_gutter_c1
           type: Card
           properties:
-            title: Wide Gap
             size: small
-          blocks:
-            - id: mas_gutter_num_c1_p
-              type: Paragraph
-              properties:
-                content: A single number for gutter applies the same spacing both horizontally and vertically (32px here).
-        - id: mas_gutter_num_c2
-          type: Card
-          properties:
             title: Spacious
-            size: small
           blocks:
-            - id: mas_gutter_num_c2_p
+            - id: mas_gutter_c1_p
               type: Paragraph
               properties:
-                content: Larger gutter values create a more open, airy layout between items.
-        - id: mas_gutter_num_c3
+                content: 32px gap between items in both directions.
+        - id: mas_gutter_c2
           type: Card
           properties:
-            title: Uniform
             size: small
+            title: Airy Layout
           blocks:
-            - id: mas_gutter_num_c3_p
-              type: Paragraph
+            - id: mas_gutter_c2_stat
+              type: Statistic
               properties:
-                content: The spacing is equal in both directions.
+                value: 32
+                suffix: px
 
-- title: Horizontal and Vertical Gutter
-  fullWidth: true
+- title: Mixed Gutter [32, 8]
   blocks:
-    - id: mas_hv_gutter
+    - id: mas_hv
       type: Masonry
       properties:
-        columns: 3
+        columns: 2
         gutter:
           - 32
           - 8
@@ -246,300 +227,210 @@
         - id: mas_hv_c1
           type: Card
           properties:
-            title: Wide Horizontal Gap
             size: small
+            title: Wide Horizontal
           blocks:
             - id: mas_hv_c1_p
               type: Paragraph
               properties:
-                content: The gutter array sets horizontal (32px) and vertical (8px) spacing independently.
+                content: 32px horizontal, 8px vertical. Compact rows, wide columns.
         - id: mas_hv_c2
           type: Card
           properties:
-            title: Compact Vertical
             size: small
+            title: Tight Vertical
           blocks:
-            - id: mas_hv_c2_p
-              type: Paragraph
+            - id: mas_hv_c2_stat
+              type: Statistic
               properties:
-                content: Vertical gaps are tighter at 8px while columns are spaced at 32px.
+                value: 8
+                suffix: px vertical
         - id: mas_hv_c3
           type: Card
           properties:
-            title: Mixed Spacing
             size: small
+            title: Third
           blocks:
             - id: mas_hv_c3_p
               type: Paragraph
               properties:
-                content: This creates a layout with distinct horizontal and vertical rhythm.
-        - id: mas_hv_c4
-          type: Card
-          properties:
-            title: Fourth Item
-            size: small
-          blocks:
-            - id: mas_hv_c4_p
-              type: Paragraph
-              properties:
-                content: Notice how items are tightly stacked vertically but have generous horizontal spacing.
+                content: Notice the asymmetric spacing.
 
 - title: Sequential Rendering
-  fullWidth: true
   blocks:
-    - id: mas_sequential
+    - id: mas_seq
       type: Masonry
       properties:
         columns: 3
-        gutter: 16
+        gutter: 12
         sequential: true
       blocks:
         - id: mas_seq_c1
           type: Card
           properties:
-            title: Item 1
             size: small
+            title: '1'
           blocks:
             - id: mas_seq_c1_p
               type: Paragraph
               properties:
-                content: Sequential mode renders items in order rather than optimizing for shortest column.
+                content: Items fill left-to-right in source order instead of shortest column.
         - id: mas_seq_c2
           type: Card
           properties:
-            title: Item 2
             size: small
+            title: '2'
           blocks:
             - id: mas_seq_c2_p
               type: Paragraph
               properties:
-                content: This preserves the source order of items across columns.
+                content: Second item.
         - id: mas_seq_c3
           type: Card
           properties:
-            title: Item 3
             size: small
+            title: '3'
           blocks:
             - id: mas_seq_c3_p
               type: Paragraph
               properties:
-                content: Useful when display order matters more than visual compactness.
-        - id: mas_seq_c4
-          type: Card
-          properties:
-            title: Item 4
-            size: small
-          blocks:
-            - id: mas_seq_c4_p
+                content: Third item.
+            - id: mas_seq_c3_p2
               type: Paragraph
               properties:
-                content: Items flow left to right, then wrap to the next row.
-        - id: mas_seq_c5
-          type: Card
-          properties:
-            title: Item 5
-            size: small
-          blocks:
-            - id: mas_seq_c5_p
-              type: Paragraph
-              properties:
-                content: Maintaining order for numbered or chronological content.
-            - id: mas_seq_c5_p2
-              type: Paragraph
-              properties:
-                content: This item has extra content to show that sequential ordering is preserved regardless of height.
+                content: Taller card — order still preserved.
 
-- title: Theme Token Overrides
-  fullWidth: true
+- title: Blue Theme Tokens
   blocks:
-    - id: mas_theme_colors
+    - id: mas_blue
       type: Masonry
       properties:
-        columns: 3
-        gutter: 16
+        columns: 2
+        gutter: 12
         theme:
           colorBgContainer: '#f0f5ff'
           colorBorderSecondary: '#adc6ff'
           borderRadiusLG: 16
       blocks:
-        - id: mas_theme_c1
+        - id: mas_blue_c1
           type: Card
           properties:
-            title: Themed Item 1
             size: small
+            title: Themed Card
           blocks:
-            - id: mas_theme_c1_p
+            - id: mas_blue_c1_p
               type: Paragraph
               properties:
-                content: The theme property passes antd design token overrides to the Masonry block and its children. Here we use a blue-tinted background.
-        - id: mas_theme_c2
+                content: Theme tokens cascade to all child blocks within this Masonry.
+        - id: mas_blue_c2
           type: Card
           properties:
-            title: Themed Item 2
             size: small
+            title: Rounded Corners
           blocks:
-            - id: mas_theme_c2_p
-              type: Paragraph
+            - id: mas_blue_c2_stat
+              type: Statistic
               properties:
-                content: Token overrides cascade to child blocks like these Cards, applying consistent colors and border radius.
-        - id: mas_theme_c3
-          type: Card
-          properties:
-            title: Themed Item 3
-            size: small
-          blocks:
-            - id: mas_theme_c3_p
-              type: Paragraph
-              properties:
-                content: The borderRadiusLG token gives all cards extra-rounded corners within this masonry grid.
+                value: 16
+                suffix: px radius
 
-    - id: mas_theme_warm
+- title: Warm Theme Tokens
+  blocks:
+    - id: mas_warm
       type: Masonry
       properties:
         columns: 2
-        gutter: 16
+        gutter: 12
         theme:
           colorBgContainer: '#fffbe6'
           colorBorderSecondary: '#ffd591'
           colorTextHeading: '#d46b08'
           colorText: '#874d00'
       blocks:
-        - id: mas_theme_warm_c1
+        - id: mas_warm_c1
           type: Card
           properties:
-            title: Warm Theme
             size: small
+            title: Orange Palette
           blocks:
-            - id: mas_theme_warm_c1_p
+            - id: mas_warm_c1_p
               type: Paragraph
               properties:
-                content: A warm-toned masonry grid using orange and gold design tokens for a distinct visual style.
-        - id: mas_theme_warm_c2
+                content: Warm-toned cards using gold design tokens.
+        - id: mas_warm_c2
           type: Card
           properties:
-            title: Consistent Palette
             size: small
+            title: Consistent
           blocks:
-            - id: mas_theme_warm_c2_p
+            - id: mas_warm_c2_p
               type: Paragraph
               properties:
-                content: All children inherit the color overrides, keeping text, borders, and backgrounds harmonized.
+                content: Text, borders, and backgrounds all harmonized.
 
-    - id: mas_theme_motion
+- title: Tailwind Styled Container
+  blocks:
+    - id: mas_tw
+      type: Masonry
+      class:
+        element: bg-gray-100 p-6 rounded-xl
+      properties:
+        columns: 2
+        gutter: 12
+      blocks:
+        - id: mas_tw_c1
+          type: Card
+          properties:
+            size: small
+            title: Gray Background
+          blocks:
+            - id: mas_tw_c1_p
+              type: Paragraph
+              properties:
+                content: Tailwind classes on the element CSS key style the Masonry wrapper.
+        - id: mas_tw_c2
+          type: Card
+          properties:
+            size: small
+            title: Contrast
+          blocks:
+            - id: mas_tw_c2_p
+              type: Paragraph
+              properties:
+                content: White cards against gray create visual separation.
+
+- title: Slow Motion Tokens
+  blocks:
+    - id: mas_motion
       type: Masonry
       properties:
-        columns: 3
-        gutter: 16
+        columns: 2
+        gutter: 12
         theme:
           motionDurationSlow: '2s'
           motionDurationFast: '1s'
           motionEaseOut: ease-in-out
       blocks:
-        - id: mas_theme_motion_c1
+        - id: mas_motion_c1
           type: Card
           properties:
-            title: Slow Transitions
             size: small
+            title: 2s Transitions
           blocks:
-            - id: mas_theme_motion_c1_p
+            - id: mas_motion_c1_p
               type: Paragraph
               properties:
-                content: The motionDurationSlow token controls how long items take to reposition and appear. Set to 2s here for a dramatic effect.
-        - id: mas_theme_motion_c2
+                content: Resize browser to see slow item repositioning.
+        - id: mas_motion_c2
           type: Card
           properties:
+            size: small
             title: Custom Easing
-            size: small
           blocks:
-            - id: mas_theme_motion_c2_p
+            - id: mas_motion_c2_p
               type: Paragraph
               properties:
-                content: The motionEaseOut token changes the easing curve. Here we use ease-in-out instead of the default cubic-bezier.
-            - id: mas_theme_motion_c2_p2
-              type: Paragraph
-              properties:
-                content: Resize the browser to see the slowed-down position transitions as items reflow between columns.
-        - id: mas_theme_motion_c3
-          type: Card
-          properties:
-            title: Leave Duration
-            size: small
-          blocks:
-            - id: mas_theme_motion_c3_p
-              type: Paragraph
-              properties:
-                content: The motionDurationFast token controls fade-out speed when items are removed. Set to 1s here.
-
-- title: Styled Masonry (Tailwind CSS)
-  fullWidth: true
-  blocks:
-    - id: mas_styled_bg
-      type: Masonry
-      class:
-        element: bg-gray-100 p-6 rounded-xl
-      properties:
-        columns: 3
-        gutter: 16
-      blocks:
-        - id: mas_styled_bg_c1
-          type: Card
-          properties:
-            title: Styled Container
-            size: small
-          blocks:
-            - id: mas_styled_bg_c1_p
-              type: Paragraph
-              properties:
-                content: The element CSS key targets the Masonry wrapper. Here we add a gray background, padding, and rounded corners using Tailwind classes.
-        - id: mas_styled_bg_c2
-          type: Card
-          properties:
-            title: Contrast Effect
-            size: small
-          blocks:
-            - id: mas_styled_bg_c2_p
-              type: Paragraph
-              properties:
-                content: White cards against a gray background create a clear visual separation between the grid and surrounding content.
-        - id: mas_styled_bg_c3
-          type: Card
-          properties:
-            title: Third Item
-            size: small
-          blocks:
-            - id: mas_styled_bg_c3_p
-              type: Paragraph
-              properties:
-                content: The padding on the masonry element adds internal margin around the entire grid.
-
-    - id: mas_styled_border
-      type: Masonry
-      class:
-        element: border-2 border-dashed border-blue-300 p-4 rounded-lg
-      properties:
-        columns: 2
-        gutter: 12
-      blocks:
-        - id: mas_styled_border_c1
-          type: Card
-          properties:
-            title: Bordered Grid
-            size: small
-          blocks:
-            - id: mas_styled_border_c1_p
-              type: Paragraph
-              properties:
-                content: A dashed border around the masonry element makes the grid boundary visible, useful for debugging layouts.
-        - id: mas_styled_border_c2
-          type: Card
-          properties:
-            title: Debug View
-            size: small
-          blocks:
-            - id: mas_styled_border_c2_p
-              type: Paragraph
-              properties:
-                content: Combine border, padding, and background classes on the element key for full control over the masonry container.
+                content: ease-in-out instead of the default cubic-bezier.
 
 - title: Image Gallery
   fullWidth: true
@@ -682,7 +573,7 @@
               properties:
                 content: Rolling sand dunes stretching to the horizon under a clear blue sky. The patterns in the sand are shaped by the wind.
 
-- title: Team Member Directory
+- title: Team Directory
   fullWidth: true
   blocks:
     - id: mas_team

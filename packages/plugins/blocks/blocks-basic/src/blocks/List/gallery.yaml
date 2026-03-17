@@ -13,332 +13,511 @@
 # limitations under the License.
 
 # ──────────────────────────────────────────────
-# Properties
+# Basic Examples
 # ──────────────────────────────────────────────
 
-- title: Direction
-  fullWidth: true
+- title: Quick Notes
   blocks:
-    - id: list_basic
-      type: List
+    - id: notes_header
+      type: Box
+      layout:
+        justify: space-between
+        align: center
       blocks:
-        - id: list_basic_item
-          type: Html
+        - id: notes_title
+          type: Title
+          layout:
+            flex: 0 0 auto
           properties:
-            html: List item content
-    - id: list_row
+            content: Notes
+            level: 4
+        - id: notes_add
+          type: Button
+          layout:
+            flex: 0 0 auto
+          properties:
+            title: Add Note
+            icon: AiOutlinePlus
+            color: primary
+            variant: solid
+            size: small
+          events:
+            onClick:
+              - id: notes_push
+                type: CallMethod
+                params:
+                  blockId: notes
+                  method: pushItem
+    - id: notes
       type: List
       properties:
         direction: row
       blocks:
-        - id: list_row_item
-          type: Box
+        - id: notes.$.text
+          type: TextInput
+          layout:
+            flex: 1 1 0
+          properties:
+            label:
+              disabled: true
+            placeholder: Type a note...
+        - id: notes.$.rm
+          type: Button
           layout:
             flex: 0 0 auto
-          style:
-            --element:
-              background: '#1677ff'
-              color: '#ffffff'
-              padding: 8px 16px
-              borderRadius: 6
           properties:
-            content: Item label
-    - id: list_column
-      type: List
-      properties:
-        direction: column
-      blocks:
-        - id: list_column_item
-          type: Box
-          style:
-            --element:
-              background: '#f5f5f5'
-              padding: 12
-              borderRadius: 6
-              marginBottom: 4
-          blocks:
-            - id: list_column_item_text
-              type: Html
-              properties:
-                html: Item name
-    - id: list_row_rev
-      type: List
-      properties:
-        direction: row-reverse
-      blocks:
-        - id: list_row_rev_item
-          type: Box
-          layout:
-            flex: 0 0 auto
-          style:
-            --element:
-              background: '#722ed1'
-              color: '#ffffff'
-              padding: 8px 16px
-              borderRadius: 6
-          properties:
-            content: Item label
-    - id: list_col_rev
-      type: List
-      properties:
-        direction: column-reverse
-      blocks:
-        - id: list_col_rev_item
-          type: Box
-          style:
-            --element:
-              background: '#f5f5f5'
-              padding: 12
-              borderRadius: 6
-              marginBottom: 4
-          blocks:
-            - id: list_col_rev_item_text
-              type: Html
-              properties:
-                html: Item name
+            icon: AiOutlineClose
+            color: default
+            variant: text
+            shape: circle
+            size: small
+          events:
+            onClick:
+              - id: rm_note
+                type: CallMethod
+                params:
+                  blockId: notes
+                  method: removeItem
+                  args:
+                    - _index: 0
 
-- title: Wrap and Scroll
-  fullWidth: true
+- title: Skill Tags
   blocks:
-    - id: list_wrap
+    - id: skills
       type: List
       properties:
         direction: row
         wrap: wrap
       blocks:
-        - id: list_wrap_item
-          type: Box
+        - id: skills.$.label
+          type: Tag
           layout:
-            flex: 0 0 150px
-          style:
-            --element:
-              background: '#52c41a'
-              color: '#ffffff'
-              padding: 8px 16px
-              borderRadius: 6
-              textAlign: center
-              margin: 4
+            flex: 0 0 auto
           properties:
-            content: Item label
-    - id: list_nowrap
-      type: List
-      properties:
-        direction: row
-        wrap: nowrap
-      style:
-        --element:
-          overflow: auto
-      blocks:
-        - id: list_nowrap_item
-          type: Box
-          layout:
-            flex: 0 0 150px
-          style:
-            --element:
-              background: '#fa8c16'
-              color: '#ffffff'
-              padding: 8px 16px
-              borderRadius: 6
-              textAlign: center
-              margin: 4
-          properties:
-            content: Item label
-    - id: list_scroll
-      type: List
-      properties:
-        direction: column
-        scroll: true
-      style:
-        --element:
-          maxHeight: 180
-          border: 1px solid #d9d9d9
-          borderRadius: 8
-          padding: 8
-      blocks:
-        - id: list_scroll_item
-          type: Box
-          style:
-            --element:
-              background: '#f5f5f5'
-              padding: 12
-              borderRadius: 6
-              marginBottom: 4
-          blocks:
-            - id: list_scroll_item_text
-              type: Html
-              properties:
-                html: Item name
+            title:
+              _state: skills.$.label
+            color:
+              _state: skills.$.color
+            closable: true
+          events:
+            onClose:
+              - id: rm_skill
+                type: CallMethod
+                params:
+                  blockId: skills
+                  method: removeItem
+                  args:
+                    - _index: 0
 
 # ──────────────────────────────────────────────
-# Styling
+# Advanced Examples
 # ──────────────────────────────────────────────
 
-- title: Styled with Tailwind Classes
+- title: Task Board
   fullWidth: true
   blocks:
-    - id: list_tw_rounded
-      type: List
-      properties:
-        direction: column
-      class: bg-gray-50 p-4 rounded-xl shadow-sm
+    - id: tasks_header
+      type: Box
+      layout:
+        justify: space-between
+        align: center
       blocks:
-        - id: list_tw_rounded_item
-          type: Html
-          properties:
-            html: List item content
-    - id: list_tw_border
-      type: List
-      properties:
-        direction: column
-      class: border-2 border-dashed border-blue-400 p-4 rounded-lg
-      blocks:
-        - id: list_tw_border_item
-          type: Html
-          properties:
-            html: List item content
-    - id: list_tw_accent
-      type: List
-      properties:
-        direction: column
-      class: border-l-4 border-l-green-500 pl-4 py-2 bg-green-50 rounded-r-lg
-      blocks:
-        - id: list_tw_accent_item
-          type: Html
-          properties:
-            html: List item content
-
-- title: Styled with CSS Key Object
-  fullWidth: true
-  blocks:
-    - id: list_csskey_blue
-      type: List
-      properties:
-        direction: column
-      style:
-        --element:
-          background: '#f0f5ff'
-          padding: 16
-          borderRadius: 8
-          border: 1px solid #91caff
-      blocks:
-        - id: list_csskey_blue_item
-          type: Html
-          properties:
-            html: List item content
-    - id: list_csskey_shadow
-      type: List
-      properties:
-        direction: column
-      style:
-        --element:
-          padding: 16
-          borderRadius: 12
-          boxShadow: 0 4px 12px rgba(0, 0, 0, 0.1)
-          background: '#ffffff'
-      blocks:
-        - id: list_csskey_shadow_item
-          type: Html
-          properties:
-            html: List item content
-    - id: list_csskey_dark
-      type: List
-      properties:
-        direction: column
-      style:
-        --element:
-          background: '#1a1a2e'
-          color: '#e0e0e0'
-          padding: 16
-          borderRadius: 8
-      blocks:
-        - id: list_csskey_dark_item
-          type: Html
-          style:
-            --element:
-              color: '#a0a0a0'
-          properties:
-            html: List item content
-
-# ──────────────────────────────────────────────
-# Applied Examples
-# ──────────────────────────────────────────────
-
-- title: List in User Directory
-  fullWidth: true
-  blocks:
-    - id: list_user_dir
-      type: List
-      properties:
-        direction: column
-      blocks:
-        - id: list_user_dir_item
-          type: Box
+        - id: tasks_title
+          type: Title
           layout:
-            gap: 12
-            align: center
-          style:
-            --element:
-              background: '#ffffff'
-              padding: 12px 16px
-              borderRadius: 8
-              border: 1px solid #f0f0f0
-              marginBottom: 8
+            flex: 0 0 auto
+          properties:
+            content: Tasks
+            level: 4
+        - id: tasks_add
+          type: Button
+          layout:
+            flex: 0 0 auto
+          properties:
+            title: Add Task
+            icon: AiOutlinePlus
+            color: primary
+            variant: solid
+            size: small
           events:
             onClick:
-              - id: list_user_dir_click
+              - id: tasks_push
+                type: CallMethod
+                params:
+                  blockId: tasks
+                  method: pushItem
+    - id: tasks
+      type: List
+      blocks:
+        - id: tasks.$.done
+          type: Switch
+          layout:
+            flex: 0 0 auto
+          properties:
+            label:
+              disabled: true
+            size: small
+        - id: tasks.$.name
+          type: TextInput
+          required: true
+          layout:
+            flex: 1 1 0
+          properties:
+            label:
+              disabled: true
+            placeholder: Task name
+            size: small
+        - id: tasks.$.priority
+          type: Selector
+          layout:
+            flex: 0 0 140px
+          properties:
+            label:
+              disabled: true
+            placeholder: Priority
+            size: small
+            options:
+              - High
+              - Medium
+              - Low
+        - id: tasks.$.pri_tag
+          type: Tag
+          layout:
+            flex: 0 0 auto
+          properties:
+            title:
+              _if_none:
+                - _state: tasks.$.priority
+                - ''
+            color:
+              _if:
+                test:
+                  _eq:
+                    - _state: tasks.$.priority
+                    - High
+                then: red
+                else:
+                  _if:
+                    test:
+                      _eq:
+                        - _state: tasks.$.priority
+                        - Medium
+                    then: orange
+                    else: green
+        - id: tasks.$.up
+          type: Button
+          layout:
+            flex: 0 0 auto
+          properties:
+            icon: AiOutlineArrowUp
+            color: default
+            variant: text
+            size: small
+            shape: circle
+          events:
+            onClick:
+              - id: tasks_up
+                type: CallMethod
+                params:
+                  blockId: tasks
+                  method: moveItemUp
+                  args:
+                    - _index: 0
+        - id: tasks.$.down
+          type: Button
+          layout:
+            flex: 0 0 auto
+          properties:
+            icon: AiOutlineArrowDown
+            color: default
+            variant: text
+            size: small
+            shape: circle
+          events:
+            onClick:
+              - id: tasks_down
+                type: CallMethod
+                params:
+                  blockId: tasks
+                  method: moveItemDown
+                  args:
+                    - _index: 0
+        - id: tasks.$.rm
+          type: Button
+          layout:
+            flex: 0 0 auto
+          properties:
+            icon: AiOutlineDelete
+            color: danger
+            variant: text
+            size: small
+            shape: circle
+          events:
+            onClick:
+              - id: tasks_rm
+                type: CallMethod
+                params:
+                  blockId: tasks
+                  method: removeItem
+                  args:
+                    - _index: 0
+    - id: tasks_footer
+      type: Box
+      layout:
+        justify: flex-end
+      blocks:
+        - id: tasks_save
+          type: Button
+          layout:
+            flex: 0 0 auto
+          properties:
+            title: Save Tasks
+            icon: AiOutlineSave
+            color: primary
+            variant: solid
+          events:
+            onClick:
+              - id: tasks_validate
+                type: Validate
+                params:
+                  regex: ^tasks
+              - id: tasks_msg
                 type: DisplayMessage
                 params:
-                  content: User selected
-                  status: info
+                  content: Tasks saved!
+                  status: success
+
+- title: User Directory
+  fullWidth: true
+  blocks:
+    - id: users_header
+      type: Box
+      layout:
+        justify: space-between
+        align: center
+      blocks:
+        - id: users_title
+          type: Title
+          layout:
+            flex: 0 0 auto
+          properties:
+            content: User Directory
+            level: 4
+        - id: users_btns
+          type: Box
+          layout:
+            flex: 0 0 auto
+            gap: 8
           blocks:
-            - id: list_user_dir_icon
-              type: Icon
+            - id: users_load
+              type: Button
               layout:
                 flex: 0 0 auto
               properties:
-                name: AiOutlineUser
-                size: 24
-                color: '#1677ff'
-            - id: list_user_dir_name
-              type: Html
+                title: Load Users
+                icon: AiOutlineCloudDownload
+                color: primary
+                variant: solid
+                size: small
+              events:
+                onClick:
+                  - id: fetch_users
+                    type: Fetch
+                    params:
+                      url: https://jsonplaceholder.typicode.com/users
+                      responseFunction: json
+                  - id: set_users
+                    type: SetState
+                    params:
+                      users:
+                        _actions: fetch_users.response
+            - id: users_clear
+              type: Button
               layout:
-                flex: 1
+                flex: 0 0 auto
               properties:
-                html: Item name
+                title: Clear
+                color: default
+                variant: outlined
+                size: small
+              events:
+                onClick:
+                  - id: clear_users
+                    type: SetState
+                    params:
+                      users: []
+    - id: users
+      type: List
+      blocks:
+        - id: users.$.avatar
+          type: Avatar
+          layout:
+            flex: 0 0 auto
+          properties:
+            content:
+              _string.charAt:
+                on:
+                  _if_none:
+                    - _state: users.$.name
+                    - '?'
+                index: 0
+            color: '#1677ff'
+        - id: users.$.disp_name
+          type: Paragraph
+          layout:
+            flex: 1 1 0
+          properties:
+            content:
+              _state: users.$.name
+        - id: users.$.disp_email
+          type: Paragraph
+          layout:
+            flex: 1 1 0
+          properties:
+            content:
+              _state: users.$.email
+            type: secondary
+        - id: users.$.disp_company
+          type: Tag
+          layout:
+            flex: 0 0 auto
+          properties:
+            title:
+              _state: users.$.company.name
+            color: blue
 
-- title: List in Card Gallery
+- title: Invoice Builder
   fullWidth: true
   blocks:
-    - id: list_card_gallery
-      type: List
-      properties:
-        direction: row
-        wrap: wrap
+    - id: inv_header
+      type: Box
+      layout:
+        justify: space-between
+        align: center
       blocks:
-        - id: list_card_gallery_item
-          type: Box
+        - id: inv_title
+          type: Title
           layout:
-            flex: 0 0 200px
-          style:
-            --element:
-              background: '#ffffff'
-              padding: 16
-              borderRadius: 8
-              boxShadow: 0 2px 8px rgba(0, 0, 0, 0.1)
-              margin: 4
+            flex: 0 0 auto
+          properties:
+            content: 'Invoice #1042'
+            level: 4
+        - id: inv_add
+          type: Button
+          layout:
+            flex: 0 0 auto
+          properties:
+            title: Add Line
+            icon: AiOutlinePlus
+            color: primary
+            variant: dashed
+            size: small
           events:
             onClick:
-              - id: list_card_gallery_click
+              - id: inv_push
+                type: CallMethod
+                params:
+                  blockId: inv
+                  method: pushItem
+    - id: inv
+      type: List
+      blocks:
+        - id: inv.$.desc
+          type: TextInput
+          required: true
+          layout:
+            flex: 3 1 0
+          properties:
+            label:
+              disabled: true
+            placeholder: Description
+        - id: inv.$.qty
+          type: NumberInput
+          required: true
+          layout:
+            flex: 1 1 0
+          properties:
+            label:
+              disabled: true
+            placeholder: Qty
+            min: 1
+        - id: inv.$.price
+          type: NumberInput
+          required: true
+          layout:
+            flex: 1 1 0
+          properties:
+            label:
+              disabled: true
+            placeholder: Unit price
+            min: 0
+            step: 0.01
+        - id: inv.$.total
+          type: Paragraph
+          layout:
+            flex: 0 0 100px
+          properties:
+            content:
+              _js: |
+                const qty = state('inv.$.qty') || 0;
+                const price = state('inv.$.price') || 0;
+                return '$' + (qty * price).toFixed(2);
+        - id: inv.$.rm
+          type: Button
+          layout:
+            flex: 0 0 auto
+          properties:
+            icon: AiOutlineMinusCircle
+            color: danger
+            variant: text
+            size: small
+            shape: circle
+          events:
+            onClick:
+              - id: inv_rm
+                type: CallMethod
+                params:
+                  blockId: inv
+                  method: removeItem
+                  args:
+                    - _index: 0
+    - id: inv_footer
+      type: Box
+      layout:
+        gap: 16
+        justify: flex-end
+        align: center
+      blocks:
+        - id: inv_total
+          type: Statistic
+          layout:
+            flex: 0 0 auto
+          properties:
+            title: Total
+            prefix: '$'
+            precision: 2
+            value:
+              _js: |
+                const items = state('inv') || [];
+                return items.reduce((sum, item) =>
+                  sum + ((item.qty || 0) * (item.price || 0)), 0);
+        - id: inv_submit
+          type: Button
+          layout:
+            flex: 0 0 auto
+          properties:
+            title: Submit Invoice
+            icon: AiOutlineSend
+            color: primary
+            variant: solid
+          events:
+            onClick:
+              - id: inv_validate
+                type: Validate
+                params:
+                  regex: ^inv
+              - id: inv_msg
                 type: DisplayMessage
                 params:
-                  content: Card selected
-                  status: info
-          blocks:
-            - id: list_card_gallery_title
-              type: Html
-              properties:
-                html: '<h4 style="margin: 0 0 8px 0;">Card Title</h4>'
-            - id: list_card_gallery_desc
-              type: Html
-              properties:
-                html: Card description text
+                  content: Invoice submitted!
+                  status: success

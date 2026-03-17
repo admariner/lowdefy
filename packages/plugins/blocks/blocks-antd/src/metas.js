@@ -76,6 +76,7 @@ export { default as Sider } from './blocks/Sider/meta.js';
 export { default as Slider } from './blocks/Slider/meta.js';
 export { default as Splitter } from './blocks/Splitter/meta.js';
 export { default as Statistic } from './blocks/Statistic/meta.js';
+export { default as Steps } from './blocks/Steps/meta.js';
 export { default as Switch } from './blocks/Switch/meta.js';
 export { default as Tabs } from './blocks/Tabs/meta.js';
 export { default as Tag } from './blocks/Tag/meta.js';

@@ -107,9 +107,9 @@ _ref:
 
             ## upgrade
 
-            The `upgrade` command upgrades a Lowdefy app to a newer version by running codemods that handle breaking changes automatically.
+            The `upgrade` command upgrades a Lowdefy app to a newer version by walking you through migration prompts that handle breaking changes.
 
-            It fetches the latest `@lowdefy/codemods` package, resolves the version chain from your current version to the target, and executes migration scripts phase by phase.
+            It fetches the latest `@lowdefy/codemods` package, resolves the version chain from your current version to the target, and presents migration prompts phase by phase.
 
             ```
             pnpx lowdefy@4 upgrade
@@ -118,8 +118,6 @@ _ref:
 
             - `--to <version>`: Target version to upgrade to. Defaults to the latest stable release.
             - `--plan`: Show the upgrade plan without executing.
-            - `--dry-run`: Run scripts in dry-run mode (no file changes).
-            - `--scripts-only`: Skip AI-guided codemods (run only automated scripts).
             - `--resume`: Resume a previously interrupted upgrade.
             - `--config-directory <config-directory>`: Change the config directory. The default is the current working directory.
             - `--log-level <level>`: The minimum severity of logs to show in the CLI output. Options are `debug`, `info`, `warn` or `error`. The default is `info`.
@@ -128,16 +126,10 @@ _ref:
 
             1. Reads your current version from `lowdefy.yaml`.
             2. Queries npm for the latest stable Lowdefy version (or uses `--to`).
-            3. Fetches `@lowdefy/codemods@latest` — the codemods package containing all migrations.
+            3. Fetches `@lowdefy/codemods@latest` — the codemods package containing all migration prompts.
             4. Resolves the upgrade chain — which intermediate versions need codemods.
-            5. Executes codemods phase by phase (automated scripts first, then AI-guided prompts).
+            5. Presents migration prompts phase by phase. Each prompt can be copied to clipboard for use with any AI coding tool, viewed as a manual guide, or skipped for later.
             6. Updates `lowdefy.yaml` after each phase and suggests a git commit.
-
-            ### Codemod categories
-
-            - **Category A** — Automated scripts. Run without human input. Handles renames, restructures, and syntax changes.
-            - **Category B** — Semi-automated scripts. Run and generate a review report. The CLI pauses for you to review before continuing.
-            - **Category C** — AI-guided. Copies a migration prompt to clipboard or runs via Claude Code. For changes that need intent understanding, not just syntax matching.
 
             See the [Upgrade Guide](/upgrade-guide) for more detail on how the upgrade system works.
 

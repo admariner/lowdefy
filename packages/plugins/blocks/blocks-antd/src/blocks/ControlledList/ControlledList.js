@@ -25,7 +25,7 @@ import withTheme from '../withTheme.js';
 const ControlledListBlock = ({
   blockId,
   classNames = {},
-  components: { Icon, Link },
+  components: { Icon, Link, ShortcutBadge },
   events,
   list,
   methods,
@@ -69,7 +69,7 @@ const ControlledListBlock = ({
             {properties.addToFront && !properties.hideAddButton && (
               <Button
                 blockId={`${blockId}_add_button`}
-                components={{ Icon, Link }}
+                components={{ Icon, Link, ShortcutBadge }}
                 events={events}
                 properties={{
                   icon: 'AiOutlinePlus',
@@ -99,7 +99,7 @@ const ControlledListBlock = ({
             <br />
             <Button
               blockId={`${blockId}_add_button`}
-              components={{ Icon, Link }}
+              components={{ Icon, Link, ShortcutBadge }}
               events={events}
               properties={{
                 icon: 'AiOutlinePlus',

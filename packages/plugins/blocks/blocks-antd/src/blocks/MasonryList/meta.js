@@ -27,7 +27,8 @@ export default {
     properties: {
       columns: {
         type: ['integer', 'object'],
-        description: 'Number of columns, or responsive breakpoint object.',
+        description:
+          'Number of columns, or responsive breakpoint object (e.g. { xs: 1, sm: 2, md: 3 }).',
         docs: {
           displayType: 'yaml',
         },
@@ -39,7 +40,7 @@ export default {
       },
       gutter: {
         type: ['number', 'array'],
-        description: 'Gap between items. Number or [horizontal, vertical] array.',
+        description: 'Gap between items in pixels. Number or [horizontal, vertical] array.',
         docs: {
           displayType: 'yaml',
         },
@@ -47,14 +48,33 @@ export default {
       sequential: {
         type: 'boolean',
         default: false,
-        description: 'Whether to render items sequentially.',
+        description:
+          'Render items sequentially (top to bottom, then next column). Default is balanced column-fill.',
       },
       theme: {
         type: 'object',
         description:
-          'Antd design token overrides for this block. See <a href="https://ant.design/components/overview#design-token">antd design tokens</a>.',
+          'Antd design token overrides for this block. Masonry uses global motion tokens for item animations. See <a href="https://ant.design/components/overview#design-token">antd design tokens</a>.',
         docs: {
           displayType: 'yaml',
+          link: 'https://ant.design/components/masonry',
+        },
+        properties: {
+          motionDurationSlow: {
+            type: 'string',
+            default: '0.3s',
+            description: 'Duration of item position and fade-in animations.',
+          },
+          motionDurationFast: {
+            type: 'string',
+            default: '0.1s',
+            description: 'Duration of item fade-out animations.',
+          },
+          motionEaseOut: {
+            type: 'string',
+            default: 'cubic-bezier(0.215, 0.61, 0.355, 1)',
+            description: 'Easing function for item animations.',
+          },
         },
       },
     },

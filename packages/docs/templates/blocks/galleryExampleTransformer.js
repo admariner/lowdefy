@@ -14,11 +14,59 @@
   limitations under the License.
 */
 
+import YAML from 'yaml';
+
 function slugify(title) {
   return title
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '_')
     .replace(/^_|_$/g, '');
+}
+
+function isMarkerKey(key) {
+  return typeof key === 'string' && key.length >= 2 && key[0] === '~';
+}
+
+function stripMarkers(value) {
+  if (typeof value === 'function' || typeof value === 'symbol') {
+    return undefined;
+  }
+  if (Array.isArray(value)) {
+    return value.map(stripMarkers);
+  }
+  if (value !== null && typeof value === 'object') {
+    if (value instanceof Date) {
+      return value.toISOString();
+    }
+    const clean = {};
+    for (const key of Object.keys(value)) {
+      if (!isMarkerKey(key)) {
+        const stripped = stripMarkers(value[key]);
+        if (stripped !== undefined) {
+          clean[key] = stripped;
+        }
+      }
+    }
+    return clean;
+  }
+  return value;
+}
+
+function hasOperators(obj) {
+  if (Array.isArray(obj)) {
+    return obj.some(hasOperators);
+  }
+  if (obj !== null && typeof obj === 'object') {
+    for (const key of Object.keys(obj)) {
+      if (key.length > 1 && key[0] === '_' && !isMarkerKey(key)) {
+        return true;
+      }
+      if (hasOperators(obj[key])) {
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 function buildStatePanel({ slug, blocks }) {
@@ -61,11 +109,116 @@ function buildStatePanel({ slug, blocks }) {
   };
 }
 
+function buildConfigPanel({ slug, configBlocks }) {
+  // Build-time YAML: operators are preserved as literal text
+  const yamlStr = YAML.stringify(stripMarkers(configBlocks), { sortKeys: false });
+  return {
+    blocks: [
+      {
+        id: `gallery_code_wrap_${slug}`,
+        type: 'Box',
+        style: {
+          maxHeight: 400,
+          overflow: 'auto',
+        },
+        blocks: [
+          {
+            id: `gallery_code_${slug}`,
+            type: 'MarkdownWithCode',
+            style: {
+              whiteSpace: 'pre',
+            },
+            properties: {
+              content: '```yaml\n' + yamlStr + '```\n',
+            },
+          },
+        ],
+      },
+    ],
+  };
+}
+
+function buildResolvedPanel({ slug, configBlocks }) {
+  return {
+    blocks: [
+      {
+        id: `gallery_resolved_wrap_${slug}`,
+        type: 'Box',
+        style: {
+          maxHeight: 400,
+          overflow: 'auto',
+        },
+        blocks: [
+          {
+            id: `gallery_resolved_${slug}`,
+            type: 'MarkdownWithCode',
+            style: {
+              whiteSpace: 'pre',
+            },
+            properties: {
+              content: {
+                _nunjucks: {
+                  template: '```yaml\n{{ blocks | safe }}```\n',
+                  on: {
+                    blocks: {
+                      _custom_yaml_stringify: [configBlocks, { sortKeys: false }],
+                    },
+                  },
+                },
+              },
+            },
+          },
+        ],
+      },
+    ],
+  };
+}
+
+function buildCopyButton({ slug, configBlocks }) {
+  const yamlStr = YAML.stringify(stripMarkers(configBlocks), { sortKeys: false });
+  return {
+    blocks: [
+      {
+        id: `gallery_copy_${slug}`,
+        type: 'Button',
+        properties: {
+          icon: 'AiOutlineCopy',
+          type: 'text',
+          size: 'small',
+          shape: 'circle',
+        },
+        events: {
+          onClick: [
+            {
+              id: `copy_config_${slug}`,
+              type: 'CopyToClipboard',
+              params: {
+                copy: yamlStr,
+              },
+            },
+            {
+              id: `copy_message_${slug}`,
+              type: 'DisplayMessage',
+              params: {
+                content: 'Config copied to clipboard',
+                duration: 2,
+              },
+            },
+          ],
+        },
+      },
+    ],
+  };
+}
+
 function transformer(sections, vars) {
   const showState = vars && vars.showState;
 
   return sections.map((section) => {
     const slug = slugify(section.title);
+    const configBlocks = JSON.parse(JSON.stringify(section.blocks));
+    const sectionHasOperators = hasOperators(configBlocks);
+
     const panels = [];
     if (showState) {
       panels.push({
@@ -80,78 +233,22 @@ function transformer(sections, vars) {
       icon: 'AiOutlineCode',
       extraKey: `config_extra_${slug}`,
     });
-    const configBlocks = JSON.parse(JSON.stringify(section.blocks));
-    const slots = {
-      config: {
-        blocks: [
-          {
-            id: `gallery_code_wrap_${slug}`,
-            type: 'Box',
-            style: {
-              maxHeight: 400,
-              overflow: 'auto',
-            },
-            blocks: [
-              {
-                id: `gallery_code_${slug}`,
-                type: 'MarkdownWithCode',
-                style: {
-                  whiteSpace: 'pre',
-                },
-                properties: {
-                  content: {
-                    _nunjucks: {
-                      template: '```yaml\n{{ blocks | safe }}```\n',
-                      on: {
-                        blocks: {
-                          _custom_yaml_stringify: [configBlocks, { sortKeys: false }],
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            ],
-          },
-        ],
-      },
-    };
+    if (sectionHasOperators) {
+      panels.push({
+        key: 'resolved',
+        title: 'Resolved',
+        icon: 'AiOutlineEye',
+      });
+    }
 
-    slots[`config_extra_${slug}`] = {
-      blocks: [
-        {
-          id: `gallery_copy_${slug}`,
-          type: 'Button',
-          properties: {
-            icon: 'AiOutlineCopy',
-            type: 'text',
-            size: 'small',
-            shape: 'circle',
-          },
-          events: {
-            onClick: [
-              {
-                id: `copy_config_${slug}`,
-                type: 'CopyToClipboard',
-                params: {
-                  copy: {
-                    _custom_yaml_stringify: [configBlocks, { sortKeys: false }],
-                  },
-                },
-              },
-              {
-                id: `copy_message_${slug}`,
-                type: 'DisplayMessage',
-                params: {
-                  content: 'Config copied to clipboard',
-                  duration: 2,
-                },
-              },
-            ],
-          },
-        },
-      ],
-    };
+    const slots = {};
+
+    slots.config = buildConfigPanel({ slug, configBlocks });
+    slots[`config_extra_${slug}`] = buildCopyButton({ slug, configBlocks });
+
+    if (sectionHasOperators) {
+      slots.resolved = buildResolvedPanel({ slug, configBlocks });
+    }
 
     if (showState) {
       slots.state = buildStatePanel({ slug, blocks: section.blocks });

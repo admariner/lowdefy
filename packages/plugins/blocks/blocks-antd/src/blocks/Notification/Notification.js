@@ -24,7 +24,7 @@ import Button from '../Button/Button.js';
 const NotificationBlock = ({
   blockId,
   classNames = {},
-  components: { Icon, handleError },
+  components: { Icon, ShortcutBadge, handleError },
   events,
   methods,
   properties,
@@ -62,7 +62,7 @@ const NotificationBlock = ({
           <ErrorBoundary onError={handleError}>
             <Button
               blockId={`${blockId}_button`}
-              components={{ Icon }}
+              components={{ Icon, ShortcutBadge }}
               events={events}
               properties={properties.button}
               onClick={() => methods.triggerEvent({ name: 'onClose' })}

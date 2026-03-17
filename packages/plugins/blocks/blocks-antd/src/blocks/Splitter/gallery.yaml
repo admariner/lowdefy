@@ -627,7 +627,9 @@
                     content:
                       _if:
                         test:
-                          _state: splitter_sizes
+                          _not:
+                            _not:
+                              _state: splitter_sizes
                         then:
                           _json.stringify:
                             on:
