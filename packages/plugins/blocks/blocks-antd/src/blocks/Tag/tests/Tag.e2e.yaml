@@ -166,6 +166,8 @@ blocks:
       content:
         _if:
           test:
-            _state: tag_shortcut_fired
+            _not:
+              _not:
+                _state: tag_shortcut_fired
           then: 'shortcut:fired'
           else: ''
