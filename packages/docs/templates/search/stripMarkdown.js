@@ -21,8 +21,12 @@ function stripMarkdown(text) {
   result = result.replace(/```[\s\S]*?```/g, '');
   // Remove inline code backticks but keep content
   result = result.replace(/`([^`]*)`/g, '$1');
-  // Remove HTML tags
-  result = result.replace(/<[^>]+>/g, '');
+  // Remove HTML tags (loop to handle nested/split tags like <scr<script>ipt>)
+  let prev;
+  do {
+    prev = result;
+    result = result.replace(/<[^>]+>/g, '');
+  } while (result !== prev);
   // Remove markdown images
   result = result.replace(/!\[[^\]]*\]\([^)]*\)/g, '');
   // Remove markdown links, keep text

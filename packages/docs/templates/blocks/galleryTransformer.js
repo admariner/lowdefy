@@ -14,6 +14,20 @@
   limitations under the License.
 */
 
+function stripHtmlTags(str) {
+  let result = str;
+  let prev;
+  do {
+    prev = result;
+    result = result.replace(/<[^>]*>/g, '');
+  } while (result !== prev);
+  return result;
+}
+
+function escapeMarkdownCell(str) {
+  return str.replace(/\\/g, '\\\\').replace(/\|/g, '\\|');
+}
+
 function flattenProperties(properties, prefix, rows) {
   for (const [name, def] of Object.entries(properties)) {
     const path = prefix ? `${prefix}.${name}` : name;
@@ -33,10 +47,9 @@ function flattenProperties(properties, prefix, rows) {
     const enumVals = def.enum ? ` Enum: ${def.enum.map((v) => `\`${v}\``).join(', ')}.` : '';
     const description = def.description ?? (variants && variants[0]?.description) ?? '';
     let desc =
-      description
-        .replace(/<a\s+href="([^"]*)"[^>]*>([^<]*)<\/a>/gi, '[$2]($1)')
-        .replace(/\|/g, '\\|')
-        .replace(/<[^>]*>/g, '') + enumVals;
+      escapeMarkdownCell(
+        stripHtmlTags(description.replace(/<a\s+href="([^"]*)"[^>]*>([^<]*)<\/a>/gi, '[$2]($1)'))
+      ) + enumVals;
     if (def.docs?.link) {
       const label = def.docs.link.match(/components\/([^#]+)/)?.[1] ?? 'component';
       desc += ` See [Ant Design ${label} tokens](${def.docs.link}).`;
@@ -96,7 +109,7 @@ function buildEventsTable(events) {
   if (entries.length === 0) return 'No events defined.';
   const rows = entries.map(([name, desc, eventData]) => {
     const dataCell = eventData ? `\`{ ${Object.keys(eventData).join(', ')} }\`` : '\\-';
-    return `| \`${name}\` | ${dataCell} | ${(desc ?? '').replace(/\|/g, '\\|')} |`;
+    return `| \`${name}\` | ${dataCell} | ${escapeMarkdownCell(desc ?? '')} |`;
   });
   return `| Event | Event Data | Description |\n| --- | --- | --- |\n${rows.join('\n')}`;
 }
@@ -111,7 +124,7 @@ function buildCssKeysTable(cssKeys) {
   if (entries.length === 0) return 'No CSS keys defined.';
   const rows = ['| `/block` | Outer block wrapper (always available). |'];
   entries.forEach(([key, desc]) => {
-    rows.push(`| \`/${key}\` | ${(desc ?? '').replace(/\|/g, '\\|')} |`);
+    rows.push(`| \`/${key}\` | ${escapeMarkdownCell(desc ?? '')} |`);
   });
   return `| Key | Target |\n| --- | --- |\n${rows.join('\n')}`;
 }
