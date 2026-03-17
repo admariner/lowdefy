@@ -14,17 +14,69 @@
   limitations under the License.
 */
 
+function flattenProperties(properties, prefix, rows) {
+  for (const [name, def] of Object.entries(properties)) {
+    const path = prefix ? `${prefix}.${name}` : name;
+
+    const variants = def.oneOf ?? def.anyOf;
+    let propType;
+    if (def.type) {
+      propType = Array.isArray(def.type) ? def.type.join(' \\| ') : def.type;
+    } else if (variants) {
+      const types = [...new Set(variants.map((v) => v.type).filter(Boolean))];
+      propType = types.join(' \\| ') || '-';
+    } else {
+      propType = '-';
+    }
+
+    const defaultVal = def.default !== undefined ? `\`${JSON.stringify(def.default)}\`` : '-';
+    const enumVals = def.enum ? ` Enum: ${def.enum.map((v) => `\`${v}\``).join(', ')}.` : '';
+    const description = def.description ?? (variants && variants[0]?.description) ?? '';
+    let desc =
+      description
+        .replace(/<a\s+href="([^"]*)"[^>]*>([^<]*)<\/a>/gi, '[$2]($1)')
+        .replace(/\|/g, '\\|')
+        .replace(/<[^>]*>/g, '') + enumVals;
+    if (def.docs?.link) {
+      const label = def.docs.link.match(/components\/([^#]+)/)?.[1] ?? 'component';
+      desc += ` See [Ant Design ${label} tokens](${def.docs.link}).`;
+    }
+    rows.push(`| \`${path}\` | ${propType} | ${defaultVal} | ${desc} |`);
+
+    if (
+      def.properties &&
+      (def.type === 'object' || (Array.isArray(def.type) && def.type.includes('object')))
+    ) {
+      flattenProperties(def.properties, path, rows);
+    }
+
+    if (def.type === 'array' && def.items?.properties) {
+      flattenProperties(def.items.properties, `${path}.$`, rows);
+    }
+
+    if (variants) {
+      for (const variant of variants) {
+        if (
+          variant.type === 'array' &&
+          variant.items?.type === 'object' &&
+          variant.items.properties
+        ) {
+          flattenProperties(variant.items.properties, `${path}.$`, rows);
+          break;
+        }
+        if (variant.type === 'object' && variant.properties) {
+          flattenProperties(variant.properties, path, rows);
+          break;
+        }
+      }
+    }
+  }
+  return rows;
+}
+
 function buildPropertiesTable(properties) {
   if (!properties) return 'No properties defined.';
-  const rows = Object.entries(properties)
-    .filter(([name]) => name !== 'theme')
-    .map(([name, def]) => {
-      const propType = Array.isArray(def.type) ? def.type.join(' \\| ') : def.type ?? '-';
-      const defaultVal = def.default !== undefined ? `\`${JSON.stringify(def.default)}\`` : '-';
-      const enumVals = def.enum ? ` Enum: ${def.enum.map((v) => `\`${v}\``).join(', ')}.` : '';
-      const desc = (def.description ?? '').replace(/\|/g, '\\|').replace(/<[^>]*>/g, '') + enumVals;
-      return `| \`${name}\` | ${propType} | ${defaultVal} | ${desc} |`;
-    });
+  const rows = flattenProperties(properties, '', []);
   return `| Property | Type | Default | Description |\n| --- | --- | --- | --- |\n${rows.join(
     '\n'
   )}`;
@@ -59,30 +111,11 @@ function buildCssKeysTable(cssKeys) {
   return `| Key | Target |\n| --- | --- |\n${rows.join('\n')}`;
 }
 
-function buildDesignTokensTable(designTokens) {
-  if (!designTokens || !designTokens.properties) return 'No design tokens defined.';
-  const rows = Object.entries(designTokens.properties).map(([name, def]) => {
-    const propType = def.type ?? '-';
-    const defaultVal = def.default !== undefined ? `\`${JSON.stringify(def.default)}\`` : '-';
-    const desc = (def.description ?? '').replace(/\|/g, '\\|');
-    return `| \`${name}\` | ${propType} | ${defaultVal} | ${desc} |`;
-  });
-  const link = designTokens.docs?.link;
-  const linkLabel = link ? link.match(/components\/([^#]+)/)?.[1] ?? 'component' : '';
-  const header = link
-    ? `Override via the \`theme\` property. See [Ant Design ${linkLabel} tokens](${link}).\n\n`
-    : 'Override via the `theme` property.\n\n';
-  return `${header}| Token | Type | Default | Description |\n| --- | --- | --- | --- |\n${rows.join(
-    '\n'
-  )}`;
-}
-
 function transformer(schema, vars) {
   const table = vars?.table;
   if (table === 'properties') return buildPropertiesTable(schema.properties?.properties);
   if (table === 'events') return buildEventsTable(schema.events);
   if (table === 'cssKeys') return buildCssKeysTable(schema.cssKeys);
-  if (table === 'designTokens') return buildDesignTokensTable(schema.properties?.properties?.theme);
   return '';
 }
 

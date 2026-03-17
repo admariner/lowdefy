@@ -191,18 +191,3 @@ _ref:
                       vars:
                         table: cssKeys
 
-      - id: gallery_tokens_card
-        type: Card
-        properties:
-          title: Design Tokens
-        blocks:
-          - id: gallery_tokens_table
-            type: Markdown
-            properties:
-              content:
-                _ref:
-                  path:
-                    _var: schema
-                  transformer: templates/blocks/galleryTransformer.js
-                  vars:
-                    table: designTokens
