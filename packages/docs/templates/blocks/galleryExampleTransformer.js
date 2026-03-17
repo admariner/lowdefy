@@ -211,93 +211,101 @@ function buildCopyButton({ slug, configBlocks }) {
   };
 }
 
+function buildCard({ section, slug, showState }) {
+  const configBlocks = JSON.parse(JSON.stringify(section.blocks));
+  const sectionHasOperators = hasOperators(configBlocks);
+
+  const panels = [];
+  if (showState) {
+    panels.push({
+      key: 'state',
+      title: 'State',
+      icon: 'AiOutlineDatabase',
+    });
+  }
+  panels.push({
+    key: 'config',
+    title: 'Config',
+    icon: 'AiOutlineCode',
+    extraKey: `config_extra_${slug}`,
+  });
+  if (sectionHasOperators) {
+    panels.push({
+      key: 'resolved',
+      title: 'Resolved',
+      icon: 'AiOutlineEye',
+    });
+  }
+
+  const slots = {};
+
+  slots.config = buildConfigPanel({ slug, configBlocks });
+  slots[`config_extra_${slug}`] = buildCopyButton({ slug, configBlocks });
+
+  if (sectionHasOperators) {
+    slots.resolved = buildResolvedPanel({ slug, configBlocks });
+  }
+
+  if (showState) {
+    slots.state = buildStatePanel({ slug, blocks: section.blocks });
+  }
+
+  const cardStyle = {
+    minWidth: 0,
+    overflow: 'hidden',
+    breakInside: 'avoid',
+    marginBottom: 16,
+  };
+  if (section.fullWidth) {
+    cardStyle.columnSpan = 'all';
+  }
+
+  return {
+    id: `gallery_card_${slug}`,
+    type: 'Card',
+    style: cardStyle,
+    properties: {
+      title: section.title,
+    },
+    blocks: section.hideConfig
+      ? [
+          {
+            id: `gallery_examples_${slug}`,
+            type: 'Box',
+            layout: {
+              gap: 8,
+            },
+            blocks: section.blocks,
+          },
+        ]
+      : [
+          {
+            id: `gallery_examples_${slug}`,
+            type: 'Box',
+            layout: {
+              gap: 8,
+            },
+            blocks: section.blocks,
+          },
+          {
+            id: `gallery_collapse_${slug}`,
+            type: 'Collapse',
+            properties: {
+              defaultActiveKey: showState ? ['state'] : [],
+              panels,
+            },
+            slots,
+          },
+        ],
+  };
+}
+
 function transformer(sections, vars) {
   const showState = vars && vars.showState;
 
   return sections.map((section) => {
     const slug = slugify(section.title);
-    const configBlocks = JSON.parse(JSON.stringify(section.blocks));
-    const sectionHasOperators = hasOperators(configBlocks);
-
-    const panels = [];
-    if (showState) {
-      panels.push({
-        key: 'state',
-        title: 'State',
-        icon: 'AiOutlineDatabase',
-      });
-    }
-    panels.push({
-      key: 'config',
-      title: 'Config',
-      icon: 'AiOutlineCode',
-      extraKey: `config_extra_${slug}`,
-    });
-    if (sectionHasOperators) {
-      panels.push({
-        key: 'resolved',
-        title: 'Resolved',
-        icon: 'AiOutlineEye',
-      });
-    }
-
-    const slots = {};
-
-    slots.config = buildConfigPanel({ slug, configBlocks });
-    slots[`config_extra_${slug}`] = buildCopyButton({ slug, configBlocks });
-
-    if (sectionHasOperators) {
-      slots.resolved = buildResolvedPanel({ slug, configBlocks });
-    }
-
-    if (showState) {
-      slots.state = buildStatePanel({ slug, blocks: section.blocks });
-    }
-
-    return {
-      id: `gallery_card_${slug}`,
-      type: 'Card',
-      layout: {
-        flex: section.fullWidth ? '1 1 100%' : '1 1 calc(50% - 8px)',
-      },
-      style: {
-        minWidth: 0,
-        overflow: 'hidden',
-      },
-      properties: {
-        title: section.title,
-      },
-      blocks: section.hideConfig
-        ? [
-            {
-              id: `gallery_examples_${slug}`,
-              type: 'Box',
-              layout: {
-                gap: 8,
-              },
-              blocks: section.blocks,
-            },
-          ]
-        : [
-            {
-              id: `gallery_examples_${slug}`,
-              type: 'Box',
-              layout: {
-                gap: 8,
-              },
-              blocks: section.blocks,
-            },
-            {
-              id: `gallery_collapse_${slug}`,
-              type: 'Collapse',
-              properties: {
-                defaultActiveKey: showState ? ['state'] : [],
-                panels,
-              },
-              slots,
-            },
-          ],
-    };
+    return buildCard({ section, slug, showState });
   });
 }
 

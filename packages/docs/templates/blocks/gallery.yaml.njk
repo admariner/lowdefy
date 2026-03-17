@@ -91,9 +91,9 @@ _ref:
         blocks:
           - id: gallery_grid
             type: Box
-            layout:
-              wrap: wrap
-              gap: 16
+            style:
+              columnCount: 2
+              columnGap: 16
 {% if onInit %}
             events:
               onMount:
@@ -111,9 +111,9 @@ _ref:
 {% else %}
       - id: gallery_grid
         type: Box
-        layout:
-          wrap: wrap
-          gap: 16
+        style:
+          columnCount: 2
+          columnGap: 16
 {% if onInit %}
         events:
           onMount:
