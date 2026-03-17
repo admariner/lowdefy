@@ -14,6 +14,8 @@
   limitations under the License.
 */
 
+import { serializer } from '@lowdefy/helpers';
+
 function _function({ actions, arrayIndices, event, location, operatorPrefix, params, parser }) {
   return (...args) => {
     const { output, errors } = parser.parse({
@@ -21,7 +23,7 @@ function _function({ actions, arrayIndices, event, location, operatorPrefix, par
       arrayIndices,
       args,
       event,
-      input: params,
+      input: serializer.copy(params),
       location,
       operatorPrefix: `_${operatorPrefix}`,
     });
