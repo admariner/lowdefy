@@ -112,6 +112,10 @@ function getBuildContext(buildDirectory, configDirectory) {
     readJsonFile(path.join(buildDirectory, 'installedPluginPackages.json')) ?? [];
   cachedBuildContext.installedPluginPackages = new Set(installedPluginPackages);
 
+  // Load icon imports snapshot from skeleton build for JIT icon detection
+  cachedBuildContext.iconImports =
+    readJsonFile(path.join(buildDirectory, 'iconImports.json')) ?? [];
+
   // Advance makeId past all skeleton IDs to prevent collisions with JIT builds
   const idCounter = readJsonFile(path.join(buildDirectory, 'idCounter.json'));
   if (idCounter != null) {
