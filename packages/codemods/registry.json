@@ -12,12 +12,12 @@
         },
         {
           "id": "migrate-properties-style",
-          "description": "Move properties.style to style: { --element }",
+          "description": "Move properties.style to style: { /element }",
           "path": "v5-0-0/02-migrate-properties-style.md"
         },
         {
           "id": "migrate-inline-style-props",
-          "description": "Move inline style props to style: { --* } sub-slots",
+          "description": "Move inline style props to style: { /* } sub-slots",
           "path": "v5-0-0/03-migrate-inline-style-props.md"
         },
         {

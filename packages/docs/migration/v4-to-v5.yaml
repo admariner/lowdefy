@@ -342,7 +342,7 @@ _ref:
 
             ### Inline style props → `style: { /key }`
 
-            Block-specific inline style properties have been replaced with the unified `style` property using `--`-prefixed CSS slot keys:
+            Block-specific inline style properties have been replaced with the unified `style` property using `/`-prefixed CSS slot keys:
 
             | Block | Remove | Use instead |
             |---|---|---|
@@ -531,21 +531,48 @@ _ref:
             | [FloatButton](/FloatButton) | display | Floating action button |
             | [Tour](/Tour) | display | Guided tour component |
             | [QRCode](/QRCode) | display | QR code generator |
-            | [ColorPicker](/ColorPicker) | input | Color picker input |
-            | [SegmentedSelector](/SegmentedSelector) | input | Segmented control selector |
+            | [ColorSelector](/ColorSelector) | input | Color picker input (renamed from ColorPicker) |
+            | [SegmentedSelector](/SegmentedSelector) | input | Segmented control selector (renamed from Segmented) |
             | [Flex](/Flex) | container | Flexbox layout container |
             | [Splitter](/Splitter) | container | Resizable split-pane container |
             | [Masonry](/Masonry) | container | Masonry (Pinterest-style) layout |
+            | [MasonryList](/MasonryList) | list | Data-driven masonry layout |
+            | [DropdownMenu](/DropdownMenu) | container | Dropdown navigation menu |
+            | [DropdownButton](/DropdownButton) | input | Button with dropdown menu |
+            | [Search](/Search) | input | Command palette search |
             | [Watermark](/Watermark) | container | Watermark overlay container |
             | [ConfigProvider](/ConfigProvider) | container | Scoped theme provider |
+
+            ## Removed packages
+
+            ### `@lowdefy/blocks-color-selectors`
+
+            The `@lowdefy/blocks-color-selectors` package has been removed. The `ColorPicker` block has been renamed to `ColorSelector` and moved to `@lowdefy/blocks-antd`. Update your config:
+
+            ```yaml
+            # Before (v4)
+            - id: color
+              type: ColorPicker
+
+            # After (v5)
+            - id: color
+              type: ColorSelector
+            ```
+
+            ### `@lowdefy/blocks-algolia`
+
+            The `@lowdefy/blocks-algolia` package has been removed. Use the new `Search` block in `@lowdefy/blocks-antd` instead, which provides a MiniSearch-powered command palette search with pre-built index support, grouped results, and keyboard navigation. See [Search](/Search).
 
             ## New features
 
             - **`class` property** — Apply Tailwind CSS classes to any block. See [Custom Styling](/custom-styling).
-            - **`style` with `--` keys** — Apply inline styles to specific parts of a block using CSS slot keys (e.g. `style: { /header: {...} }`).
+            - **`style` with `/` keys** — Apply inline styles to specific parts of a block using CSS slot keys (e.g. `style: { /header: {...} }`).
             - **`properties.theme`** — Override antd design tokens per block.
             - **`_theme` operator** — Access theme seed tokens in expressions. See [`_theme`](/_theme).
             - **Theming system** — App-level, component-level, and block-level theme customization. See [Theming](/theming).
+            - **Keyboard shortcuts** — Add `events.onClick.shortcut: 'mod+k'` to any event for platform-aware keyboard shortcuts. Blocks like Button, Anchor, Tag, and Menu render a `ShortcutBadge` automatically.
+            - **`lowdefy upgrade` CLI** — Run `lowdefy upgrade` to automatically migrate your config from v4 to v5. Includes 20 codemods covering antd prop renames, layout grid migration, dayjs migration, and more. Supports `--plan`, `--dry-run`, and `--resume`.
+            - **ECharts v6** — Upgraded to echarts 6.0.0 with improved flex container sizing.
 
             ## Common pitfalls
 
