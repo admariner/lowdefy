@@ -27,7 +27,7 @@ export default createBlockHelper({
   expect: {
     placeholder: (page, blockId, text) =>
       expect(locator(page, blockId).locator('.DocSearch-Button-Placeholder')).toHaveText(text),
-    modalVisible: (page) => expect(page.locator('.DocSearch-Modal')).toBeVisible(),
-    modalHidden: (page) => expect(page.locator('.DocSearch-Modal')).not.toBeVisible(),
+    modalVisible: (page, _blockId) => expect(page.locator('.DocSearch-Modal')).toBeVisible(),
+    modalHidden: (page, _blockId) => expect(page.locator('.DocSearch-Modal')).not.toBeVisible(),
   },
 });

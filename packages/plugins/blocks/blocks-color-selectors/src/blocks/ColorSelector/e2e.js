@@ -39,5 +39,7 @@ export default createBlockHelper({
       expect(page.locator(`#bl-${escapeId(blockId)} .color-picker-popover`)).not.toBeVisible(),
     disabled: (page, blockId) =>
       expect(locator(page, blockId)).toHaveClass(/color-picker-swatch-disabled/),
+    enabled: (page, blockId) =>
+      expect(locator(page, blockId)).not.toHaveClass(/color-picker-swatch-disabled/),
   },
 });
