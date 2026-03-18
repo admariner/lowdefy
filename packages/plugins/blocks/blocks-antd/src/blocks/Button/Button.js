@@ -72,7 +72,6 @@ const ButtonBlock = ({
 
   const isPresetColor = ANTD_COLOR_PRESETS.has(properties.color);
   const resolvedColor = isPresetColor ? buttonColor : properties.color ? 'primary' : buttonColor;
-  const resolvedVariant = !isPresetColor && properties.color ? variant ?? 'solid' : variant;
 
   const button = (
     <Button
@@ -82,7 +81,7 @@ const ButtonBlock = ({
       classNames={{ icon: classNames.icon }}
       styles={{ icon: styles.icon }}
       color={resolvedColor}
-      variant={resolvedVariant}
+      variant={variant}
       type={buttonType}
       disabled={properties.disabled || get(events, `${onClickActionName}.loading`) || loading}
       ghost={properties.ghost}

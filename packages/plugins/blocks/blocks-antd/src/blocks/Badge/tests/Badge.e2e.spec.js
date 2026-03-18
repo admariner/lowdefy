@@ -84,7 +84,9 @@ test.describe('Badge Block', () => {
   test('renders as dot', async ({ page }) => {
     const block = getBadge(page, 'badge_dot');
     const dot = block.locator('.ant-badge-dot');
-    await expect(dot).toBeVisible();
+    // antd v6: dot element has zero dimensions but data-show="true" indicates active state
+    await expect(dot).toBeAttached();
+    await expect(dot).toHaveAttribute('data-show', 'true');
   });
 
   // ============================================
