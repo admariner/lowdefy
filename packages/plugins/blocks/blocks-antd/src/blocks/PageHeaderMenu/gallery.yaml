@@ -40,49 +40,94 @@
         - id: phm_basic_content
           type: Paragraph
           properties:
-            content: PageHeaderMenu provides a full page layout with a horizontal navigation menu in the header. The menu links are configured through the menu.links property. On mobile screens, the menu collapses into a mobile drawer.
+            content: PageHeaderMenu provides a full page layout with a horizontal navigation menu in the header. On mobile screens, the menu collapses into a drawer.
 
-- title: Breadcrumb with Custom Separator
+- title: Grouped Menu with Breadcrumb
   fullWidth: true
   blocks:
-    - id: phm_bc_custom
+    - id: phm_grouped
       type: PageHeaderMenu
       properties:
         header:
           theme: dark
         breadcrumb:
-          separator: '>'
+          separator: /
           list:
             - Dashboard
-            - Reports
-            - Monthly
+            - Analytics
+            - Overview
         menu:
           theme: dark
           links:
-            - id: phm_bcc_dash
+            - id: phm_g_dash
               type: MenuLink
               properties:
                 title: Dashboard
                 icon: AiOutlineDashboard
-            - id: phm_bcc_reports
+            - id: phm_g_analytics
+              type: MenuGroup
+              properties:
+                title: Analytics
+                icon: AiOutlineBarChart
+              links:
+                - id: phm_g_overview
+                  type: MenuLink
+                  properties:
+                    title: Overview
+                - id: phm_g_realtime
+                  type: MenuLink
+                  properties:
+                    title: Real-time
+                - id: phm_g_funnel
+                  type: MenuLink
+                  properties:
+                    title: Funnels
+            - id: phm_g_settings
               type: MenuLink
               properties:
-                title: Reports
-                icon: AiOutlineBarChart
+                title: Settings
+                icon: AiOutlineSetting
       events:
-        onBreadcrumbClick:
-          - id: phm_bcc_action
+        onMenuItemClick:
+          - id: phm_g_nav
             type: DisplayMessage
             params:
-              content: Breadcrumb clicked!
-              duration: 2
+              content: Navigating...
+              duration: 1
       blocks:
-        - id: phm_bc_custom_content
-          type: Paragraph
+        - id: phm_g_title
+          type: Title
           properties:
-            content: The breadcrumb separator can be customized to any string. The onBreadcrumbClick event fires when any breadcrumb item is clicked, allowing navigation or other actions.
+            content: Analytics Overview
+            level: 3
+        - id: phm_g_cards
+          type: Box
+          layout:
+            gap: 16
+          blocks:
+            - id: phm_g_card_visits
+              type: Statistic
+              layout:
+                flex: 1 1 200px
+              properties:
+                title: Page Views
+                value: 12,847
+            - id: phm_g_card_users
+              type: Statistic
+              layout:
+                flex: 1 1 200px
+              properties:
+                title: Active Users
+                value: 1,024
+            - id: phm_g_card_rate
+              type: Statistic
+              layout:
+                flex: 1 1 200px
+              properties:
+                title: Bounce Rate
+                value: 23.4%
 
-- title: Company Intranet Portal
+- title: Intranet Portal
   fullWidth: true
   blocks:
     - id: phm_intranet
@@ -126,28 +171,11 @@
                   type: MenuLink
                   properties:
                     title: Benefits Guide
-                - id: phm_intranet_handbook
-                  type: MenuLink
-                  properties:
-                    title: Employee Handbook
             - id: phm_intranet_help
               type: MenuLink
               properties:
                 title: IT Support
                 icon: AiOutlineQuestionCircle
-      events:
-        onMenuItemClick:
-          - id: phm_intranet_nav_action
-            type: DisplayMessage
-            params:
-              content: Navigating...
-              duration: 1
-        onBreadcrumbClick:
-          - id: phm_intranet_bc_action
-            type: DisplayMessage
-            params:
-              content: Breadcrumb navigation
-              duration: 1
       slots:
         header:
           blocks:
@@ -181,7 +209,6 @@
               type: Box
               layout:
                 justify: center
-                gap: 24
               blocks:
                 - id: phm_intranet_footer_copy
                   type: Paragraph
@@ -215,7 +242,7 @@
                 - id: phm_intranet_announce_2
                   type: Paragraph
                   properties:
-                    content: 'Q1 All-Hands meeting scheduled for March 28 at 2:00 PM in the main auditorium.'
+                    content: 'Q1 All-Hands meeting scheduled for March 28 at 2:00 PM.'
             - id: phm_intranet_card_links
               type: Card
               layout:
@@ -236,7 +263,7 @@
                   properties:
                     content: Book a Meeting Room
 
-- title: Documentation Site Layout
+- title: Documentation Site
   fullWidth: true
   blocks:
     - id: phm_docs_site
@@ -306,13 +333,6 @@
                 variant: text
                 hideTitle: true
                 size: small
-      events:
-        onMenuItemSelect:
-          - id: phm_docs_nav_action
-            type: DisplayMessage
-            params:
-              content: Loading documentation section...
-              duration: 1
       blocks:
         - id: phm_docs_title
           type: Title
@@ -322,7 +342,7 @@
         - id: phm_docs_intro
           type: Paragraph
           properties:
-            content: Get started by installing the framework via npm or yarn. Follow the steps below to set up your development environment and create your first application.
+            content: Get started by installing the framework via npm or yarn. Follow the steps below to set up your development environment.
         - id: phm_docs_alert
           type: Alert
           properties:
