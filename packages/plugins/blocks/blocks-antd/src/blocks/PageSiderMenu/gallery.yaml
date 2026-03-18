@@ -516,7 +516,6 @@
         footer:
           style:
             textAlign: center
-            backgroundColor: '#fafafa'
             borderTop: 1px solid #f0f0f0
         menu:
           theme: light
@@ -556,7 +555,6 @@
           collapsible: true
         content:
           style:
-            backgroundColor: '#f5f5f5'
             padding: 0 24px 24px 24px
         menu:
           theme: light
@@ -867,7 +865,6 @@
                 icon: AiOutlineFile
         theme:
           colorPrimary: '#52c41a'
-          colorBgContainer: '#f6ffed'
       blocks:
         - id: psm_theme_primary_content
           type: Paragraph
@@ -901,7 +898,6 @@
                 icon: AiOutlineSetting
         theme:
           colorPrimary: '#722ed1'
-          colorBgLayout: '#f9f0ff'
           colorText: '#531dab'
       blocks:
         - id: psm_theme_layout_content
@@ -952,9 +948,9 @@
       type: PageSiderMenu
       class:
         header: bg-gradient-to-r from-blue-600 to-blue-800
-        sider: bg-gray-50
-        content: bg-white
-        footer: bg-gray-100
+        sider: bg-bg-layout
+        content: bg-bg-container
+        footer: bg-bg-layout
       properties:
         header:
           theme: dark
@@ -1041,7 +1037,7 @@
     - id: psm_css_bc
       type: PageSiderMenu
       class:
-        breadcrumb: bg-blue-50 px-4 py-2 rounded-lg
+        breadcrumb: bg-bg-layout px-4 py-2 rounded-lg
         logo: h-8 w-auto
       properties:
         header:
@@ -1208,8 +1204,7 @@
                   properties:
                     title: Total Users
                     value: 2847
-                    prefix:
-                      icon: AiOutlineUser
+                    prefixIcon: AiOutlineUser
             - id: psm_admin_stat_revenue
               type: Card
               layout:
