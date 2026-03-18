@@ -81,7 +81,23 @@ async function buildPageJit({ pageId, pageRegistry, context, directories, logger
       const pagePath = path.join(buildContext.directories.build, 'pages', pageId, `${pageId}.json`);
       try {
         const content = await fs.promises.readFile(pagePath, 'utf8');
-        return serializer.deserialize(JSON.parse(content));
+        const page = serializer.deserialize(JSON.parse(content));
+
+        // Detect icons in the pre-built page that aren't in the static bundle.
+        // Skeleton build writes the page artifact but doesn't trigger a Next.js rebuild,
+        // so newly discovered icons need to be loaded dynamically.
+        if (buildContext.iconImports) {
+          const missingIcons = detectMissingIcons({ page, iconImports: buildContext.iconImports });
+          if (missingIcons.length > 0) {
+            await updateIconImportsJit({
+              newIcons: missingIcons,
+              iconImports: buildContext.iconImports,
+              context: buildContext,
+            });
+          }
+        }
+
+        return page;
       } catch (err) {
         if (err.code !== 'ENOENT') throw err;
       }
