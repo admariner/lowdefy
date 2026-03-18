@@ -20,9 +20,10 @@ import path from 'path';
 // Matches the JSON data argument inside GenIcon({...})(props) in react-icons source.
 // react-icons icons are generated functions of the form:
 //   function IconName(props) { return GenIcon({...})(props); }
-const genIconDataRegex = /GenIcon\(([\s\S]*?)\)\s*\(props\)/;
+// Tolerates optional whitespace around GenIcon call and props argument.
+const genIconDataRegex = /GenIcon\s*\(([\s\S]*?)\)\s*\(\s*props\s*\)/;
 
-function extractIconData({ icons, directories }) {
+function extractIconData({ icons, directories, logger }) {
   const serverRequire = createRequire(path.join(directories.server, 'package.json'));
   const iconDataMap = {};
   const moduleCache = {};
@@ -32,6 +33,9 @@ function extractIconData({ icons, directories }) {
       try {
         moduleCache[pkg] = serverRequire(pkg);
       } catch {
+        if (logger) {
+          logger.warn(`Could not load icon package "${pkg}" for dynamic icon extraction.`);
+        }
         continue;
       }
     }
@@ -43,8 +47,12 @@ function extractIconData({ icons, directories }) {
       try {
         iconDataMap[icon] = JSON.parse(match[1]);
       } catch {
-        // Skip icons with unparseable data
+        if (logger) {
+          logger.warn(`Could not parse icon data for "${icon}" from "${pkg}".`);
+        }
       }
+    } else if (logger) {
+      logger.warn(`Could not extract icon data for "${icon}" from "${pkg}". The icon will show as a fallback.`);
     }
   }
   return iconDataMap;

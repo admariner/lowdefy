@@ -47,6 +47,18 @@ import writePageJit from './writePageJit.js';
 validateOperatorsDynamic({ operators });
 const dynamicIdentifiers = collectDynamicIdentifiers({ operators });
 
+async function updateDynamicIcons({ page, context }) {
+  if (!context.iconImports) return;
+  const missingIcons = detectMissingIcons({ page, iconImports: context.iconImports });
+  if (missingIcons.length > 0) {
+    await updateIconImportsJit({
+      newIcons: missingIcons,
+      iconImports: context.iconImports,
+      context,
+    });
+  }
+}
+
 async function buildPageJit({ pageId, pageRegistry, context, directories, logger }) {
   // Use provided context or create a minimal one for JIT builds
   const buildContext =
@@ -83,20 +95,7 @@ async function buildPageJit({ pageId, pageRegistry, context, directories, logger
         const content = await fs.promises.readFile(pagePath, 'utf8');
         const page = serializer.deserialize(JSON.parse(content));
 
-        // Detect icons in the pre-built page that aren't in the static bundle.
-        // Skeleton build writes the page artifact but doesn't trigger a Next.js rebuild,
-        // so newly discovered icons need to be loaded dynamically.
-        if (buildContext.iconImports) {
-          const missingIcons = detectMissingIcons({ page, iconImports: buildContext.iconImports });
-          if (missingIcons.length > 0) {
-            await updateIconImportsJit({
-              newIcons: missingIcons,
-              iconImports: buildContext.iconImports,
-              context: buildContext,
-            });
-          }
-        }
-
+        await updateDynamicIcons({ page, context: buildContext });
         return page;
       } catch (err) {
         if (err.code !== 'ENOENT') throw err;
@@ -229,19 +228,7 @@ async function buildPageJit({ pageId, pageRegistry, context, directories, logger
     // Detect icons in the JIT-resolved page that weren't discovered during skeleton build.
     // Placed after detectMissingPluginPackages so we skip this when packages are being
     // installed (the server restarts and icons will be discovered on the next build).
-    if (buildContext.iconImports) {
-      const missingIcons = detectMissingIcons({
-        page: processed,
-        iconImports: buildContext.iconImports,
-      });
-      if (missingIcons.length > 0) {
-        await updateIconImportsJit({
-          newIcons: missingIcons,
-          iconImports: buildContext.iconImports,
-          context: buildContext,
-        });
-      }
-    }
+    await updateDynamicIcons({ page: processed, context: buildContext });
 
     // Validate link, state, payload, and server-state references
     const pageIds = Object.keys(pageRegistry);
