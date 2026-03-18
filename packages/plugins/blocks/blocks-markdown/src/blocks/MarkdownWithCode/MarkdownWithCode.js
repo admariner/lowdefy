@@ -80,7 +80,10 @@ const MarkdownWithCode = ({ blockId, classNames, properties, styles }) => {
   const { token } = antdTheme.useToken();
   // Ant Design dark algorithm sets colorBgBase to '#000' or '#141414'.
   // Parse the hex value and check if it's below mid-brightness.
-  const bgHex = (token.colorBgBase || '#ffffff').replace('#', '');
+  let bgHex = (token.colorBgBase || '#ffffff').replace('#', '');
+  if (bgHex.length === 3) {
+    bgHex = bgHex[0] + bgHex[0] + bgHex[1] + bgHex[1] + bgHex[2] + bgHex[2];
+  }
   const r = parseInt(bgHex.substring(0, 2) || 'ff', 16);
   const g = parseInt(bgHex.substring(2, 4) || 'ff', 16);
   const b = parseInt(bgHex.substring(4, 6) || 'ff', 16);
