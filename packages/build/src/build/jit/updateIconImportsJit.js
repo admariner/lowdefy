@@ -14,7 +14,8 @@
   limitations under the License.
 */
 
-import writeIconImports from '../writePluginImports/writeIconImports.js';
+import extractIconData from './extractIconData.js';
+import writeIconsDynamic from './writeIconsDynamic.js';
 
 async function updateIconImportsJit({ newIcons, iconImports, context }) {
   for (const { icon, package: pkg } of newIcons) {
@@ -30,7 +31,11 @@ async function updateIconImportsJit({ newIcons, iconImports, context }) {
   }
 
   await context.writeBuildArtifact('iconImports.json', JSON.stringify(iconImports));
-  await writeIconImports({ components: { imports: { icons: iconImports } }, context });
+
+  // Extract SVG tree data from react-icons and write a self-contained JS module
+  // that the client can fetch at runtime without a Next.js rebuild.
+  const newIconData = extractIconData({ icons: newIcons, directories: context.directories });
+  await writeIconsDynamic({ newIconData, context });
 }
 
 export default updateIconImportsJit;

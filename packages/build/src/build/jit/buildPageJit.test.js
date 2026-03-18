@@ -633,13 +633,15 @@ areas:
 // Note: existing tests above implicitly cover the !iconImports guard path
 // since they do not set context.iconImports.
 
-test('buildPageJit detects missing icons and regenerates icon imports', async () => {
+test('buildPageJit detects missing icons and writes dynamic icon data', async () => {
   const context = createTestContext();
   // Set up iconImports with no IoAddCircle — simulating shallow build that missed it
   context.iconImports = [
     { icons: [], package: 'react-icons/ai' },
     { icons: [], package: 'react-icons/io5' },
   ];
+  context.dynamicIconData = {};
+  context.directories.server = '/test/server';
 
   mockFiles([
     {
@@ -682,17 +684,17 @@ blocks:
   const io5Entry = context.iconImports.find((e) => e.package === 'react-icons/io5');
   expect(io5Entry.icons).toContain('IoAddCircle');
 
-  // plugins/icons.js should have been written
-  const iconJsCall = mockWriteBuildArtifact.mock.calls.find(
-    (c) => c[0] === 'plugins/icons.js'
+  // plugins/iconsDynamic.js should have been written
+  const iconDynamicCall = mockWriteBuildArtifact.mock.calls.find(
+    (c) => c[0] === 'plugins/iconsDynamic.js'
   );
-  expect(iconJsCall).toBeDefined();
-  expect(iconJsCall[1]).toContain('IoAddCircle');
+  expect(iconDynamicCall).toBeDefined();
 });
 
-test('buildPageJit does not regenerate icon imports when all icons already present', async () => {
+test('buildPageJit does not write dynamic icons when all icons already present', async () => {
   const context = createTestContext();
   context.iconImports = [{ icons: ['AiFillHome'], package: 'react-icons/ai' }];
+  context.dynamicIconData = {};
 
   mockFiles([
     {
@@ -729,9 +731,9 @@ blocks:
     context,
   });
 
-  // plugins/icons.js should NOT have been written
-  const iconJsCall = mockWriteBuildArtifact.mock.calls.find(
-    (c) => c[0] === 'plugins/icons.js'
+  // plugins/iconsDynamic.js should NOT have been written
+  const iconDynamicCall = mockWriteBuildArtifact.mock.calls.find(
+    (c) => c[0] === 'plugins/iconsDynamic.js'
   );
-  expect(iconJsCall).toBeUndefined();
+  expect(iconDynamicCall).toBeUndefined();
 });

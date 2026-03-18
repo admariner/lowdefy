@@ -34,6 +34,12 @@ let cachedRegistry = null;
 let cachedBuildContext = null;
 let lastInvalidationMtime = null;
 
+// Frozen snapshot of icon imports from the initial build (what's actually in the Next.js bundle).
+// Module-level so it persists across context resets (skeleton rebuilds update iconImports.json
+// with newly discovered icons, but those aren't in the bundle until the next nextBuild).
+// Only resets when the server process restarts (which happens after every nextBuild).
+let bundledIconImports = null;
+
 function readJsonFile(filePath) {
   try {
     const content = fs.readFileSync(filePath, 'utf8');
@@ -112,9 +118,18 @@ function getBuildContext(buildDirectory, configDirectory) {
     readJsonFile(path.join(buildDirectory, 'installedPluginPackages.json')) ?? [];
   cachedBuildContext.installedPluginPackages = new Set(installedPluginPackages);
 
-  // Load icon imports snapshot from skeleton build for JIT icon detection
-  cachedBuildContext.iconImports =
-    readJsonFile(path.join(buildDirectory, 'iconImports.json')) ?? [];
+  // Use the frozen icon imports from the initial build for JIT detection.
+  // This represents what's actually in the Next.js bundle — not what shallowBuild
+  // discovers on subsequent rebuilds (those icons aren't bundled yet).
+  // bundledIconImports is module-level and only resets on server restart (after nextBuild).
+  if (!bundledIconImports) {
+    bundledIconImports = readJsonFile(path.join(buildDirectory, 'iconImports.json')) ?? [];
+  }
+  cachedBuildContext.iconImports = bundledIconImports;
+
+  // Accumulator for dynamically extracted icon SVG data written to plugins/iconsDynamic.js.
+  // Reset on skeleton rebuild (cachedBuildContext = null) — JIT re-discovers as needed.
+  cachedBuildContext.dynamicIconData = {};
 
   // Advance makeId past all skeleton IDs to prevent collisions with JIT builds
   const idCounter = readJsonFile(path.join(buildDirectory, 'idCounter.json'));
