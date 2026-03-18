@@ -14,28 +14,18 @@
   limitations under the License.
 */
 
-export default {
-  actions: [
-    'CallAPI',
-    'CallMethod',
-    'CopyToClipboard',
-    'DisplayMessage',
-    'Fetch',
-    'GeolocationCurrentPosition',
-    'Link',
-    'Login',
-    'Logout',
-    'Request',
-    'Reset',
-    'ResetValidation',
-    'ScrollTo',
-    'SetDarkMode',
-    'SetFocus',
-    'SetGlobal',
-    'SetState',
-    'Throw',
-    'UpdateSession',
-    'Validate',
-    'Wait',
-  ],
-};
+function SetDarkMode({ globals, methods, params }) {
+  const { window } = globals;
+  const currentDarkMode = window.localStorage?.getItem('lowdefy_darkMode') === 'true';
+  const newDarkMode = params?.darkMode ?? !currentDarkMode;
+
+  window.localStorage?.setItem('lowdefy_darkMode', String(newDarkMode));
+
+  // Trigger root ConfigProvider re-render
+  window.__lowdefy_setDarkMode?.(newDarkMode);
+
+  // Trigger engine update cascade so _media: darkMode re-evaluates in all blocks
+  methods.setGlobal({});
+}
+
+export default SetDarkMode;
