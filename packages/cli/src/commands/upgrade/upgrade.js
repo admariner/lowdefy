@@ -56,9 +56,18 @@ async function upgrade({ context }) {
 
   const targetIsPrerelease = semver.prerelease(targetVersion) !== null;
 
-  if (!targetIsPrerelease && semver.gte(currentVersion, targetVersion)) {
+  if (!targetIsPrerelease && semver.gt(currentVersion, targetVersion)) {
     logger.info(`Already up to date (${currentVersion}).`);
     return;
+  }
+
+  if (!targetIsPrerelease && semver.eq(currentVersion, targetVersion)) {
+    logger.info(`Version ${currentVersion} is already set in lowdefy.yaml.`);
+    const runCodemods = await askQuestion('Still run codemods for this version? [y/N] ');
+    if (!runCodemods || runCodemods.toLowerCase() !== 'y') {
+      logger.info('Upgrade skipped.');
+      return;
+    }
   }
 
   if (targetIsPrerelease) {
