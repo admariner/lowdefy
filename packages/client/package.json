@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "6.1.0",
+    "antd": "6.3.1",
     "@lowdefy/block-utils": "4.7.0",
     "@lowdefy/engine": "4.7.0",
     "@lowdefy/errors": "4.7.0",
