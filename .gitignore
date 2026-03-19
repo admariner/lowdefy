@@ -16,6 +16,7 @@
 _server/
 
 packages/servers/*/build/**
+packages/servers/*/lowdefy-build/**
 packages/servers/*/public/**
 packages/servers/*/package.original.json
 
@@ -39,9 +40,11 @@ packages/utils/node-utils/test/copyFile/**
 app/**
 
 packages/docs/public/sitemap.xml
+packages/docs/public/search-index.json
 packages/website/public/sitemap.xml
 
 lerna-debug.log
+log.txt
 
 *.vsix
 

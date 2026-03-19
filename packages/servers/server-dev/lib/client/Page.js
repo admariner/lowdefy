@@ -14,7 +14,7 @@
   limitations under the License.
 */
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { GenIcon } from 'react-icons/lib';
 import Client from '@lowdefy/client';
 
@@ -35,6 +35,17 @@ const Page = ({
   types,
 }) => {
   const { data: pageConfig } = usePageConfig(pageId, router.basePath);
+
+  // Push build warnings to ErrorBar via runtime error callback
+  const pushedWarningsRef = useRef(null);
+  useEffect(() => {
+    if (pageConfig?._warnings && pageConfig._warnings !== pushedWarningsRef.current) {
+      pushedWarningsRef.current = pageConfig._warnings;
+      for (const warning of pageConfig._warnings) {
+        lowdefy._runtimeErrorCallback?.(warning);
+      }
+    }
+  }, [pageConfig?._warnings, lowdefy]);
 
   if (!pageConfig) {
     router.replace(`/404`);

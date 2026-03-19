@@ -19,25 +19,53 @@ import path from 'node:path';
 
 // Pin react/react-dom to the target dir's copies so linked @lowdefy/*
 // packages share a single instance (prevents "invalid hook call" errors).
+//
+// Two strategies depending on the next.config.js shape:
+// - Webpack configs: inject alias into the webpack callback
+// - Turbopack configs: inject resolveAlias into the turbopack config
 function patchNextConfig({ targetDir }) {
   const nextConfigPath = path.join(targetDir, 'next.config.js');
   const content = fs.readFileSync(nextConfigPath, 'utf8');
-  fs.writeFileSync(
-    nextConfigPath,
-    content.replace(
-      'webpack: (config, { isServer }) => {',
-      [
+
+  // Strategy 1: Webpack-based config (production server)
+  if (content.includes('webpack: (config, { isServer }) => {')) {
+    fs.writeFileSync(
+      nextConfigPath,
+      content.replace(
         'webpack: (config, { isServer }) => {',
-        `    const reactDir = require('path').dirname(require.resolve('react/package.json'));`,
-        `    const reactDomDir = require('path').dirname(require.resolve('react-dom/package.json'));`,
-        `    config.resolve.alias = {`,
-        `      ...config.resolve.alias,`,
-        `      react: reactDir,`,
-        `      'react-dom': reactDomDir,`,
-        `    };`,
-      ].join('\n')
-    )
-  );
+        [
+          'webpack: (config, { isServer }) => {',
+          `    const reactDir = require('path').dirname(require.resolve('react/package.json'));`,
+          `    const reactDomDir = require('path').dirname(require.resolve('react-dom/package.json'));`,
+          `    config.resolve.alias = {`,
+          `      ...config.resolve.alias,`,
+          `      react: reactDir,`,
+          `      'react-dom': reactDomDir,`,
+          `    };`,
+        ].join('\n')
+      )
+    );
+    return;
+  }
+
+  // Strategy 2: Turbopack-based config (dev server)
+  if (content.includes('turbopack: {},')) {
+    fs.writeFileSync(
+      nextConfigPath,
+      content.replace(
+        'turbopack: {},',
+        [
+          `turbopack: {`,
+          `    resolveAlias: {`,
+          `      react: require('path').dirname(require.resolve('react/package.json')),`,
+          `      'react-dom': require('path').dirname(require.resolve('react-dom/package.json')),`,
+          `    },`,
+          `  },`,
+        ].join('\n')
+      )
+    );
+    return;
+  }
 }
 
 export default patchNextConfig;
