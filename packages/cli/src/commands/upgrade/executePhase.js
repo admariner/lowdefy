@@ -27,7 +27,10 @@ function updateLowdefyVersion(configDirectory, version) {
 
   let content = fs.readFileSync(yamlPath, 'utf8');
   // Match both quoted and unquoted version values
-  content = content.replace(/^(lowdefy:\s*)(['"]?)[\d.]+(?:-[\w.]+)?(\2)\s*$/m, `$1$2${version}$3`);
+  content = content.replace(
+    /^(lowdefy:\s*)(['"]?)[\d.]+(?:-[\w.-]+)?(\2)\s*$/m,
+    `$1$2${version}$3`
+  );
   fs.writeFileSync(yamlPath, content);
 }
 
@@ -87,3 +90,4 @@ async function executePhase({ phase, targetDirectory, codemodsDirectory, logger 
 }
 
 export default executePhase;
+export { updateLowdefyVersion };
