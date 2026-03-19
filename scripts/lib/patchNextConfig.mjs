@@ -17,32 +17,36 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-// Pin react/react-dom to the target dir's copies so linked @lowdefy/*
-// packages share a single instance (prevents "invalid hook call" errors).
+// Patch next.config.js for the local monorepo dev environment.
+//
+// The isolated _server/ copy has its own pnpm-workspace.yaml and lockfile.
+// Next.js 16 detects multiple lockfiles and warns about the workspace root.
+// Setting outputFileTracingRoot tells Next.js where the real root is.
 //
 // Turbopack's resolveAlias does not handle absolute paths (it prepends "./"),
 // so we resolve paths relative to __dirname at runtime in next.config.js.
 function patchNextConfig({ targetDir }) {
   const nextConfigPath = path.join(targetDir, 'next.config.js');
-  const content = fs.readFileSync(nextConfigPath, 'utf8');
+  let content = fs.readFileSync(nextConfigPath, 'utf8');
 
+  // Silence the "multiple lockfiles" warning by telling Next.js the
+  // monorepo root is the output file tracing root.
   if (content.includes('turbopack: {},')) {
-    fs.writeFileSync(
-      nextConfigPath,
-      content.replace(
-        'turbopack: {},',
-        [
-          `turbopack: {`,
-          `    resolveAlias: {`,
-          `      react: './' + require('path').relative(__dirname, require('path').dirname(require.resolve('react/package.json'))),`,
-          `      'react-dom': './' + require('path').relative(__dirname, require('path').dirname(require.resolve('react-dom/package.json'))),`,
-          `    },`,
-          `  },`,
-        ].join('\n')
-      )
+    content = content.replace(
+      'turbopack: {},',
+      [
+        `outputFileTracingRoot: require('path').resolve(__dirname, '../..'),`,
+        `  turbopack: {`,
+        `    resolveAlias: {`,
+        `      react: './' + require('path').relative(__dirname, require('path').dirname(require.resolve('react/package.json'))),`,
+        `      'react-dom': './' + require('path').relative(__dirname, require('path').dirname(require.resolve('react-dom/package.json'))),`,
+        `    },`,
+        `  },`,
+      ].join('\n')
     );
-    return;
   }
+
+  fs.writeFileSync(nextConfigPath, content);
 }
 
 export default patchNextConfig;
