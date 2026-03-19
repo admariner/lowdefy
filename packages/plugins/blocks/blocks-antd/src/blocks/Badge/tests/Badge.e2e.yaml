@@ -72,7 +72,6 @@ blocks:
     type: Badge
     properties:
       dot: true
-      count: 1
     slots:
       content:
         blocks:

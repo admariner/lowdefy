@@ -32,8 +32,7 @@ test.describe('Divider Block', () => {
 
   test('renders basic divider', async ({ page }) => {
     const divider = getDivider(page, 'divider_basic');
-    // antd v6: plain divider renders as a rail with zero visible height
-    await expect(divider).toBeAttached();
+    await expect(divider).toBeVisible();
     await expect(divider).toHaveClass(/ant-divider/);
   });
 

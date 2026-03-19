@@ -482,7 +482,6 @@
       type: Layout
       style:
         minHeight: 450px
-      properties:
       blocks:
         - id: layout_docs_header
           type: Header
