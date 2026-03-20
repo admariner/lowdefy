@@ -15,10 +15,10 @@
 */
 
 import React, { useState, useEffect } from 'react';
+import { ConfigProvider } from 'antd';
 import { get, mergeObjects, type } from '@lowdefy/helpers';
 import { withBlockDefaults } from '@lowdefy/block-utils';
 
-import Affix from '../Affix/Affix.js';
 import Breadcrumb from '../Breadcrumb/Breadcrumb.js';
 import Button from '../Button/Button.js';
 import Content from '../Content/Content.js';
@@ -63,6 +63,10 @@ const PageSidebarLayout = ({
   properties,
   styles = {},
 }) => {
+  const baseTheme = properties.theme ?? 'light';
+  const siderTheme = get(properties, 'sider.theme') ?? baseTheme;
+  const headerTheme = get(properties, 'header.theme') ?? baseTheme;
+  const mobileHeaderTheme = get(properties, 'mobileHeader.theme') ?? baseTheme;
   const [openSiderState, setSiderOpen] = useState(() => getInitialSiderState({ properties }));
   useEffect(() => {
     methods.registerMethod('toggleSiderOpen', () => {
@@ -77,7 +81,7 @@ const PageSidebarLayout = ({
       writeSiderState({ properties, open });
     });
   });
-  return (
+  const layout = (
     <Layout
       blockId={blockId}
       components={{ Icon, Link, ShortcutBadge }}
@@ -96,7 +100,7 @@ const PageSidebarLayout = ({
               methods={methods}
               properties={mergeObjects([
                 {
-                  theme: get(properties, 'sider.theme') ?? 'light',
+                  theme: siderTheme,
                 },
                 properties.sider,
               ])}
@@ -130,9 +134,7 @@ const PageSidebarLayout = ({
                           type: 'link',
                           block: true,
                           icon: {
-                            name: openSiderState
-                              ? 'AiOutlineMenuFold'
-                              : 'AiOutlineMenuUnfold',
+                            name: openSiderState ? 'AiOutlineMenuFold' : 'AiOutlineMenuUnfold',
                           },
                           ...(properties.toggleSiderButton ?? {}),
                         }}
@@ -158,7 +160,7 @@ const PageSidebarLayout = ({
                       properties={mergeObjects([
                         {
                           mode: 'inline',
-                          theme: get(properties, 'sider.theme') ?? 'light',
+                          theme: siderTheme,
                           collapsed: !openSiderState,
                         },
                         properties.menu,
@@ -184,46 +186,29 @@ const PageSidebarLayout = ({
                       <div style={{ flex: '0 0 auto' }}>{content.siderClosed()}</div>
                     )}
                     <div style={{ flex: '1 0 auto' }} />
-                    <Affix
-                      blockId={`${blockId}_logo_affix`}
-                      components={{ Icon, Link, ShortcutBadge }}
-                      events={events}
-                      properties={{ offsetBottom: 0 }}
-                      methods={methods}
-                      rename={{
-                        events: {
-                          onChange: 'onChangeLogoAffix',
-                        },
+                    <div
+                      style={{
+                        position: 'sticky',
+                        bottom: 0,
+                        background: siderTheme === 'dark' ? '#001529' : 'white',
+                        padding: 8,
                       }}
-                      content={{
-                        content: () => (
-                          <div
-                            style={{
-                              background:
-                                get(properties, 'sider.theme') === 'dark'
-                                  ? '#30393e'
-                                  : 'white',
-                              padding: 8,
-                            }}
-                          >
-                            <Link home={true}>
-                              <img
-                                src={
-                                  properties.logo?.srcMobile ??
-                                  properties.logo?.src ??
-                                  `${basePath}/logo-square-${
-                                    get(properties, 'sider.theme') ?? 'light'
-                                  }-theme.png`
-                                }
-                                alt={properties.logo?.alt ?? 'Lowdefy'}
-                                className={classNames.logo}
-                                style={mergeObjects([properties.logo?.style, styles.logo])}
-                              />
-                            </Link>
-                          </div>
-                        ),
-                      }}
-                    />
+                    >
+                      <Link home={true}>
+                        <img
+                          src={
+                            openSiderState
+                              ? properties.logo?.src ?? `${basePath}/logo-${siderTheme}-theme.png`
+                              : properties.logo?.srcMobile ??
+                                properties.logo?.src ??
+                                `${basePath}/logo-square-${siderTheme}-theme.png`
+                          }
+                          alt={properties.logo?.alt ?? 'Lowdefy'}
+                          className={classNames.logo}
+                          style={mergeObjects([properties.logo?.style, styles.logo])}
+                        />
+                      </Link>
+                    </div>
                   </div>
                 ),
               }}
@@ -242,11 +227,10 @@ const PageSidebarLayout = ({
                         element: `${classNames.mobileHeader ?? 'hidden max-lg:flex'} hide-on-print`,
                       }}
                       events={events}
-                      properties={properties.header ?? {}}
+                      properties={{ theme: mobileHeaderTheme }}
                       styles={{
                         element: mergeObjects([
                           {
-                            display: 'flex',
                             alignItems: 'center',
                           },
                           styles.mobileHeader,
@@ -266,9 +250,7 @@ const PageSidebarLayout = ({
                                 src={
                                   properties.logo?.srcMobile ??
                                   properties.logo?.src ??
-                                  `${basePath}/logo-square-${
-                                    get(properties, 'header.theme') ?? 'dark'
-                                  }-theme.png`
+                                  `${basePath}/logo-square-${mobileHeaderTheme}-theme.png`
                                 }
                                 alt={properties.logo?.alt ?? 'Lowdefy'}
                                 className={classNames.logo}
@@ -293,7 +275,7 @@ const PageSidebarLayout = ({
                               properties={mergeObjects([
                                 {
                                   mode: 'inline',
-                                  theme: get(properties, 'sider.theme') ?? 'light',
+                                  theme: siderTheme,
                                   logo: properties.logo,
                                   drawer: { width: '100%', placement: 'right' },
                                 },
@@ -327,7 +309,7 @@ const PageSidebarLayout = ({
                           element: `${classNames.header ?? ''} hide-on-print`,
                         }}
                         events={events}
-                        properties={properties.header ?? {}}
+                        properties={{ ...properties.header, theme: headerTheme }}
                         styles={{
                           element: mergeObjects([
                             {
@@ -383,10 +365,7 @@ const PageSidebarLayout = ({
                                 methods={methods}
                                 properties={properties.breadcrumb}
                                 styles={{
-                                  element: mergeObjects([
-                                    { margin: '16px 0' },
-                                    styles.breadcrumb,
-                                  ]),
+                                  element: mergeObjects([{ margin: '16px 0' }, styles.breadcrumb]),
                                 }}
                                 rename={{
                                   events: {
@@ -426,6 +405,19 @@ const PageSidebarLayout = ({
       }}
     />
   );
+  return layout;
 };
 
-export default withBlockDefaults(PageSidebarLayout);
+function PageSidebarLayoutWithTheme(props) {
+  const { theme, ...restProperties } = props.properties;
+  if (!type.isObject(theme)) {
+    return <PageSidebarLayout {...props} />;
+  }
+  return (
+    <ConfigProvider theme={{ token: theme }}>
+      <PageSidebarLayout {...props} properties={restProperties} />
+    </ConfigProvider>
+  );
+}
+
+export default withBlockDefaults(PageSidebarLayoutWithTheme);

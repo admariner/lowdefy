@@ -22,6 +22,14 @@ import Button from '../Button/Button.js';
 import Drawer from '../Drawer/Drawer.js';
 import Menu from '../Menu/Menu.js';
 
+const darkDrawerTheme = {
+  colorBgElevated: '#001529',
+  colorText: '#ffffffd9',
+  colorTextHeading: '#ffffffd9',
+  colorIcon: '#ffffffd9',
+  colorIconHover: '#ffffff',
+};
+
 const MobileMenu = ({
   basePath,
   blockId,
@@ -76,6 +84,7 @@ const MobileMenu = ({
           {
             bodyStyle: { padding: '3.1em 0 0 0' },
           },
+          properties.theme === 'dark' ? { theme: darkDrawerTheme } : {},
           properties.drawer,
         ])}
         rename={{

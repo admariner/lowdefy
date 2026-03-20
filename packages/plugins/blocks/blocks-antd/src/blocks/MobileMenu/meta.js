@@ -15,7 +15,7 @@
 */
 
 export default {
-  category: 'display',
+  category: 'container',
   icons: ['AiOutlineMenuUnfold', 'AiOutlineMenuFold'],
   valueType: null,
   slots: ['drawerContent', 'drawerFooter'],

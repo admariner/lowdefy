@@ -60,6 +60,12 @@ export default {
         type: 'string',
         description: 'Page title. Accepted for compatibility.',
       },
+      theme: {
+        type: ['string', 'object'],
+        default: 'light',
+        description:
+          "As a string ('light' or 'dark'), sets the base theme for sider, menu, header, and mobile header. Individual component themes (sider.theme, header.theme, mobileHeader.theme) override this value. As an object, applies Ant Design design token overrides to all child components.",
+      },
       logo: {
         type: 'object',
         description: 'Logo settings.',
@@ -164,6 +170,19 @@ export default {
             docs: {
               displayType: 'yaml',
             },
+          },
+        },
+      },
+      mobileHeader: {
+        type: 'object',
+        description: 'Mobile header properties.',
+        additionalProperties: false,
+        properties: {
+          theme: {
+            type: 'string',
+            enum: ['light', 'dark'],
+            default: 'light',
+            description: 'Mobile header theme color.',
           },
         },
       },
@@ -287,14 +306,6 @@ export default {
       menuMd: {
         type: 'object',
         description: 'Mobile menu properties. Overwrites menu properties on mobile screen sizes.',
-        docs: {
-          displayType: 'yaml',
-        },
-      },
-      theme: {
-        type: 'object',
-        description:
-          'Antd design token overrides for this block. See <a href="https://ant.design/components/overview#design-token">antd design tokens</a>.',
         docs: {
           displayType: 'yaml',
         },

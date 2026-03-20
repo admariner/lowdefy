@@ -18,8 +18,8 @@
     - id: psl_basic
       type: PageSidebarLayout
       properties:
+        siderStorageKey: psl_basic
         sider:
-          theme: light
           initialCollapsed: false
           width: 220
         menu:
@@ -43,20 +43,20 @@
         - id: psl_basic_content
           type: Paragraph
           properties:
-            content: PageSidebarLayout provides a full-page layout with a full-height sidebar. The sider spans the entire viewport height with the logo affixed at the bottom. On mobile screens, a hamburger menu with a full-width drawer replaces the sider.
+            content: PageSidebarLayout provides a full-page layout with a full-height sidebar. The sider spans the entire viewport height with the logo at the bottom. On mobile screens, a hamburger menu with a full-width drawer replaces the sider.
 
-- title: Dark Sider Theme
+- title: Dark Color Scheme
   fullWidth: true
   blocks:
     - id: psl_dark
       type: PageSidebarLayout
       properties:
+        siderStorageKey: psl_dark
+        theme: dark
         sider:
-          theme: dark
           initialCollapsed: false
           width: 220
         menu:
-          theme: dark
           links:
             - id: psl_dark_dash
               type: MenuLink
@@ -77,19 +77,17 @@
         - id: psl_dark_content
           type: Paragraph
           properties:
-            content: Dark theme sider with matching menu theme. The toggle button and logo affix background automatically adjust to the dark color scheme.
+            content: Setting colorScheme to dark applies the dark theme to all components — sider, menu, headers, mobile drawer, toggle button, and logo background all adjust automatically.
 
-- title: Light Sider Theme
+- title: Light Color Scheme
   fullWidth: true
   blocks:
     - id: psl_light
       type: PageSidebarLayout
       properties:
-        sider:
-          theme: light
-          initialCollapsed: false
+        siderStorageKey: psl_light
+        theme: light
         menu:
-          theme: light
           links:
             - id: psl_light_home
               type: MenuLink
@@ -105,7 +103,49 @@
         - id: psl_light_content
           type: Paragraph
           properties:
-            content: Explicit light theme sider. Light is the default theme when not specified.
+            content: Explicit light color scheme. Light is the default when colorScheme is not specified.
+
+- title: Dark Sider with Light Header
+  fullWidth: true
+  blocks:
+    - id: psl_mixed
+      type: PageSidebarLayout
+      properties:
+        siderStorageKey: psl_mixed
+        theme: dark
+        header:
+          theme: light
+        sider:
+          width: 220
+        menu:
+          links:
+            - id: psl_mixed_dash
+              type: MenuLink
+              properties:
+                title: Dashboard
+                icon: AiOutlineDashboard
+            - id: psl_mixed_users
+              type: MenuLink
+              properties:
+                title: Users
+                icon: AiOutlineUser
+      slots:
+        header:
+          blocks:
+            - id: psl_mixed_header_btn
+              type: Button
+              layout:
+                flex: 0 0 auto
+              properties:
+                title: Action
+                color: primary
+                variant: solid
+                size: small
+      blocks:
+        - id: psl_mixed_content
+          type: Paragraph
+          properties:
+            content: colorScheme sets the base to dark, but header.theme overrides it to light. Individual component themes always take precedence over the base colorScheme.
 
 - title: Menu with Nested Groups
   fullWidth: true
@@ -113,11 +153,11 @@
     - id: psl_nested
       type: PageSidebarLayout
       properties:
+        siderStorageKey: psl_nested
+        theme: dark
         sider:
-          theme: dark
           width: 240
         menu:
-          theme: dark
           defaultOpenKeys:
             - psl_nested_admin
           links:
@@ -166,8 +206,8 @@
     - id: psl_collapsed
       type: PageSidebarLayout
       properties:
+        siderStorageKey: psl_collapsed
         sider:
-          theme: light
           initialCollapsed: true
         menu:
           links:
@@ -193,8 +233,7 @@
     - id: psl_breadcrumb
       type: PageSidebarLayout
       properties:
-        sider:
-          theme: light
+        siderStorageKey: psl_breadcrumb
         breadcrumb:
           separator: /
           list:
@@ -220,14 +259,14 @@
     - id: psl_header
       type: PageSidebarLayout
       properties:
+        siderStorageKey: psl_header
+        theme: dark
         sider:
-          theme: dark
           width: 220
         header:
           contentStyle:
             justifyContent: flex-end
         menu:
-          theme: dark
           links:
             - id: psl_header_dash
               type: MenuLink
@@ -271,7 +310,7 @@
         - id: psl_header_content
           type: Paragraph
           properties:
-            content: Optional desktop header with action buttons. The header sits inside the content area, not above the sider.
+            content: Optional desktop header with action buttons. The header sits inside the content area, not above the sider. The dark colorScheme applies to the header automatically.
 
 - title: With Footer
   fullWidth: true
@@ -279,8 +318,7 @@
     - id: psl_footer
       type: PageSidebarLayout
       properties:
-        sider:
-          theme: light
+        siderStorageKey: psl_footer
         footer:
           style:
             textAlign: center
@@ -315,11 +353,11 @@
     - id: psl_width
       type: PageSidebarLayout
       properties:
+        siderStorageKey: psl_width
+        theme: dark
         sider:
-          theme: dark
           width: 300
         menu:
-          theme: dark
           links:
             - id: psl_width_dash
               type: MenuLink
@@ -338,8 +376,8 @@
     - id: psl_cw
       type: PageSidebarLayout
       properties:
+        siderStorageKey: psl_cw
         sider:
-          theme: light
           initialCollapsed: true
           collapsedWidth: 0
         menu:
@@ -361,8 +399,8 @@
     - id: psl_no_toggle
       type: PageSidebarLayout
       properties:
+        siderStorageKey: psl_no_toggle
         sider:
-          theme: light
           hideToggleButton: true
         menu:
           links:
@@ -383,14 +421,15 @@
     - id: psl_logo
       type: PageSidebarLayout
       properties:
-        sider:
-          theme: dark
+        siderStorageKey: psl_logo
+        theme: dark
         logo:
+          src: /logo.png
+          srcMobile: /logo-square.png
           alt: Custom Logo
           style:
             width: 80
         menu:
-          theme: dark
           links:
             - id: psl_logo_dash
               type: MenuLink
@@ -401,7 +440,7 @@
         - id: psl_logo_content
           type: Paragraph
           properties:
-            content: Custom logo with style overrides. The logo appears affixed at the bottom of the sider and in the mobile header.
+            content: Custom logo with style overrides. The full logo (src) shows when the sider is expanded, and the square logo (srcMobile) shows when collapsed. The logo also appears in the mobile header.
 
 - title: Sider Open/Closed Slots
   fullWidth: true
@@ -409,8 +448,7 @@
     - id: psl_slots
       type: PageSidebarLayout
       properties:
-        sider:
-          theme: light
+        siderStorageKey: psl_slots
         menu:
           links:
             - id: psl_slots_dash
@@ -467,8 +505,7 @@
     - id: psl_css
       type: PageSidebarLayout
       properties:
-        sider:
-          theme: light
+        siderStorageKey: psl_css
         menu:
           links:
             - id: psl_css_dash
@@ -493,8 +530,13 @@
     - id: psl_theme
       type: PageSidebarLayout
       properties:
+        siderStorageKey: psl_theme
         sider:
-          theme: light
+          width: 220
+        breadcrumb:
+          list:
+            - Home
+            - Dashboard
         menu:
           links:
             - id: psl_theme_dash
@@ -502,13 +544,37 @@
               properties:
                 title: Dashboard
                 icon: AiOutlineDashboard
+            - id: psl_theme_users
+              type: MenuLink
+              properties:
+                title: Users
+                icon: AiOutlineUser
+            - id: psl_theme_settings
+              type: MenuLink
+              properties:
+                title: Settings
+                icon: AiOutlineSetting
         theme:
-          colorPrimary: '#4f46e5'
+          colorPrimary: '#7c3aed'
+          borderRadius: 8
+          colorBgContainer: '#faf5ff'
+      slots:
+        header:
+          blocks:
+            - id: psl_theme_header_btn
+              type: Button
+              layout:
+                flex: 0 0 auto
+              properties:
+                title: Action
+                color: primary
+                variant: solid
+                size: small
       blocks:
         - id: psl_theme_content
           type: Paragraph
           properties:
-            content: Ant Design theme token overrides applied to the entire layout.
+            content: The theme property applies global Ant Design design tokens to all child components — menu, breadcrumb, buttons, and content all inherit the purple primary color, rounded corners, and tinted background. This is separate from colorScheme which controls the dark/light string theme.
 
 - title: Menu Shortcut Keys
   fullWidth: true
@@ -516,8 +582,7 @@
     - id: psl_shortcuts
       type: PageSidebarLayout
       properties:
-        sider:
-          theme: light
+        siderStorageKey: psl_shortcuts
         menu:
           links:
             - id: psl_sc_dash

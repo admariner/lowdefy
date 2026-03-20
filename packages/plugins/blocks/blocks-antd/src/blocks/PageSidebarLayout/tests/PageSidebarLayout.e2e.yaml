@@ -20,6 +20,8 @@ properties:
     initialCollapsed: false
     collapsible: true
   logo:
+    src: /logo.png
+    srcMobile: /logo-square.png
     alt: Test Logo
   menu:
     links:
