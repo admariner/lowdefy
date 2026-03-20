@@ -43,26 +43,38 @@ function isGitRepo(directory) {
   }
 }
 
-async function executePhase({ phase, targetDirectory, codemodsDirectory, logger }) {
-  logger.info(`\nPhase: Upgrading to v${phase.version} — ${phase.description}`);
+async function executePhase({
+  phase,
+  phaseIndex,
+  totalPhases,
+  targetDirectory,
+  codemodsDirectory,
+  logger,
+}) {
+  const phaseLabel = `[${phaseIndex + 1}/${totalPhases}]`;
+  logger.info(`\n${phaseLabel} Upgrading to v${phase.version} — ${phase.description}`);
 
   const results = [];
+  const totalCodemods = phase.codemods.length;
 
-  for (const codemod of phase.codemods) {
+  for (let j = 0; j < phase.codemods.length; j++) {
+    const codemod = phase.codemods[j];
+    const stepLabel = `${phaseLabel} [${j + 1}/${totalCodemods}]`;
     const label = codemod.description;
 
     if (!codemod.path) {
-      logger.warn(`  ${label} — no path defined, skipping.`);
+      logger.warn(`  ${stepLabel} ${label} — no path defined, skipping.`);
       results.push({ id: codemod.id, status: 'skipped' });
       continue;
     }
 
     const codemodPath = path.join(codemodsDirectory, codemod.path);
 
-    logger.info(`  ${label}`);
+    logger.info(`  ${stepLabel} ${label}`);
     const result = await handlePrompt({
       path: codemodPath,
       codemodId: codemod.id,
+      stepLabel,
       logger,
     });
     results.push({ id: codemod.id, status: result.status });
