@@ -77,7 +77,7 @@
         - id: psl_dark_content
           type: Paragraph
           properties:
-            content: Setting colorScheme to dark applies the dark theme to all components — sider, menu, headers, mobile drawer, toggle button, and logo background all adjust automatically.
+            content: Setting theme to dark applies the dark theme to all components — sider, menu, headers, mobile drawer, toggle button, and logo background all adjust automatically.
 
 - title: Light Color Scheme
   fullWidth: true
@@ -103,7 +103,7 @@
         - id: psl_light_content
           type: Paragraph
           properties:
-            content: Explicit light color scheme. Light is the default when colorScheme is not specified.
+            content: Explicit light theme. Light is the default when theme is not specified.
 
 - title: Dark Sider with Light Header
   fullWidth: true
@@ -145,7 +145,7 @@
         - id: psl_mixed_content
           type: Paragraph
           properties:
-            content: colorScheme sets the base to dark, but header.theme overrides it to light. Individual component themes always take precedence over the base colorScheme.
+            content: theme sets the base to dark, but header.theme overrides it to light. Individual component themes always take precedence over the base theme.
 
 - title: Menu with Nested Groups
   fullWidth: true
@@ -310,7 +310,7 @@
         - id: psl_header_content
           type: Paragraph
           properties:
-            content: Optional desktop header with action buttons. The header sits inside the content area, not above the sider. The dark colorScheme applies to the header automatically.
+            content: Optional desktop header with action buttons. The header sits inside the content area, not above the sider. The dark theme applies to the header automatically.
 
 - title: With Footer
   fullWidth: true
@@ -574,7 +574,7 @@
         - id: psl_theme_content
           type: Paragraph
           properties:
-            content: The theme property applies global Ant Design design tokens to all child components — menu, breadcrumb, buttons, and content all inherit the purple primary color, rounded corners, and tinted background. This is separate from colorScheme which controls the dark/light string theme.
+            content: The theme property as an object applies global Ant Design design tokens to all child components — menu, breadcrumb, buttons, and content all inherit the purple primary color, rounded corners, and tinted background. As a string, theme controls the dark/light color scheme instead.
 
 - title: Menu Shortcut Keys
   fullWidth: true
@@ -608,3 +608,422 @@
           type: Paragraph
           properties:
             content: Menu items with keyboard shortcut badges. Press Cmd/Ctrl+D to activate Dashboard, Cmd/Ctrl+U for Users.
+
+- title: PageSidebarLayout as Admin Dashboard
+  fullWidth: true
+  blocks:
+    - id: psl_admin
+      type: PageSidebarLayout
+      properties:
+        siderStorageKey: psl_admin
+        theme: dark
+        sider:
+          width: 240
+        breadcrumb:
+          list:
+            - Admin
+            - Dashboard
+        header:
+          theme: light
+          contentStyle:
+            justifyContent: flex-end
+        menu:
+          defaultOpenKeys:
+            - psl_admin_users_group
+          links:
+            - id: psl_admin_dash
+              type: MenuLink
+              properties:
+                title: Dashboard
+                icon: AiOutlineDashboard
+            - id: psl_admin_users_group
+              type: MenuGroup
+              properties:
+                title: User Management
+                icon: AiOutlineTeam
+              links:
+                - id: psl_admin_all_users
+                  type: MenuLink
+                  properties:
+                    title: All Users
+                - id: psl_admin_user_roles
+                  type: MenuLink
+                  properties:
+                    title: Roles & Permissions
+            - id: psl_admin_analytics
+              type: MenuLink
+              properties:
+                title: Analytics
+                icon: AiOutlineBarChart
+            - id: psl_admin_settings
+              type: MenuLink
+              properties:
+                title: Settings
+                icon: AiOutlineSetting
+      slots:
+        header:
+          blocks:
+            - id: psl_admin_header_row
+              type: Box
+              layout:
+                gap: 16
+                align: center
+              blocks:
+                - id: psl_admin_notif_btn
+                  type: Button
+                  layout:
+                    flex: 0 0 auto
+                  properties:
+                    icon: AiOutlineBell
+                    hideTitle: true
+                    color: default
+                    variant: text
+                    size: small
+                  events:
+                    onClick:
+                      - id: psl_admin_notif_action
+                        type: DisplayMessage
+                        params:
+                          content: You have 3 new notifications.
+                          status: info
+                - id: psl_admin_avatar
+                  type: Avatar
+                  layout:
+                    flex: 0 0 auto
+                  properties:
+                    icon: AiOutlineUser
+                    size: small
+                    color: '#fff'
+                    backgroundColor: '#1677ff'
+        siderOpen:
+          blocks:
+            - id: psl_admin_sider_open
+              type: Box
+              style:
+                padding: 12px
+              blocks:
+                - id: psl_admin_user_avatar
+                  type: Avatar
+                  properties:
+                    icon: AiOutlineUser
+                    size: 48
+                    color: '#fff'
+                    backgroundColor: '#1677ff'
+                - id: psl_admin_user_name
+                  type: Paragraph
+                  properties:
+                    content: Admin User
+                    style:
+                      margin: 4px 0 0 0
+                      fontSize: 14
+                      color: '#ffffffd9'
+        siderClosed:
+          blocks:
+            - id: psl_admin_sider_closed
+              type: Box
+              style:
+                padding: 8px
+                textAlign: center
+              blocks:
+                - id: psl_admin_user_avatar_sm
+                  type: Avatar
+                  properties:
+                    icon: AiOutlineUser
+                    size: 32
+                    color: '#fff'
+                    backgroundColor: '#1677ff'
+        footer:
+          blocks:
+            - id: psl_admin_footer_text
+              type: Paragraph
+              properties:
+                content: Admin Panel v2.4.1
+                style:
+                  textAlign: center
+                  margin: 0
+                  color: '#999'
+                  fontSize: 12
+      blocks:
+        - id: psl_admin_title
+          type: Title
+          properties:
+            content: Dashboard Overview
+            level: 3
+        - id: psl_admin_stats_row
+          type: Box
+          layout:
+            gap: 16
+          blocks:
+            - id: psl_admin_stat_users
+              type: Card
+              layout:
+                flex: 1 1 0
+              properties:
+                size: small
+              blocks:
+                - id: psl_admin_stat_users_val
+                  type: Statistic
+                  properties:
+                    title: Total Users
+                    value: 2847
+                    prefixIcon: AiOutlineUser
+            - id: psl_admin_stat_revenue
+              type: Card
+              layout:
+                flex: 1 1 0
+              properties:
+                size: small
+              blocks:
+                - id: psl_admin_stat_revenue_val
+                  type: Statistic
+                  properties:
+                    title: Revenue
+                    value: 58420
+                    prefix: $
+            - id: psl_admin_stat_orders
+              type: Card
+              layout:
+                flex: 1 1 0
+              properties:
+                size: small
+              blocks:
+                - id: psl_admin_stat_orders_val
+                  type: Statistic
+                  properties:
+                    title: Orders
+                    value: 384
+
+- title: PageSidebarLayout as Project Management App
+  fullWidth: true
+  blocks:
+    - id: psl_project
+      type: PageSidebarLayout
+      properties:
+        siderStorageKey: psl_project
+        theme: dark
+        sider:
+          width: 250
+        breadcrumb:
+          separator: /
+          list:
+            - Projects
+            - Project Alpha
+            - Tasks
+        content:
+          style:
+            padding: 0 32px 32px 32px
+        menu:
+          links:
+            - id: psl_proj_overview
+              type: MenuLink
+              properties:
+                title: Overview
+                icon: AiOutlineAppstore
+            - id: psl_proj_tasks_link
+              type: MenuLink
+              properties:
+                title: Tasks
+                icon: AiOutlineCheckSquare
+            - id: psl_proj_team_group
+              type: MenuGroup
+              properties:
+                title: Team
+                icon: AiOutlineTeam
+              links:
+                - id: psl_proj_members
+                  type: MenuLink
+                  properties:
+                    title: Members
+                - id: psl_proj_activity
+                  type: MenuLink
+                  properties:
+                    title: Activity Log
+            - id: psl_proj_files
+              type: MenuLink
+              properties:
+                title: Files
+                icon: AiOutlineFile
+            - id: psl_proj_settings_link
+              type: MenuLink
+              properties:
+                title: Project Settings
+                icon: AiOutlineSetting
+      slots:
+        header:
+          blocks:
+            - id: psl_proj_header_row
+              type: Box
+              layout:
+                gap: 12
+                align: center
+              blocks:
+                - id: psl_proj_search_btn
+                  type: Button
+                  layout:
+                    flex: 0 0 auto
+                  properties:
+                    icon: AiOutlineSearch
+                    hideTitle: true
+                    color: default
+                    variant: text
+                    size: small
+                - id: psl_proj_add_btn
+                  type: Button
+                  layout:
+                    flex: 0 0 auto
+                  properties:
+                    title: New Task
+                    icon: AiOutlinePlus
+                    color: primary
+                    variant: solid
+                    size: small
+                  events:
+                    onClick:
+                      - id: psl_proj_add_action
+                        type: DisplayMessage
+                        params:
+                          content: New task dialog would open here.
+                          status: info
+        siderOpen:
+          blocks:
+            - id: psl_proj_sider_progress
+              type: Box
+              style:
+                padding: 12px
+              blocks:
+                - id: psl_proj_progress_label
+                  type: Paragraph
+                  properties:
+                    content: Sprint Progress
+                    style:
+                      margin: 0 0 8px 0
+                      fontSize: 12
+                      color: '#ffffffa6'
+                - id: psl_proj_progress
+                  type: Progress
+                  properties:
+                    percent: 68
+                    size: small
+      blocks:
+        - id: psl_proj_title
+          type: Title
+          properties:
+            content: Project Alpha - Tasks
+            level: 3
+        - id: psl_proj_summary_row
+          type: Box
+          layout:
+            gap: 16
+          blocks:
+            - id: psl_proj_stat_total
+              type: Card
+              layout:
+                flex: 1 1 0
+              properties:
+                size: small
+              blocks:
+                - id: psl_proj_stat_total_val
+                  type: Statistic
+                  properties:
+                    title: Total Tasks
+                    value: 42
+            - id: psl_proj_stat_done
+              type: Card
+              layout:
+                flex: 1 1 0
+              properties:
+                size: small
+              blocks:
+                - id: psl_proj_stat_done_val
+                  type: Statistic
+                  properties:
+                    title: Completed
+                    value: 28
+            - id: psl_proj_stat_open
+              type: Card
+              layout:
+                flex: 1 1 0
+              properties:
+                size: small
+              blocks:
+                - id: psl_proj_stat_open_val
+                  type: Statistic
+                  properties:
+                    title: In Progress
+                    value: 14
+        - id: psl_proj_tasks_card
+          type: Card
+          properties:
+            title: Active Tasks
+          blocks:
+            - id: psl_proj_task_1
+              type: Box
+              layout:
+                gap: 8
+                align: center
+              style:
+                padding: 8px 0
+                borderBottom: 1px solid var(--ant-color-border)
+              blocks:
+                - id: psl_proj_task_1_title
+                  type: Paragraph
+                  layout:
+                    flex: 1 1 0
+                  properties:
+                    content: Implement user authentication flow
+                    style:
+                      margin: 0
+                - id: psl_proj_task_1_tag
+                  type: Tag
+                  layout:
+                    flex: 0 0 auto
+                  properties:
+                    title: High
+                    color: red
+            - id: psl_proj_task_2
+              type: Box
+              layout:
+                gap: 8
+                align: center
+              style:
+                padding: 8px 0
+                borderBottom: 1px solid var(--ant-color-border)
+              blocks:
+                - id: psl_proj_task_2_title
+                  type: Paragraph
+                  layout:
+                    flex: 1 1 0
+                  properties:
+                    content: Design dashboard wireframes
+                    style:
+                      margin: 0
+                - id: psl_proj_task_2_tag
+                  type: Tag
+                  layout:
+                    flex: 0 0 auto
+                  properties:
+                    title: Medium
+                    color: orange
+            - id: psl_proj_task_3
+              type: Box
+              layout:
+                gap: 8
+                align: center
+              style:
+                padding: 8px 0
+              blocks:
+                - id: psl_proj_task_3_title
+                  type: Paragraph
+                  layout:
+                    flex: 1 1 0
+                  properties:
+                    content: Write API documentation
+                    style:
+                      margin: 0
+                - id: psl_proj_task_3_tag
+                  type: Tag
+                  layout:
+                    flex: 0 0 auto
+                  properties:
+                    title: Low
+                    color: green
