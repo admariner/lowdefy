@@ -15,13 +15,14 @@
 id: pagesidebarlayout
 type: PageSidebarLayout
 properties:
+  siderStorageKey: psl_e2e
   sider:
     theme: light
     initialCollapsed: false
     collapsible: true
   logo:
-    src: /logo.png
-    srcMobile: /logo-square.png
+    src: logo-light-theme.png
+    srcMobile: logo-square-light-theme.png
     alt: Test Logo
   menu:
     links:
@@ -79,6 +80,18 @@ slots:
         type: Span
         properties:
           content: Mobile Extra
+  mobileDrawerContent:
+    blocks:
+      - id: mobile_drawer_content
+        type: Span
+        properties:
+          content: Mobile Drawer Content
+  mobileDrawerFooter:
+    blocks:
+      - id: mobile_drawer_footer
+        type: Span
+        properties:
+          content: Mobile Drawer Footer
   content:
     blocks:
       - id: main_content
@@ -165,6 +178,18 @@ slots:
                   - _state: psl_menuitem_clicked
               else: ''
 
+      - id: toggle_sider_display
+        type: Span
+        properties:
+          content:
+            _if:
+              test:
+                _eq:
+                  - _state: psl_toggle_sider_fired
+                  - true
+              then: Toggle sider fired
+              else: ''
+
   footer:
     blocks:
       - id: footer_content
@@ -185,3 +210,8 @@ events:
       params:
         psl_menuitem_clicked:
           _event: key
+  onToggleSider:
+    - id: set_toggle_sider_fired
+      type: SetState
+      params:
+        psl_toggle_sider_fired: true

@@ -19,6 +19,10 @@ import { getBlock, navigateToTestPage } from '@lowdefy/block-dev-e2e';
 
 test.describe('PageSidebarLayout Block', () => {
   test.beforeEach(async ({ page }) => {
+    // Clear localStorage to ensure clean state for each test
+    await page.addInitScript(() => {
+      localStorage.removeItem('lf-psl_e2e-open');
+    });
     await navigateToTestPage(page, 'pagesidebarlayout');
     // Set desktop viewport for most tests
     await page.setViewportSize({ width: 1200, height: 800 });
@@ -76,6 +80,27 @@ test.describe('PageSidebarLayout Block', () => {
   });
 
   // ============================================
+  // LOGO RESPONSIVE TESTS
+  // ============================================
+
+  test('shows full logo when sider is expanded', async ({ page }) => {
+    const logo = page.locator('.ant-layout-sider img[alt="Test Logo"]');
+    await expect(logo).toBeVisible();
+    await expect(logo).toHaveAttribute('src', /logo-light-theme\.png/);
+  });
+
+  test('shows square logo when sider is collapsed', async ({ page }) => {
+    const toggleBtn = getBlock(page, 'toggle_sider_btn').locator('.ant-btn');
+    await toggleBtn.click();
+
+    const sider = page.locator('.ant-layout-sider');
+    await expect(sider).toHaveClass(/ant-layout-sider-collapsed/);
+
+    const logo = page.locator('.ant-layout-sider img[alt="Test Logo"]');
+    await expect(logo).toHaveAttribute('src', /logo-square-light-theme\.png/);
+  });
+
+  // ============================================
   // SIDER OPEN/CLOSED SLOT TESTS
   // ============================================
 
@@ -88,7 +113,6 @@ test.describe('PageSidebarLayout Block', () => {
   });
 
   test('renders siderClosed slot when sider is collapsed', async ({ page }) => {
-    // Collapse the sider
     const toggleBtn = getBlock(page, 'toggle_sider_btn').locator('.ant-btn');
     await toggleBtn.click();
 
@@ -138,13 +162,46 @@ test.describe('PageSidebarLayout Block', () => {
   test('sider can be collapsed via toggle button', async ({ page }) => {
     const sider = page.locator('.ant-layout-sider');
     await expect(sider).toBeVisible();
-
     await expect(sider).not.toHaveClass(/ant-layout-sider-collapsed/);
 
     const toggleBtn = getBlock(page, 'toggle_sider_btn').locator('.ant-btn');
     await toggleBtn.click();
 
     await expect(sider).toHaveClass(/ant-layout-sider-collapsed/);
+  });
+
+  // ============================================
+  // LOCALSTORAGE PERSISTENCE TESTS
+  // ============================================
+
+  test('persists sider state to localStorage', async ({ page }) => {
+    // Collapse the sider
+    const toggleBtn = getBlock(page, 'toggle_sider_btn').locator('.ant-btn');
+    await toggleBtn.click();
+
+    const sider = page.locator('.ant-layout-sider');
+    await expect(sider).toHaveClass(/ant-layout-sider-collapsed/);
+
+    // Check localStorage was written
+    const storedValue = await page.evaluate(() => localStorage.getItem('lf-psl_e2e-open'));
+    expect(storedValue).toBe('false');
+  });
+
+  test('restores sider state from localStorage on reload', async ({ page }) => {
+    // Collapse the sider
+    const toggleBtn = getBlock(page, 'toggle_sider_btn').locator('.ant-btn');
+    await toggleBtn.click();
+
+    const sider = page.locator('.ant-layout-sider');
+    await expect(sider).toHaveClass(/ant-layout-sider-collapsed/);
+
+    // Reload the page
+    await page.reload();
+    await page.setViewportSize({ width: 1200, height: 800 });
+
+    // Sider should still be collapsed
+    const siderAfterReload = page.locator('.ant-layout-sider');
+    await expect(siderAfterReload).toHaveClass(/ant-layout-sider-collapsed/);
   });
 
   // ============================================
@@ -188,11 +245,26 @@ test.describe('PageSidebarLayout Block', () => {
   // MOBILE TESTS
   // ============================================
 
-  test('shows mobile menu on small screens', async ({ page }) => {
+  test('hides sider on small screens', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 667 });
+
+    const sider = page.locator('.ant-layout-sider');
+    await expect(sider).not.toBeVisible();
+  });
+
+  test('shows mobile menu button on small screens', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
 
     const mobileMenuButton = page.locator('#pagesidebarlayout_mobile_menu_button');
     await expect(mobileMenuButton).toBeVisible();
+  });
+
+  test('shows mobile extra content on small screens', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 667 });
+
+    const mobileExtra = getBlock(page, 'mobile_extra_content');
+    await expect(mobileExtra).toBeVisible();
+    await expect(mobileExtra).toContainText('Mobile Extra');
   });
 
   test('opens mobile menu drawer when button clicked', async ({ page }) => {
@@ -207,6 +279,33 @@ test.describe('PageSidebarLayout Block', () => {
     const drawerMenu = page.locator('.ant-drawer .ant-menu');
     await expect(drawerMenu).toBeVisible();
     await expect(drawerMenu).toContainText('Dashboard');
+  });
+
+  test('renders mobileDrawerContent in mobile drawer', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 667 });
+
+    const mobileMenuButton = page.locator('#pagesidebarlayout_mobile_menu_button');
+    await mobileMenuButton.click();
+
+    const drawer = page.locator('.ant-drawer-content-wrapper');
+    await expect(drawer).toBeVisible();
+
+    const drawerContent = getBlock(page, 'mobile_drawer_content');
+    await expect(drawerContent).toContainText('Mobile Drawer Content');
+  });
+
+  test('renders mobileDrawerFooter in mobile drawer', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 667 });
+
+    const mobileMenuButton = page.locator('#pagesidebarlayout_mobile_menu_button');
+    await mobileMenuButton.click();
+
+    const drawer = page.locator('.ant-drawer-content-wrapper');
+    await expect(drawer).toBeVisible();
+
+    const footer = page.locator('.ant-drawer-footer');
+    await expect(footer).toBeVisible();
+    await expect(footer).toContainText('Mobile Drawer Footer');
   });
 
   // ============================================
@@ -233,6 +332,15 @@ test.describe('PageSidebarLayout Block', () => {
 
     const display = getBlock(page, 'menuitem_display');
     await expect(display).toHaveText('Menu clicked: psl_link1');
+  });
+
+  test('onToggleSider event fires when sider toggle button is clicked', async ({ page }) => {
+    // Click the built-in toggle button in the sider
+    const siderToggle = page.locator('#pagesidebarlayout_toggle_sider .ant-btn');
+    await siderToggle.click();
+
+    const display = getBlock(page, 'toggle_sider_display');
+    await expect(display).toHaveText('Toggle sider fired');
   });
 
   // ============================================
