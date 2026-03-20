@@ -103,6 +103,9 @@ const PageSidebarLayout = ({
                   theme: siderTheme,
                 },
                 properties.sider,
+                {
+                  initialCollapsed: !openSiderState,
+                },
               ])}
               classNames={{
                 element: `${classNames.sider ?? 'hidden lg:block'} hide-on-print`,
