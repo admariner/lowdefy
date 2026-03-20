@@ -481,9 +481,6 @@
         - id: Message
           type: MenuLink
           pageId: Message
-        - id: MobileMenu
-          type: MenuLink
-          pageId: MobileMenu
         - id: Notification
           type: MenuLink
           pageId: Notification
@@ -605,6 +602,9 @@
         - id: Masonry
           type: MenuLink
           pageId: Masonry
+        - id: MobileMenu
+          type: MenuLink
+          pageId: MobileMenu
         - id: Modal
           type: MenuLink
           pageId: Modal
