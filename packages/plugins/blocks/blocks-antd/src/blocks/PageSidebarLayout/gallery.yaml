@@ -1,0 +1,545 @@
+# Copyright 2020-2026 Lowdefy, Inc
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+- title: Basic PageSidebarLayout
+  fullWidth: true
+  blocks:
+    - id: psl_basic
+      type: PageSidebarLayout
+      properties:
+        sider:
+          theme: light
+          initialCollapsed: false
+          width: 220
+        menu:
+          links:
+            - id: psl_basic_dash
+              type: MenuLink
+              properties:
+                title: Dashboard
+                icon: AiOutlineDashboard
+            - id: psl_basic_users
+              type: MenuLink
+              properties:
+                title: Users
+                icon: AiOutlineUser
+            - id: psl_basic_settings
+              type: MenuLink
+              properties:
+                title: Settings
+                icon: AiOutlineSetting
+      blocks:
+        - id: psl_basic_content
+          type: Paragraph
+          properties:
+            content: PageSidebarLayout provides a full-page layout with a full-height sidebar. The sider spans the entire viewport height with the logo affixed at the bottom. On mobile screens, a hamburger menu with a full-width drawer replaces the sider.
+
+- title: Dark Sider Theme
+  fullWidth: true
+  blocks:
+    - id: psl_dark
+      type: PageSidebarLayout
+      properties:
+        sider:
+          theme: dark
+          initialCollapsed: false
+          width: 220
+        menu:
+          theme: dark
+          links:
+            - id: psl_dark_dash
+              type: MenuLink
+              properties:
+                title: Dashboard
+                icon: AiOutlineDashboard
+            - id: psl_dark_analytics
+              type: MenuLink
+              properties:
+                title: Analytics
+                icon: AiOutlineBarChart
+            - id: psl_dark_settings
+              type: MenuLink
+              properties:
+                title: Settings
+                icon: AiOutlineSetting
+      blocks:
+        - id: psl_dark_content
+          type: Paragraph
+          properties:
+            content: Dark theme sider with matching menu theme. The toggle button and logo affix background automatically adjust to the dark color scheme.
+
+- title: Light Sider Theme
+  fullWidth: true
+  blocks:
+    - id: psl_light
+      type: PageSidebarLayout
+      properties:
+        sider:
+          theme: light
+          initialCollapsed: false
+        menu:
+          theme: light
+          links:
+            - id: psl_light_home
+              type: MenuLink
+              properties:
+                title: Home
+                icon: AiOutlineHome
+            - id: psl_light_docs
+              type: MenuLink
+              properties:
+                title: Documentation
+                icon: AiOutlineBook
+      blocks:
+        - id: psl_light_content
+          type: Paragraph
+          properties:
+            content: Explicit light theme sider. Light is the default theme when not specified.
+
+- title: Menu with Nested Groups
+  fullWidth: true
+  blocks:
+    - id: psl_nested
+      type: PageSidebarLayout
+      properties:
+        sider:
+          theme: dark
+          width: 240
+        menu:
+          theme: dark
+          defaultOpenKeys:
+            - psl_nested_admin
+          links:
+            - id: psl_nested_dash
+              type: MenuLink
+              properties:
+                title: Dashboard
+                icon: AiOutlineDashboard
+            - id: psl_nested_admin
+              type: MenuGroup
+              properties:
+                title: Administration
+                icon: AiOutlineTeam
+              links:
+                - id: psl_nested_users
+                  type: MenuLink
+                  properties:
+                    title: Users
+                - id: psl_nested_roles
+                  type: MenuLink
+                  properties:
+                    title: Roles & Permissions
+            - id: psl_nested_content_group
+              type: MenuGroup
+              properties:
+                title: Content
+                icon: AiOutlineEdit
+              links:
+                - id: psl_nested_articles
+                  type: MenuLink
+                  properties:
+                    title: Articles
+                - id: psl_nested_categories
+                  type: MenuLink
+                  properties:
+                    title: Categories
+      blocks:
+        - id: psl_nested_content
+          type: Paragraph
+          properties:
+            content: Menu with nested groups and defaultOpenKeys to expand the Administration section on load.
+
+- title: Initially Collapsed
+  fullWidth: true
+  blocks:
+    - id: psl_collapsed
+      type: PageSidebarLayout
+      properties:
+        sider:
+          theme: light
+          initialCollapsed: true
+        menu:
+          links:
+            - id: psl_collapsed_dash
+              type: MenuLink
+              properties:
+                title: Dashboard
+                icon: AiOutlineDashboard
+            - id: psl_collapsed_users
+              type: MenuLink
+              properties:
+                title: Users
+                icon: AiOutlineUser
+      blocks:
+        - id: psl_collapsed_content
+          type: Paragraph
+          properties:
+            content: Sider starts collapsed. Click the toggle button to expand. The collapsed state is persisted in localStorage.
+
+- title: With Breadcrumb
+  fullWidth: true
+  blocks:
+    - id: psl_breadcrumb
+      type: PageSidebarLayout
+      properties:
+        sider:
+          theme: light
+        breadcrumb:
+          separator: /
+          list:
+            - Admin
+            - Dashboard
+            - Overview
+        menu:
+          links:
+            - id: psl_bc_dash
+              type: MenuLink
+              properties:
+                title: Dashboard
+                icon: AiOutlineDashboard
+      blocks:
+        - id: psl_bc_content
+          type: Paragraph
+          properties:
+            content: Breadcrumb navigation appears above the content area.
+
+- title: With Desktop Header
+  fullWidth: true
+  blocks:
+    - id: psl_header
+      type: PageSidebarLayout
+      properties:
+        sider:
+          theme: dark
+          width: 220
+        header:
+          contentStyle:
+            justifyContent: flex-end
+        menu:
+          theme: dark
+          links:
+            - id: psl_header_dash
+              type: MenuLink
+              properties:
+                title: Dashboard
+                icon: AiOutlineDashboard
+            - id: psl_header_settings
+              type: MenuLink
+              properties:
+                title: Settings
+                icon: AiOutlineSetting
+      slots:
+        header:
+          blocks:
+            - id: psl_header_row
+              type: Box
+              layout:
+                gap: 12
+                align: center
+              blocks:
+                - id: psl_header_notif_btn
+                  type: Button
+                  layout:
+                    flex: 0 0 auto
+                  properties:
+                    icon: AiOutlineBell
+                    hideTitle: true
+                    color: default
+                    variant: text
+                    size: small
+                - id: psl_header_avatar
+                  type: Avatar
+                  layout:
+                    flex: 0 0 auto
+                  properties:
+                    icon: AiOutlineUser
+                    size: small
+                    color: '#fff'
+                    backgroundColor: '#1677ff'
+      blocks:
+        - id: psl_header_content
+          type: Paragraph
+          properties:
+            content: Optional desktop header with action buttons. The header sits inside the content area, not above the sider.
+
+- title: With Footer
+  fullWidth: true
+  blocks:
+    - id: psl_footer
+      type: PageSidebarLayout
+      properties:
+        sider:
+          theme: light
+        footer:
+          style:
+            textAlign: center
+        menu:
+          links:
+            - id: psl_footer_dash
+              type: MenuLink
+              properties:
+                title: Dashboard
+                icon: AiOutlineDashboard
+      slots:
+        footer:
+          blocks:
+            - id: psl_footer_text
+              type: Paragraph
+              properties:
+                content: My App v1.0.0 - Powered by Lowdefy
+                style:
+                  textAlign: center
+                  margin: 0
+                  color: '#999'
+                  fontSize: 12
+      blocks:
+        - id: psl_footer_content
+          type: Paragraph
+          properties:
+            content: Footer appears below the content area inside the main layout.
+
+- title: Custom Sider Width
+  fullWidth: true
+  blocks:
+    - id: psl_width
+      type: PageSidebarLayout
+      properties:
+        sider:
+          theme: dark
+          width: 300
+        menu:
+          theme: dark
+          links:
+            - id: psl_width_dash
+              type: MenuLink
+              properties:
+                title: Dashboard
+                icon: AiOutlineDashboard
+      blocks:
+        - id: psl_width_content
+          type: Paragraph
+          properties:
+            content: Sider width set to 300px.
+
+- title: Custom Collapsed Width
+  fullWidth: true
+  blocks:
+    - id: psl_cw
+      type: PageSidebarLayout
+      properties:
+        sider:
+          theme: light
+          initialCollapsed: true
+          collapsedWidth: 0
+        menu:
+          links:
+            - id: psl_cw_dash
+              type: MenuLink
+              properties:
+                title: Dashboard
+                icon: AiOutlineDashboard
+      blocks:
+        - id: psl_cw_content
+          type: Paragraph
+          properties:
+            content: Collapsed width set to 0. The sider disappears completely when collapsed.
+
+- title: Hidden Toggle Button
+  fullWidth: true
+  blocks:
+    - id: psl_no_toggle
+      type: PageSidebarLayout
+      properties:
+        sider:
+          theme: light
+          hideToggleButton: true
+        menu:
+          links:
+            - id: psl_nt_dash
+              type: MenuLink
+              properties:
+                title: Dashboard
+                icon: AiOutlineDashboard
+      blocks:
+        - id: psl_nt_content
+          type: Paragraph
+          properties:
+            content: Toggle button is hidden. Use the toggleSiderOpen or setSiderOpen methods to control the sider programmatically.
+
+- title: Logo Configuration
+  fullWidth: true
+  blocks:
+    - id: psl_logo
+      type: PageSidebarLayout
+      properties:
+        sider:
+          theme: dark
+        logo:
+          alt: Custom Logo
+          style:
+            width: 80
+        menu:
+          theme: dark
+          links:
+            - id: psl_logo_dash
+              type: MenuLink
+              properties:
+                title: Dashboard
+                icon: AiOutlineDashboard
+      blocks:
+        - id: psl_logo_content
+          type: Paragraph
+          properties:
+            content: Custom logo with style overrides. The logo appears affixed at the bottom of the sider and in the mobile header.
+
+- title: Sider Open/Closed Slots
+  fullWidth: true
+  blocks:
+    - id: psl_slots
+      type: PageSidebarLayout
+      properties:
+        sider:
+          theme: light
+        menu:
+          links:
+            - id: psl_slots_dash
+              type: MenuLink
+              properties:
+                title: Dashboard
+                icon: AiOutlineDashboard
+      slots:
+        siderOpen:
+          blocks:
+            - id: psl_slots_open
+              type: Box
+              style:
+                padding: 12px
+              blocks:
+                - id: psl_slots_open_avatar
+                  type: Avatar
+                  properties:
+                    icon: AiOutlineUser
+                    size: 48
+                    color: '#fff'
+                    backgroundColor: '#1677ff'
+                - id: psl_slots_open_name
+                  type: Paragraph
+                  properties:
+                    content: Jane Cooper
+                    style:
+                      margin: 4px 0 0 0
+                      fontSize: 14
+        siderClosed:
+          blocks:
+            - id: psl_slots_closed
+              type: Box
+              style:
+                padding: 8px
+                textAlign: center
+              blocks:
+                - id: psl_slots_closed_avatar
+                  type: Avatar
+                  properties:
+                    icon: AiOutlineUser
+                    size: 32
+                    color: '#fff'
+                    backgroundColor: '#1677ff'
+      blocks:
+        - id: psl_slots_content
+          type: Paragraph
+          properties:
+            content: Different sider content when expanded vs collapsed. The siderOpen slot shows a full user profile, while siderClosed shows just an avatar.
+
+- title: CSS Key Styling
+  fullWidth: true
+  blocks:
+    - id: psl_css
+      type: PageSidebarLayout
+      properties:
+        sider:
+          theme: light
+        menu:
+          links:
+            - id: psl_css_dash
+              type: MenuLink
+              properties:
+                title: Dashboard
+                icon: AiOutlineDashboard
+      style:
+        /content:
+          padding: 0 20px 20px 20px
+        /breadcrumb:
+          margin: 12px 0
+      blocks:
+        - id: psl_css_content
+          type: Paragraph
+          properties:
+            content: CSS keys allow targeting specific areas of the layout for custom styling.
+
+- title: Ant Design Theme Overrides
+  fullWidth: true
+  blocks:
+    - id: psl_theme
+      type: PageSidebarLayout
+      properties:
+        sider:
+          theme: light
+        menu:
+          links:
+            - id: psl_theme_dash
+              type: MenuLink
+              properties:
+                title: Dashboard
+                icon: AiOutlineDashboard
+        theme:
+          colorPrimary: '#4f46e5'
+      blocks:
+        - id: psl_theme_content
+          type: Paragraph
+          properties:
+            content: Ant Design theme token overrides applied to the entire layout.
+
+- title: Menu Shortcut Keys
+  fullWidth: true
+  blocks:
+    - id: psl_shortcuts
+      type: PageSidebarLayout
+      properties:
+        sider:
+          theme: light
+        menu:
+          links:
+            - id: psl_sc_dash
+              type: MenuLink
+              properties:
+                title: Dashboard
+                icon: AiOutlineDashboard
+                shortcut: mod+d
+            - id: psl_sc_users
+              type: MenuLink
+              properties:
+                title: Users
+                icon: AiOutlineUser
+                shortcut: mod+u
+            - id: psl_sc_settings
+              type: MenuLink
+              properties:
+                title: Settings
+                icon: AiOutlineSetting
+                shortcut: mod+comma
+      blocks:
+        - id: psl_sc_content
+          type: Paragraph
+          properties:
+            content: Menu items with keyboard shortcut badges. Press Cmd/Ctrl+D to activate Dashboard, Cmd/Ctrl+U for Users.
