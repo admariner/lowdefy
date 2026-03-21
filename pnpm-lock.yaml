@@ -90,6 +90,9 @@ importers:
       '@lowdefy/ajv':
         specifier: 4.7.1
         version: link:../utils/ajv
+      '@lowdefy/block-utils':
+        specifier: 4.7.1
+        version: link:../utils/block-utils
       '@lowdefy/blocks-basic':
         specifier: 4.7.1
         version: link:../plugins/blocks/blocks-basic
