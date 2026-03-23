@@ -19,9 +19,9 @@ import { withBlockDefaults } from '@lowdefy/block-utils';
 
 import '@ag-grid-community/styles/ag-grid.css';
 import '@ag-grid-community/styles/ag-theme-alpine.css';
+import antdStyles from '../../ag-grid-antd.module.css';
 
 import AgGridInput from '../../AgGridInput.js';
-import useDarkMode from '../../useDarkMode.js';
 
 const AgGridInputAlpine = ({
   blockId,
@@ -34,11 +34,10 @@ const AgGridInputAlpine = ({
   validation,
   value,
 }) => {
-  const isDark = useDarkMode();
   return (
     <div
       id={blockId}
-      className={isDark ? 'ag-theme-alpine-dark' : 'ag-theme-alpine'}
+      className={`ag-theme-alpine ${antdStyles.antdTheme}`}
       style={{ width: '100%', height: properties.height ?? 500, ...styles?.element }}
     >
       <AgGridInput

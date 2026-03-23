@@ -19,16 +19,15 @@ import { withBlockDefaults } from '@lowdefy/block-utils';
 
 import '@ag-grid-community/styles/ag-grid.css';
 import '@ag-grid-community/styles/ag-theme-alpine.css';
+import antdStyles from '../../ag-grid-antd.module.css';
 
 import AgGrid from '../../AgGrid.js';
-import useDarkMode from '../../useDarkMode.js';
 
 const AgGridAlpine = ({ blockId, events, loading, methods, properties, styles }) => {
-  const isDark = useDarkMode();
   return (
     <div
       id={blockId}
-      className={isDark ? 'ag-theme-alpine-dark' : 'ag-theme-alpine'}
+      className={`ag-theme-alpine ${antdStyles.antdTheme}`}
       style={{ width: '100%', height: properties.height ?? 500, ...styles?.element }}
     >
       <AgGrid events={events} loading={loading} methods={methods} properties={properties} />
