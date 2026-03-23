@@ -1811,6 +1811,9 @@ importers:
       '@lowdefy/operators-change-case':
         specifier: 4.7.1
         version: link:../../plugins/operators/operators-change-case
+      '@lowdefy/operators-dayjs':
+        specifier: 4.7.1
+        version: link:../../plugins/operators/operators-dayjs
       '@lowdefy/operators-diff':
         specifier: 4.7.1
         version: link:../../plugins/operators/operators-diff
