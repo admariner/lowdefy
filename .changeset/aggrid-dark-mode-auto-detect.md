@@ -2,4 +2,4 @@
 '@lowdefy/blocks-aggrid': minor
 ---
 
-AG Grid blocks now auto-detect dark mode via `prefers-color-scheme` media query. Light theme blocks (AgGridAlpine, AgGridBalham, AgGridMaterial, and their Input variants) automatically switch to their dark theme counterpart when the user's system is in dark mode. The explicit dark variant blocks (AgGridAlpineDark, AgGridBalhamDark, AgGridInputAlpineDark, AgGridInputBalhamDark) have been removed as they are no longer needed.
+AG Grid blocks now follow the Ant Design theme automatically. All six grid blocks (AgGridAlpine, AgGridBalham, AgGridMaterial, and their Input variants) map ag-grid CSS variables to antd design tokens, so they respond to light/dark mode and custom theme colors without any configuration. Override individual `--ag-*` variables via the block's `style` property for per-instance customization. The explicit dark variant blocks (AgGridAlpineDark, AgGridBalhamDark, AgGridInputAlpineDark, AgGridInputBalhamDark) have been removed.
