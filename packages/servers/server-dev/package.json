@@ -63,6 +63,7 @@
     "@lowdefy/logger": "4.7.1",
     "@lowdefy/node-utils": "4.7.1",
     "@lowdefy/operators-change-case": "4.7.1",
+    "@lowdefy/operators-dayjs": "4.7.1",
     "@lowdefy/operators-diff": "4.7.1",
     "@lowdefy/operators-js": "4.7.1",
     "@lowdefy/operators-mql": "4.7.1",
