@@ -93,8 +93,7 @@ For **mixed plugins** that export blocks alongside actions, connections, or oper
 
 ### 5. Replace `blockDefaultProps` with `withBlockDefaults` (REQUIRED)
 
-> **This step is mandatory.** Skipping it causes runtime errors:
-> `BlockError: o.makeCssClass is not a function` — the old `blockDefaultProps` pattern does not initialize `methods` correctly in v5. The `withBlockDefaults()` HOC is required.
+> **This step is mandatory.** The old `blockDefaultProps` pattern does not initialize block props correctly in v5. The `withBlockDefaults()` HOC is required.
 
 Replace `blockDefaultProps` with `withBlockDefaults` in **every** block component. If your block also imports `renderHtml` or other named exports, keep those — only replace `blockDefaultProps`:
 
@@ -119,51 +118,102 @@ grep -rn "blockDefaultProps" --include='*.js' plugins/*/src/
 
 Every match needs migration. Delete the `.defaultProps = blockDefaultProps;` line and wrap the export with `withBlockDefaults()`.
 
-### 5b. Replace `methods.makeCssClass` on root wrapper elements
+### 5b. Replace ALL `methods.makeCssClass` calls (REQUIRED)
 
-`methods.makeCssClass` still works in v5 via `withBlockDefaults`, but for **root wrapper divs** that only apply sizing and user styles, prefer the `styles` prop pattern:
+> **This step is mandatory.** `methods.makeCssClass` is fully removed in v5 — it was an Emotion-based utility that no longer exists. Any call to it will throw: `BlockError: o.makeCssClass is not a function`. **Every** usage must be replaced, not just root wrappers.
 
-**Before:**
+**Grep to find all files that need this change:**
 
-```javascript
-const MyBlock = ({ blockId, methods, properties }) => (
-  <div
-    id={blockId}
-    className={`my-theme ${methods.makeCssClass({
-      width: '100%',
-      height: properties.height ?? 500,
-      ...properties.style,
-    })}`}
-  >
-    {/* ... */}
-  </div>
-);
+```bash
+grep -rn "methods.makeCssClass" --include='*.js' plugins/*/src/
 ```
 
-**After:**
+Replace each call with an inline `style` prop:
+
+**Pattern 1 — single style object:**
 
 ```javascript
-const MyBlock = ({ blockId, methods, properties, styles }) => (
-  <div
-    id={blockId}
-    className="my-theme"
-    style={{ width: '100%', height: properties.height ?? 500, ...styles?.element }}
-  >
-    {/* ... */}
-  </div>
-);
+// OLD
+<div className={methods.makeCssClass(styles.myStyle)}>
+// NEW
+<div style={styles.myStyle}>
+```
+
+**Pattern 2 — merged style objects:**
+
+```javascript
+// OLD
+<div className={methods.makeCssClass([styles.base, properties.style])}>
+// NEW
+<div style={{ ...styles.base, ...properties.style }}>
+```
+
+**Pattern 3 — conditional styles:**
+
+```javascript
+// OLD
+<div className={methods.makeCssClass([styles.base, isActive && styles.active])}>
+// NEW
+<div style={{ ...styles.base, ...(isActive && styles.active) }}>
+```
+
+**Pattern 4 — template literal with CSS class + makeCssClass:**
+
+```javascript
+// OLD
+className={`my-theme ${methods.makeCssClass({ width: '100%', ...properties.style })}`}
+// NEW
+className="my-theme"
+style={{ width: '100%', ...styles?.element }}
 ```
 
 Key changes:
 
-- Add `styles` to the destructured props
-- Replace the `methods.makeCssClass({ ... })` template literal in `className` with a plain string class name
-- Add an inline `style` prop with the CSS properties that were previously passed to `makeCssClass`
-- Replace `...properties.style` with `...styles?.element` — user-configured styles now come via the `styles` prop instead of `properties.style`
+- Replace `className={methods.makeCssClass(...)}` with `style={...}` using inline React style objects
+- For root wrapper elements: replace `...properties.style` with `...styles?.element` — user-configured styles now come via the `styles` prop instead of `properties.style`
+- If a sub-component only received `methods` for `makeCssClass`, remove `methods` from its props entirely
+- If `methods` is no longer used in the component after migration, remove it from the destructured props
 
-> **Note:** Internal uses of `methods.makeCssClass` for dynamic class generation (e.g., conditional styles on child elements) are fine to keep — they work correctly with `withBlockDefaults`. Only root wrapper styling should migrate to the `styles` prop pattern.
+### 5c. Apply antd v6 prop renames in plugin JS source (REQUIRED)
 
-### 5c. Rename `style.css` → `style.module.css`
+> Codemod 05 handles antd prop renames in YAML configs, but **plugins that import antd components directly** also need the same renames in their JS source code. Skipping this causes silent failures or deprecation warnings.
+
+**Key renames:**
+
+| Old prop            | New prop         | Components                                  |
+| ------------------- | ---------------- | ------------------------------------------- |
+| `visible`           | `open`           | Modal, Drawer, Popover, Popconfirm, Tooltip |
+| `onVisibleChange`   | `onOpenChange`   | Tooltip, Popover, Popconfirm                |
+| `dropdownClassName` | `popupClassName` | Select, TreeSelect, Cascader                |
+
+**Grep to find files that need this change:**
+
+```bash
+grep -rn 'visible=' --include='*.js' plugins/*/src/
+grep -rn 'onVisibleChange' --include='*.js' plugins/*/src/
+grep -rn 'dropdownClassName' --include='*.js' plugins/*/src/
+```
+
+For `visible=`, only rename on antd components (Modal, Drawer, etc.) — not on custom div/span elements where `visible` might be a different prop.
+
+### 5d. Remove `@emotion/*` dependencies (REQUIRED)
+
+> Emotion is fully removed in Lowdefy v5. Any `@emotion/*` packages in plugin `package.json` dependencies must be removed. Any source code that imports from `@emotion/react` or `@emotion/css` (e.g., `css`, `keyframes`, `Global`) must be rewritten using plain CSS, CSS modules, or inline styles.
+
+**Grep to find files that need this change:**
+
+```bash
+grep -rn "@emotion" --include='*.js' plugins/*/src/
+grep -rn "@emotion" plugins/*/package.json
+```
+
+Remove the dependency from `package.json` and replace any Emotion usage:
+
+- `css` template literals → inline `style` objects or CSS module classes
+- `keyframes` → `@keyframes` rules in a CSS module file or an injected `<style>` tag
+- `Global` → move to a CSS file imported as a module
+
+### 5e. Rename `style.css` → `style.module.css`
 
 Next.js 16 with Turbopack rejects global CSS imports from component files (`import './style.css'`). CSS must be imported as CSS Modules.
 
@@ -394,8 +444,11 @@ export { default as MyOtherBlock } from './blocks/MyOtherBlock/meta.js';
 - **Mixed plugins** (blocks + actions + connections): only replace the block-related logic in `types.js`. Action and connection imports can stay as-is — they don't import React/CSS
 - **Blocks with no `.meta` property**: create a minimal `meta.js` with `{ category: 'display', icons: [] }`
 - **Input blocks with `valueType`**: include `valueType` in the meta.js (e.g., `{ category: 'input', valueType: 'array', icons: [] }`)
-- **`withBlockDefaults` is required in v5**: `blockDefaultProps` no longer initializes `methods` correctly. If you see `makeCssClass is not a function` at runtime, this migration was missed.
+- **`withBlockDefaults` is required in v5**: `blockDefaultProps` no longer initializes block props correctly.
+- **`methods.makeCssClass` is fully removed in v5**: it was Emotion-based and no longer exists. If you see `makeCssClass is not a function` at runtime, step 5b was missed. Every call must be replaced with inline `style` props.
 - **`extractBlockTypes` availability**: only available in `@lowdefy/block-utils` v5+. If on v4.x, use the manual pattern: `import * as metas from './metas.js'; const blocks = Object.keys(metas); const icons = {}; for (const name of blocks) { icons[name] = metas[name].icons ?? []; } export default { blocks, icons };`
+- **antd prop renames in JS source**: codemod 05 only handles YAML files. Plugin JS code that uses antd components directly (Modal, Drawer, Tooltip, etc.) must apply the same renames (`visible` → `open`, etc.). These are silent failures — antd v6 may still accept the old prop as a compatibility shim but it will be removed in future versions.
+- **`@emotion/*` removal**: Emotion is fully gone in v5. Remove from `package.json` dependencies and rewrite any `css`/`keyframes`/`Global` usage. Common replacement: `keyframes` → `@keyframes` in a CSS module or injected `<style>` tag.
 - **Global CSS imports (`import './style.css'`)**: Next.js 16 with Turbopack rejects global CSS from component files. Rename to `.module.css` and wrap selectors in `:global { ... }` to preserve global scoping. Third-party CSS (e.g., `@ag-grid-community/styles/ag-grid.css`) is handled by Next.js `transpilePackages` and doesn't need renaming.
 - **Third-party CSS imports** in block components (e.g., `@ag-grid-community/styles/ag-grid.css`): these are fine — the key fix is ensuring `types.js` never reaches them via its import chain
 - Don't forget to rebuild the plugin after making changes (`pnpm build`)
@@ -428,4 +481,17 @@ export { default as MyOtherBlock } from './blocks/MyOtherBlock/meta.js';
    grep -rn "methods.makeCssClass" --include='*.js' */src/blocks/
    ```
 
-6. Build each plugin and start the dev server — blocks should load without CSS import errors
+6. No deprecated antd `visible` prop on Modal/Drawer components:
+
+   ```
+   grep -rn "visible=" --include='*.js' */src/blocks/
+   ```
+
+7. No `@emotion` imports or dependencies:
+
+   ```
+   grep -rn "@emotion" --include='*.js' */src/
+   grep -rn "@emotion" */package.json
+   ```
+
+8. Build each plugin and start the dev server — blocks should load without errors
