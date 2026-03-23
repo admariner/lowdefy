@@ -110,7 +110,49 @@ export default withBlockDefaults(BlockName);
 
 **If your plugin still depends on `@lowdefy/block-utils` v4.x:** Keep `blockDefaultProps` — `withBlockDefaults` does not exist in v4. Only migrate this when you update `@lowdefy/block-utils` to v5+.
 
-### 5b. Rename `style.css` → `style.module.css`
+### 5b. Replace `methods.makeCssClass` with inline `style` and `styles` prop
+
+In v5, `methods.makeCssClass` is removed. Blocks should use inline `style` on their root element and receive the new `styles` prop for user-configured styles.
+
+**Before:**
+
+```javascript
+const MyBlock = ({ blockId, methods, properties }) => (
+  <div
+    id={blockId}
+    className={`my-theme ${methods.makeCssClass({
+      width: '100%',
+      height: properties.height ?? 500,
+      ...properties.style,
+    })}`}
+  >
+    {/* ... */}
+  </div>
+);
+```
+
+**After:**
+
+```javascript
+const MyBlock = ({ blockId, methods, properties, styles }) => (
+  <div
+    id={blockId}
+    className="my-theme"
+    style={{ width: '100%', height: properties.height ?? 500, ...styles?.element }}
+  >
+    {/* ... */}
+  </div>
+);
+```
+
+Key changes:
+
+- Add `styles` to the destructured props
+- Replace the `methods.makeCssClass({ ... })` template literal in `className` with a plain string class name
+- Add an inline `style` prop with the CSS properties that were previously passed to `makeCssClass`
+- Replace `...properties.style` with `...styles?.element` — user-configured styles now come via the `styles` prop instead of `properties.style`
+
+### 5c. Rename `style.css` → `style.module.css`
 
 Next.js 16 with Turbopack rejects global CSS imports from component files (`import './style.css'`). CSS must be imported as CSS Modules.
 
@@ -186,6 +228,7 @@ Grep patterns:
 - `blockDefaultProps` — old default props pattern
 - `\.meta\s*=\s*\{` — meta assigned on component
 - `\.defaultProps\s*=\s*blockDefaultProps` — old pattern
+- `methods\.makeCssClass` — removed in v5, replace with inline `style` + `styles?.element`
 
 ## Examples
 
@@ -368,4 +411,10 @@ export { default as MyOtherBlock } from './blocks/MyOtherBlock/meta.js';
 
 4. Each block plugin's `package.json` should have a `"./metas"` export
 
-5. Build each plugin and start the dev server — blocks should load without CSS import errors
+5. No `methods.makeCssClass` should remain:
+
+   ```
+   grep -rn "methods.makeCssClass" --include='*.js' */src/blocks/
+   ```
+
+6. Build each plugin and start the dev server — blocks should load without CSS import errors
