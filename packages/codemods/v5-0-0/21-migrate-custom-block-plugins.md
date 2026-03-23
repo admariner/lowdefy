@@ -91,33 +91,46 @@ export default extractBlockTypes(metas);
 
 For **mixed plugins** that export blocks alongside actions, connections, or operators — keep the non-block exports but replace the block logic. See the mixed plugin example below.
 
-### 5. Replace `blockDefaultProps` with `withBlockDefaults`
+### 5. `blockDefaultProps` vs `withBlockDefaults`
 
-In each block component file:
+**If your plugin depends on `@lowdefy/block-utils` v5+ (from the new experimental releases):**
 
-- Change the import:
+Replace `blockDefaultProps` with `withBlockDefaults`:
 
-  ```javascript
-  // OLD
-  import { blockDefaultProps } from '@lowdefy/block-utils';
-  // NEW
-  import { withBlockDefaults } from '@lowdefy/block-utils';
-  ```
+```javascript
+// OLD
+import { blockDefaultProps } from '@lowdefy/block-utils';
+BlockName.defaultProps = blockDefaultProps;
+export default BlockName;
 
-- Remove the defaultProps assignment:
+// NEW
+import { withBlockDefaults } from '@lowdefy/block-utils';
+export default withBlockDefaults(BlockName);
+```
 
-  ```javascript
-  // DELETE this line:
-  BlockName.defaultProps = blockDefaultProps;
-  ```
+**If your plugin still depends on `@lowdefy/block-utils` v4.x:** Keep `blockDefaultProps` — `withBlockDefaults` does not exist in v4. Only migrate this when you update `@lowdefy/block-utils` to v5+.
 
-- Wrap the export:
-  ```javascript
-  // OLD
-  export default BlockName;
-  // NEW
-  export default withBlockDefaults(BlockName);
-  ```
+### 5b. Rename `style.css` → `style.module.css`
+
+Next.js 16 with Turbopack rejects global CSS imports from component files (`import './style.css'`). CSS must be imported as CSS Modules.
+
+For each block that imports a `.css` file:
+
+1. Rename the file: `style.css` → `style.module.css`
+2. Update the import: `import './style.css'` → `import './style.module.css'`
+3. If the CSS has global selectors (class names, element selectors), wrap them in `:global { ... }` to preserve global scoping:
+
+```css
+/* style.module.css */
+:global {
+  .my-block-class {
+    padding: 16px;
+  }
+  .my-block-class .child {
+    color: red;
+  }
+}
+```
 
 ### 6. Update `package.json` exports
 
@@ -133,6 +146,35 @@ Add the `./metas` export:
   }
 }
 ```
+
+### 7. Update dependency versions
+
+Update all `@lowdefy/*` dependencies to match the target Lowdefy version you're upgrading to. Also update `antd` if your plugin imports from it directly.
+
+```json
+{
+  "dependencies": {
+    "@lowdefy/block-utils": "5.0.0",
+    "@lowdefy/helpers": "5.0.0",
+    "@lowdefy/blocks-antd": "5.0.0",
+    "antd": "6.3.1"
+  }
+}
+```
+
+**Key version changes:**
+
+- All `@lowdefy/*` packages → match your target Lowdefy version
+- `antd` → `6.3.1` (v5 uses antd v6, not v4). Only needed if your plugin imports from `antd` directly. If you only import from `@lowdefy/blocks-antd`, antd is a transitive dep and doesn't need to be listed.
+- `react` / `react-dom` → keep at `18.2.0`
+
+**Check which plugins import antd directly:**
+
+```bash
+grep -rn "from 'antd'" plugins/*/src/ --include='*.js'
+```
+
+Only those plugins need `antd` in their direct dependencies.
 
 ## Files to Check
 
@@ -234,11 +276,11 @@ MyGrid.meta = {
 export default MyGrid;
 ```
 
-### After — block component
+### After — block component (v4 block-utils)
 
 ```javascript
 import React from 'react';
-import { withBlockDefaults } from '@lowdefy/block-utils';
+import { blockDefaultProps } from '@lowdefy/block-utils';
 import '@ag-grid-community/styles/ag-grid.css';
 
 const MyGrid = ({ blockId, events, methods, properties }) => (
@@ -247,7 +289,9 @@ const MyGrid = ({ blockId, events, methods, properties }) => (
   </div>
 );
 
-export default withBlockDefaults(MyGrid);
+MyGrid.defaultProps = blockDefaultProps;
+
+export default MyGrid;
 ```
 
 ### New file — `blocks/MyGrid/meta.js`
@@ -296,9 +340,10 @@ export { default as MyOtherBlock } from './blocks/MyOtherBlock/meta.js';
 - **Mixed plugins** (blocks + actions + connections): only replace the block-related logic in `types.js`. Action and connection imports can stay as-is — they don't import React/CSS
 - **Blocks with no `.meta` property**: create a minimal `meta.js` with `{ category: 'display', icons: [] }`
 - **Input blocks with `valueType`**: include `valueType` in the meta.js (e.g., `{ category: 'input', valueType: 'array', icons: [] }`)
-- **`renderHtml` or other block-utils imports**: keep them alongside `withBlockDefaults`: `import { renderHtml, withBlockDefaults } from '@lowdefy/block-utils'`
-- **Plugins that already have a static types.js** (hardcoded block name arrays without importing blocks.js): these won't crash but should be migrated to use `extractBlockTypes` for consistency and to get `blockMetas` support
-- **Third-party CSS imports** in block components (e.g., `@ag-grid-community/styles/ag-grid.css`): these are fine in the component file — the key fix is ensuring `types.js` never reaches them via its import chain
+- **`withBlockDefaults` availability**: only available in `@lowdefy/block-utils` v5+. If your plugin depends on v4.x, keep using `blockDefaultProps` with `.defaultProps` assignment. Only switch to `withBlockDefaults` after upgrading the dependency.
+- **`extractBlockTypes` availability**: only available in `@lowdefy/block-utils` v5+. If on v4.x, use the manual pattern: `import * as metas from './metas.js'; const blocks = Object.keys(metas); const icons = {}; for (const name of blocks) { icons[name] = metas[name].icons ?? []; } export default { blocks, icons };`
+- **Global CSS imports (`import './style.css'`)**: Next.js 16 with Turbopack rejects global CSS from component files. Rename to `.module.css` and wrap selectors in `:global { ... }` to preserve global scoping. Third-party CSS (e.g., `@ag-grid-community/styles/ag-grid.css`) is handled by Next.js `transpilePackages` and doesn't need renaming.
+- **Third-party CSS imports** in block components (e.g., `@ag-grid-community/styles/ag-grid.css`): these are fine — the key fix is ensuring `types.js` never reaches them via its import chain
 - Don't forget to rebuild the plugin after making changes (`pnpm build`)
 
 ## Verification

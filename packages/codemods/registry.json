@@ -109,6 +109,11 @@
           "id": "migrate-custom-block-plugins",
           "description": "Migrate custom block plugin architecture: types.js, meta.js, withBlockDefaults",
           "path": "v5-0-0/21-migrate-custom-block-plugins.md"
+        },
+        {
+          "id": "migrate-nested-css-selectors",
+          "description": "Replace Emotion-style nested CSS selectors (&:hover, & > *) with Tailwind classes",
+          "path": "v5-0-0/22-migrate-nested-css-selectors.md"
         }
       ]
     }
