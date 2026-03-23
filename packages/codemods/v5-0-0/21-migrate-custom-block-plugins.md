@@ -91,28 +91,37 @@ export default extractBlockTypes(metas);
 
 For **mixed plugins** that export blocks alongside actions, connections, or operators — keep the non-block exports but replace the block logic. See the mixed plugin example below.
 
-### 5. `blockDefaultProps` vs `withBlockDefaults`
+### 5. Replace `blockDefaultProps` with `withBlockDefaults` (REQUIRED)
 
-**If your plugin depends on `@lowdefy/block-utils` v5+ (from the new experimental releases):**
+> **This step is mandatory.** Skipping it causes runtime errors:
+> `BlockError: o.makeCssClass is not a function` — the old `blockDefaultProps` pattern does not initialize `methods` correctly in v5. The `withBlockDefaults()` HOC is required.
 
-Replace `blockDefaultProps` with `withBlockDefaults`:
+Replace `blockDefaultProps` with `withBlockDefaults` in **every** block component. If your block also imports `renderHtml` or other named exports, keep those — only replace `blockDefaultProps`:
 
 ```javascript
 // OLD
 import { blockDefaultProps } from '@lowdefy/block-utils';
+// or: import { blockDefaultProps, renderHtml } from '@lowdefy/block-utils';
 BlockName.defaultProps = blockDefaultProps;
 export default BlockName;
 
 // NEW
 import { withBlockDefaults } from '@lowdefy/block-utils';
+// or: import { withBlockDefaults, renderHtml } from '@lowdefy/block-utils';
 export default withBlockDefaults(BlockName);
 ```
 
-**If your plugin still depends on `@lowdefy/block-utils` v4.x:** Keep `blockDefaultProps` — `withBlockDefaults` does not exist in v4. Only migrate this when you update `@lowdefy/block-utils` to v5+.
+**Grep to find all files that need this change:**
 
-### 5b. Replace `methods.makeCssClass` with inline `style` and `styles` prop
+```bash
+grep -rn "blockDefaultProps" --include='*.js' plugins/*/src/
+```
 
-In v5, `methods.makeCssClass` is removed. Blocks should use inline `style` on their root element and receive the new `styles` prop for user-configured styles.
+Every match needs migration. Delete the `.defaultProps = blockDefaultProps;` line and wrap the export with `withBlockDefaults()`.
+
+### 5b. Replace `methods.makeCssClass` on root wrapper elements
+
+`methods.makeCssClass` still works in v5 via `withBlockDefaults`, but for **root wrapper divs** that only apply sizing and user styles, prefer the `styles` prop pattern:
 
 **Before:**
 
@@ -151,6 +160,8 @@ Key changes:
 - Replace the `methods.makeCssClass({ ... })` template literal in `className` with a plain string class name
 - Add an inline `style` prop with the CSS properties that were previously passed to `makeCssClass`
 - Replace `...properties.style` with `...styles?.element` — user-configured styles now come via the `styles` prop instead of `properties.style`
+
+> **Note:** Internal uses of `methods.makeCssClass` for dynamic class generation (e.g., conditional styles on child elements) are fine to keep — they work correctly with `withBlockDefaults`. Only root wrapper styling should migrate to the `styles` prop pattern.
 
 ### 5c. Rename `style.css` → `style.module.css`
 
@@ -383,7 +394,7 @@ export { default as MyOtherBlock } from './blocks/MyOtherBlock/meta.js';
 - **Mixed plugins** (blocks + actions + connections): only replace the block-related logic in `types.js`. Action and connection imports can stay as-is — they don't import React/CSS
 - **Blocks with no `.meta` property**: create a minimal `meta.js` with `{ category: 'display', icons: [] }`
 - **Input blocks with `valueType`**: include `valueType` in the meta.js (e.g., `{ category: 'input', valueType: 'array', icons: [] }`)
-- **`withBlockDefaults` availability**: only available in `@lowdefy/block-utils` v5+. If your plugin depends on v4.x, keep using `blockDefaultProps` with `.defaultProps` assignment. Only switch to `withBlockDefaults` after upgrading the dependency.
+- **`withBlockDefaults` is required in v5**: `blockDefaultProps` no longer initializes `methods` correctly. If you see `makeCssClass is not a function` at runtime, this migration was missed.
 - **`extractBlockTypes` availability**: only available in `@lowdefy/block-utils` v5+. If on v4.x, use the manual pattern: `import * as metas from './metas.js'; const blocks = Object.keys(metas); const icons = {}; for (const name of blocks) { icons[name] = metas[name].icons ?? []; } export default { blocks, icons };`
 - **Global CSS imports (`import './style.css'`)**: Next.js 16 with Turbopack rejects global CSS from component files. Rename to `.module.css` and wrap selectors in `:global { ... }` to preserve global scoping. Third-party CSS (e.g., `@ag-grid-community/styles/ag-grid.css`) is handled by Next.js `transpilePackages` and doesn't need renaming.
 - **Third-party CSS imports** in block components (e.g., `@ag-grid-community/styles/ag-grid.css`): these are fine — the key fix is ensuring `types.js` never reaches them via its import chain
