@@ -60,6 +60,8 @@
     "@lowdefy/node-utils": "4.7.1",
     "@lowdefy/operators-js": "4.7.1",
     "@lowdefy/plugin-next-auth": "4.7.1",
+    "@ant-design/cssinjs": "2.1.2",
+    "antd": "6.3.1",
     "@sentry/nextjs": "8.53.0",
     "next": "16.1.6",
     "next-auth": "4.24.10",
