@@ -21,6 +21,7 @@ import '@ag-grid-community/styles/ag-grid.css';
 import '@ag-grid-community/styles/ag-theme-alpine.css';
 
 import AgGridInput from '../../AgGridInput.js';
+import useDarkMode from '../../useDarkMode.js';
 
 const AgGridInputAlpine = ({
   blockId,
@@ -32,23 +33,26 @@ const AgGridInputAlpine = ({
   styles,
   validation,
   value,
-}) => (
-  <div
-    id={blockId}
-    className="ag-theme-alpine"
-    style={{ width: '100%', height: properties.height ?? 500, ...styles?.element }}
-  >
-    <AgGridInput
-      blockId={blockId}
-      events={events}
-      loading={loading}
-      methods={methods}
-      properties={properties}
-      required={required}
-      validation={validation}
-      value={value}
-    />
-  </div>
-);
+}) => {
+  const isDark = useDarkMode();
+  return (
+    <div
+      id={blockId}
+      className={isDark ? 'ag-theme-alpine-dark' : 'ag-theme-alpine'}
+      style={{ width: '100%', height: properties.height ?? 500, ...styles?.element }}
+    >
+      <AgGridInput
+        blockId={blockId}
+        events={events}
+        loading={loading}
+        methods={methods}
+        properties={properties}
+        required={required}
+        validation={validation}
+        value={value}
+      />
+    </div>
+  );
+};
 
 export default withBlockDefaults(AgGridInputAlpine);

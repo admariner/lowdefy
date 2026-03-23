@@ -19,8 +19,10 @@ import { withBlockDefaults } from '@lowdefy/block-utils';
 
 import '@ag-grid-community/styles/ag-grid.css';
 import '@ag-grid-community/styles/ag-theme-material.css';
+import '../../ag-theme-material-dark.css';
 
 import AgGridInput from '../../AgGridInput.js';
+import useDarkMode from '../../useDarkMode.js';
 
 const AgGridInputMaterial = ({
   blockId,
@@ -32,23 +34,26 @@ const AgGridInputMaterial = ({
   styles,
   validation,
   value,
-}) => (
-  <div
-    id={blockId}
-    className="ag-theme-material"
-    style={{ width: '100%', height: properties.height ?? 500, ...styles?.element }}
-  >
-    <AgGridInput
-      blockId={blockId}
-      events={events}
-      loading={loading}
-      methods={methods}
-      properties={properties}
-      required={required}
-      validation={validation}
-      value={value}
-    />
-  </div>
-);
+}) => {
+  const isDark = useDarkMode();
+  return (
+    <div
+      id={blockId}
+      className={isDark ? 'ag-theme-material ag-theme-material-dark' : 'ag-theme-material'}
+      style={{ width: '100%', height: properties.height ?? 500, ...styles?.element }}
+    >
+      <AgGridInput
+        blockId={blockId}
+        events={events}
+        loading={loading}
+        methods={methods}
+        properties={properties}
+        required={required}
+        validation={validation}
+        value={value}
+      />
+    </div>
+  );
+};
 
 export default withBlockDefaults(AgGridInputMaterial);

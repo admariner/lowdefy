@@ -21,6 +21,7 @@ import '@ag-grid-community/styles/ag-grid.css';
 import '@ag-grid-community/styles/ag-theme-balham.css';
 
 import AgGridInput from '../../AgGridInput.js';
+import useDarkMode from '../../useDarkMode.js';
 
 const AgGridInputBalham = ({
   blockId,
@@ -32,23 +33,26 @@ const AgGridInputBalham = ({
   styles,
   validation,
   value,
-}) => (
-  <div
-    id={blockId}
-    className="ag-theme-balham"
-    style={{ width: '100%', height: properties.height ?? 500, ...styles?.element }}
-  >
-    <AgGridInput
-      blockId={blockId}
-      events={events}
-      loading={loading}
-      methods={methods}
-      properties={properties}
-      required={required}
-      validation={validation}
-      value={value}
-    />
-  </div>
-);
+}) => {
+  const isDark = useDarkMode();
+  return (
+    <div
+      id={blockId}
+      className={isDark ? 'ag-theme-balham-dark' : 'ag-theme-balham'}
+      style={{ width: '100%', height: properties.height ?? 500, ...styles?.element }}
+    >
+      <AgGridInput
+        blockId={blockId}
+        events={events}
+        loading={loading}
+        methods={methods}
+        properties={properties}
+        required={required}
+        validation={validation}
+        value={value}
+      />
+    </div>
+  );
+};
 
 export default withBlockDefaults(AgGridInputBalham);

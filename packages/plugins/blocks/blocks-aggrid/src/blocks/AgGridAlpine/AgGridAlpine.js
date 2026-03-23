@@ -21,15 +21,19 @@ import '@ag-grid-community/styles/ag-grid.css';
 import '@ag-grid-community/styles/ag-theme-alpine.css';
 
 import AgGrid from '../../AgGrid.js';
+import useDarkMode from '../../useDarkMode.js';
 
-const AgGridAlpine = ({ blockId, events, loading, methods, properties, styles }) => (
-  <div
-    id={blockId}
-    className="ag-theme-alpine"
-    style={{ width: '100%', height: properties.height ?? 500, ...styles?.element }}
-  >
-    <AgGrid events={events} loading={loading} methods={methods} properties={properties} />
-  </div>
-);
+const AgGridAlpine = ({ blockId, events, loading, methods, properties, styles }) => {
+  const isDark = useDarkMode();
+  return (
+    <div
+      id={blockId}
+      className={isDark ? 'ag-theme-alpine-dark' : 'ag-theme-alpine'}
+      style={{ width: '100%', height: properties.height ?? 500, ...styles?.element }}
+    >
+      <AgGrid events={events} loading={loading} methods={methods} properties={properties} />
+    </div>
+  );
+};
 
 export default withBlockDefaults(AgGridAlpine);

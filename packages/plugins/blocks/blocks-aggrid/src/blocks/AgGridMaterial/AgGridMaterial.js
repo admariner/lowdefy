@@ -19,17 +19,22 @@ import { withBlockDefaults } from '@lowdefy/block-utils';
 
 import '@ag-grid-community/styles/ag-grid.css';
 import '@ag-grid-community/styles/ag-theme-material.css';
+import '../../ag-theme-material-dark.css';
 
 import AgGrid from '../../AgGrid.js';
+import useDarkMode from '../../useDarkMode.js';
 
-const AgGridMaterial = ({ blockId, events, loading, methods, properties, styles }) => (
-  <div
-    id={blockId}
-    className="ag-theme-material"
-    style={{ width: '100%', height: properties.height ?? 500, ...styles?.element }}
-  >
-    <AgGrid events={events} loading={loading} methods={methods} properties={properties} />
-  </div>
-);
+const AgGridMaterial = ({ blockId, events, loading, methods, properties, styles }) => {
+  const isDark = useDarkMode();
+  return (
+    <div
+      id={blockId}
+      className={isDark ? 'ag-theme-material ag-theme-material-dark' : 'ag-theme-material'}
+      style={{ width: '100%', height: properties.height ?? 500, ...styles?.element }}
+    >
+      <AgGrid events={events} loading={loading} methods={methods} properties={properties} />
+    </div>
+  );
+};
 
 export default withBlockDefaults(AgGridMaterial);
