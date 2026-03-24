@@ -20,6 +20,9 @@ export default {
   category: 'container',
   icons: ['AiOutlineBell', 'AiOutlineMoon', 'AiOutlineSun', 'AiOutlineUser'],
   valueType: null,
+  slots: {
+    content: 'Child blocks in the header.',
+  },
   cssKeys: {
     element: 'The Header element.',
     headerActions: 'The header actions container (notifications, profile, dark mode toggle).',
