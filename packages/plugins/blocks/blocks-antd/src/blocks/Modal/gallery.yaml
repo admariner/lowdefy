@@ -415,7 +415,7 @@
                   blockId: modal_no_footer
                   method: setOpen
                   args:
-                    open: false
+                    - open: false
 
 - title: Custom Footer Slot
   blocks:
@@ -480,7 +480,7 @@
                               blockId: modal_footer_slot
                               method: setOpen
                               args:
-                                open: false
+                                - open: false
                     - id: modal_footer_save_btn
                       type: Button
                       layout:
@@ -498,7 +498,7 @@
                               blockId: modal_footer_slot
                               method: setOpen
                               args:
-                                open: false
+                                - open: false
       blocks:
         - id: modal_footer_slot_content
           type: Paragraph
