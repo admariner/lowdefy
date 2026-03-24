@@ -1136,7 +1136,7 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -1159,7 +1159,7 @@
                   ],
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -1182,7 +1182,7 @@
                   ],
                   "description": "The Result element."
                 },
-                "/icon": {
+                ".icon": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -1224,15 +1224,15 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "type": "object",
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "type": "object",
                   "description": "The Result element."
                 },
-                "/icon": {
+                ".icon": {
                   "type": "object",
                   "description": "The icon in the Result."
                 }
@@ -1241,7 +1241,7 @@
             {
               "type": "object",
               "patternProperties": {
-                "^(?!_)(?!/)": {}
+                "^(?!_)(?!\\.)": {}
               },
               "additionalProperties": false,
               "minProperties": 1
@@ -1430,7 +1430,7 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -1453,7 +1453,7 @@
                   ],
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -1476,7 +1476,7 @@
                   ],
                   "description": "The Message element."
                 },
-                "/icon": {
+                ".icon": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -1518,15 +1518,15 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "type": "object",
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "type": "object",
                   "description": "The Message element."
                 },
-                "/icon": {
+                ".icon": {
                   "type": "object",
                   "description": "The icon in the Message."
                 }
@@ -1535,7 +1535,7 @@
             {
               "type": "object",
               "patternProperties": {
-                "^(?!_)(?!/)": {}
+                "^(?!_)(?!\\.)": {}
               },
               "additionalProperties": false,
               "minProperties": 1
@@ -1749,7 +1749,7 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -1772,7 +1772,7 @@
                   ],
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -1795,7 +1795,7 @@
                   ],
                   "description": "The anchor element."
                 },
-                "/icon": {
+                ".icon": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -1837,15 +1837,15 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "type": "object",
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "type": "object",
                   "description": "The anchor element."
                 },
-                "/icon": {
+                ".icon": {
                   "type": "object",
                   "description": "The icon in the Anchor."
                 }
@@ -1854,7 +1854,7 @@
             {
               "type": "object",
               "patternProperties": {
-                "^(?!_)(?!/)": {}
+                "^(?!_)(?!\\.)": {}
               },
               "additionalProperties": false,
               "minProperties": 1
@@ -1995,7 +1995,7 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -2018,7 +2018,7 @@
                   ],
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -2060,11 +2060,11 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "type": "object",
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "type": "object",
                   "description": "The Box element."
                 }
@@ -2073,7 +2073,7 @@
             {
               "type": "object",
               "patternProperties": {
-                "^(?!_)(?!/)": {}
+                "^(?!_)(?!\\.)": {}
               },
               "additionalProperties": false,
               "minProperties": 1
@@ -2250,7 +2250,7 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -2273,7 +2273,7 @@
                   ],
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -2315,11 +2315,11 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "type": "object",
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "type": "object",
                   "description": "The DangerousHtml element."
                 }
@@ -2328,7 +2328,7 @@
             {
               "type": "object",
               "patternProperties": {
-                "^(?!_)(?!/)": {}
+                "^(?!_)(?!\\.)": {}
               },
               "additionalProperties": false,
               "minProperties": 1
@@ -2454,7 +2454,7 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -2477,7 +2477,7 @@
                   ],
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -2519,11 +2519,11 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "type": "object",
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "type": "object",
                   "description": "The Html element."
                 }
@@ -2532,7 +2532,7 @@
             {
               "type": "object",
               "patternProperties": {
-                "^(?!_)(?!/)": {}
+                "^(?!_)(?!\\.)": {}
               },
               "additionalProperties": false,
               "minProperties": 1
@@ -2709,7 +2709,7 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -2732,7 +2732,7 @@
                   ],
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -2774,11 +2774,11 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "type": "object",
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "type": "object",
                   "description": "The Icon element."
                 }
@@ -2787,7 +2787,7 @@
             {
               "type": "object",
               "patternProperties": {
-                "^(?!_)(?!/)": {}
+                "^(?!_)(?!\\.)": {}
               },
               "additionalProperties": false,
               "minProperties": 1
@@ -2979,7 +2979,7 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -3002,7 +3002,7 @@
                   ],
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -3044,11 +3044,11 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "type": "object",
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "type": "object",
                   "description": "The Img element."
                 }
@@ -3057,7 +3057,7 @@
             {
               "type": "object",
               "patternProperties": {
-                "^(?!_)(?!/)": {}
+                "^(?!_)(?!\\.)": {}
               },
               "additionalProperties": false,
               "minProperties": 1
@@ -3199,7 +3199,7 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -3222,7 +3222,7 @@
                   ],
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -3264,11 +3264,11 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "type": "object",
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "type": "object",
                   "description": "The List element."
                 }
@@ -3277,7 +3277,7 @@
             {
               "type": "object",
               "patternProperties": {
-                "^(?!_)(?!/)": {}
+                "^(?!_)(?!\\.)": {}
               },
               "additionalProperties": false,
               "minProperties": 1
@@ -3418,7 +3418,7 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -3441,7 +3441,7 @@
                   ],
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -3483,11 +3483,11 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "type": "object",
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "type": "object",
                   "description": "The Span element."
                 }
@@ -3496,7 +3496,7 @@
             {
               "type": "object",
               "patternProperties": {
-                "^(?!_)(?!/)": {}
+                "^(?!_)(?!\\.)": {}
               },
               "additionalProperties": false,
               "minProperties": 1
@@ -3647,7 +3647,7 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -3689,7 +3689,7 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "type": "object",
                   "description": "The block layout wrapper."
                 }
@@ -3698,7 +3698,7 @@
             {
               "type": "object",
               "patternProperties": {
-                "^(?!_)(?!/)": {}
+                "^(?!_)(?!\\.)": {}
               },
               "additionalProperties": false,
               "minProperties": 1
@@ -3831,7 +3831,7 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -3854,7 +3854,7 @@
                   ],
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -3896,11 +3896,11 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "type": "object",
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "type": "object",
                   "description": "The ProgressBar element."
                 }
@@ -3909,7 +3909,7 @@
             {
               "type": "object",
               "patternProperties": {
-                "^(?!_)(?!/)": {}
+                "^(?!_)(?!\\.)": {}
               },
               "additionalProperties": false,
               "minProperties": 1
@@ -4048,7 +4048,7 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -4071,7 +4071,7 @@
                   ],
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -4113,11 +4113,11 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "type": "object",
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "type": "object",
                   "description": "The Skeleton element."
                 }
@@ -4126,7 +4126,7 @@
             {
               "type": "object",
               "patternProperties": {
-                "^(?!_)(?!/)": {}
+                "^(?!_)(?!\\.)": {}
               },
               "additionalProperties": false,
               "minProperties": 1
@@ -4264,7 +4264,7 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -4287,7 +4287,7 @@
                   ],
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -4329,11 +4329,11 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "type": "object",
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "type": "object",
                   "description": "The SkeletonAvatar element."
                 }
@@ -4342,7 +4342,7 @@
             {
               "type": "object",
               "patternProperties": {
-                "^(?!_)(?!/)": {}
+                "^(?!_)(?!\\.)": {}
               },
               "additionalProperties": false,
               "minProperties": 1
@@ -4481,7 +4481,7 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -4504,7 +4504,7 @@
                   ],
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -4546,11 +4546,11 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "type": "object",
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "type": "object",
                   "description": "The SkeletonButton element."
                 }
@@ -4559,7 +4559,7 @@
             {
               "type": "object",
               "patternProperties": {
-                "^(?!_)(?!/)": {}
+                "^(?!_)(?!\\.)": {}
               },
               "additionalProperties": false,
               "minProperties": 1
@@ -4728,7 +4728,7 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -4751,7 +4751,7 @@
                   ],
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -4774,7 +4774,7 @@
                   ],
                   "description": "The outer container."
                 },
-                "/input": {
+                ".input": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -4816,15 +4816,15 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "type": "object",
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "type": "object",
                   "description": "The outer container."
                 },
-                "/input": {
+                ".input": {
                   "type": "object",
                   "description": "The input skeleton."
                 }
@@ -4833,7 +4833,7 @@
             {
               "type": "object",
               "patternProperties": {
-                "^(?!_)(?!/)": {}
+                "^(?!_)(?!\\.)": {}
               },
               "additionalProperties": false,
               "minProperties": 1
@@ -4967,7 +4967,7 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -4990,7 +4990,7 @@
                   ],
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -5032,11 +5032,11 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "type": "object",
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "type": "object",
                   "description": "The SkeletonParagraph element."
                 }
@@ -5045,7 +5045,7 @@
             {
               "type": "object",
               "patternProperties": {
-                "^(?!_)(?!/)": {}
+                "^(?!_)(?!\\.)": {}
               },
               "additionalProperties": false,
               "minProperties": 1
@@ -5173,7 +5173,7 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -5196,7 +5196,7 @@
                   ],
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "oneOf": [
                     {
                       "type": "string"
@@ -5238,11 +5238,11 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "/block": {
+                ".block": {
                   "type": "object",
                   "description": "The block layout wrapper."
                 },
-                "/element": {
+                ".element": {
                   "type": "object",
                   "description": "The Spinner element."
                 }
@@ -5251,7 +5251,7 @@
             {
               "type": "object",
               "patternProperties": {
-                "^(?!_)(?!/)": {}
+                "^(?!_)(?!\\.)": {}
               },
               "additionalProperties": false,
               "minProperties": 1
