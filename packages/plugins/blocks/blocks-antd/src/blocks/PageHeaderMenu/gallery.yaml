@@ -79,8 +79,6 @@
       type: PageHeaderMenu
       properties:
         darkModeToggle: true
-        header:
-          theme: dark
         breadcrumb:
           separator: /
           list:
@@ -89,7 +87,6 @@
             - label: Analytics
             - label: Overview
         menu:
-          theme: dark
           links:
             - id: phm_g_dash
               type: MenuLink
@@ -177,14 +174,11 @@
         darkModeToggle: true
         logo:
           alt: Acme Corp
-        header:
-          theme: dark
         breadcrumb:
           list:
             - Intranet
             - Team Directory
         menu:
-          theme: dark
           links:
             - id: phm_full_home
               type: MenuLink

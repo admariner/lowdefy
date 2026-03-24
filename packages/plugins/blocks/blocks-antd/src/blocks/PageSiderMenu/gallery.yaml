@@ -19,7 +19,7 @@
       type: PageSiderMenu
       properties:
         sider:
-initialCollapsed: false
+          initialCollapsed: false
           width: 220
           hideToggleButton: true
         menu:
@@ -89,7 +89,7 @@ initialCollapsed: false
       properties:
         darkModeToggle: true
         sider:
-initialCollapsed: false
+          initialCollapsed: false
           width: 230
           hideToggleButton: true
         breadcrumb:
@@ -144,7 +144,7 @@ initialCollapsed: false
       type: PageSiderMenu
       properties:
         sider:
-initialCollapsed: false
+          initialCollapsed: false
           width: 240
           hideToggleButton: false
         menu:
@@ -272,7 +272,7 @@ initialCollapsed: false
       properties:
         darkModeToggle: true
         sider:
-initialCollapsed: false
+          initialCollapsed: false
           width: 240
           hideToggleButton: true
         breadcrumb:
