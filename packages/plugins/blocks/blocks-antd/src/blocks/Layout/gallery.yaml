@@ -249,7 +249,7 @@
         - id: layout_tailwind_content
           type: Content
           class:
-            /element: bg-bg-layout
+            .element: bg-bg-layout
           style:
             padding: 24px
           blocks:
@@ -260,7 +260,7 @@
         - id: layout_tailwind_footer
           type: Footer
           class:
-            /element: bg-bg-layout text-center
+            .element: bg-bg-layout text-center
           blocks:
             - id: layout_tailwind_footer_text
               type: Paragraph
