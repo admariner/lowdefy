@@ -23,8 +23,6 @@
         - id: layout_basic_header
           type: Header
           style:
-            display: flex
-            alignItems: center
             paddingInline: 24px
           blocks:
             - id: layout_basic_header_text
@@ -65,8 +63,6 @@
         - id: layout_sider_header
           type: Header
           style:
-            display: flex
-            alignItems: center
             paddingInline: 24px
           blocks:
             - id: layout_sider_header_text
@@ -179,8 +175,6 @@
         - id: layout_theme_header
           type: Header
           style:
-            display: flex
-            alignItems: center
             paddingInline: 24px
           blocks:
             - id: layout_theme_header_text
@@ -239,8 +233,6 @@
           type: Header
           class: bg-indigo-700
           style:
-            display: flex
-            alignItems: center
             paddingInline: 24px
           blocks:
             - id: layout_tailwind_header_text
@@ -268,44 +260,6 @@
               type: Paragraph
               properties:
                 content: Footer with Tailwind background
-
-- title: CSS Key Element Styling
-  fullWidth: true
-  blocks:
-    - id: layout_csskey_outer
-      type: Layout
-      class:
-        element: border-2 border-dashed border-blue-400 rounded-xl p-1
-      style:
-        minHeight: 200px
-      blocks:
-        - id: layout_csskey_header
-          type: Header
-          class:
-            element: rounded-t-lg
-          style:
-            display: flex
-            alignItems: center
-            paddingInline: 24px
-          blocks:
-            - id: layout_csskey_header_text
-              type: Paragraph
-              properties:
-                content: Header with element cssKey
-                style:
-                  color: white
-                  margin: 0
-        - id: layout_csskey_content
-          type: Content
-          class:
-            element: bg-bg-container
-          style:
-            padding: 24px
-          blocks:
-            - id: layout_csskey_content_text
-              type: Paragraph
-              properties:
-                content: 'Layout exposes a single CSS key: "element", which targets the outermost Layout wrapper. Use class as an object with the element key to apply Tailwind classes specifically to the Layout container. Here the dashed border makes the Layout boundary visible.'
 
 - title: Layout in Admin Dashboard
   fullWidth: true
