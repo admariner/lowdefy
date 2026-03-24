@@ -24,7 +24,10 @@ export default {
   cssKeys: {
     element: 'The PageHeaderMenu element.',
     header: 'The PageHeaderMenu header.',
+    headerContent: 'The PageHeaderMenu header content area.',
     logo: 'The PageHeaderMenu logo.',
+    darkModeToggle: 'The PageHeaderMenu dark mode toggle button.',
+    mobileMenu: 'The PageHeaderMenu mobile menu.',
     menu: 'The PageHeaderMenu menu.',
     content: 'The PageHeaderMenu content.',
     breadcrumb: 'The PageHeaderMenu breadcrumb.',
@@ -65,13 +68,6 @@ export default {
             default: 'Lowdefy',
             description: 'Header logo alternative text.',
           },
-          style: {
-            type: 'object',
-            description: 'Css style object to apply to logo.',
-            docs: {
-              displayType: 'yaml',
-            },
-          },
         },
       },
       header: {
@@ -85,49 +81,19 @@ export default {
             default: 'dark',
             description: 'Header theme color.',
           },
-          contentStyle: {
-            type: 'object',
-            description: 'Header content css style object.',
-            docs: {
-              displayType: 'yaml',
-            },
-          },
-          style: {
-            type: 'object',
-            description: 'Header css style object.',
-            docs: {
-              displayType: 'yaml',
-            },
-          },
         },
       },
       footer: {
         type: 'object',
         description: 'Footer properties.',
         additionalProperties: false,
-        properties: {
-          style: {
-            type: 'object',
-            description: 'Footer css style object.',
-            docs: {
-              displayType: 'yaml',
-            },
-          },
-        },
+        properties: {},
       },
       content: {
         type: 'object',
         description: 'Content properties.',
         additionalProperties: false,
-        properties: {
-          style: {
-            type: 'object',
-            description: 'Content css style object.',
-            docs: {
-              displayType: 'yaml',
-            },
-          },
-        },
+        properties: {},
       },
       breadcrumb: {
         type: 'object',
@@ -139,12 +105,52 @@ export default {
             description: 'Use a custom separator string.',
           },
           list: {
-            type: 'array',
-            description: 'List of breadcrumb links.',
-            items: {
-              type: 'string',
-              description: 'Title of the breadcrumb link.',
-            },
+            oneOf: [
+              {
+                type: 'array',
+                description: 'List of breadcrumb links.',
+                items: {
+                  type: 'string',
+                  description: 'Title of the breadcrumb link.',
+                },
+              },
+              {
+                type: 'array',
+                description: 'List of breadcrumb links.',
+                items: {
+                  type: 'object',
+                  properties: {
+                    label: {
+                      type: 'string',
+                      description: 'Label of the breadcrumb link.',
+                    },
+                    pageId: {
+                      type: 'string',
+                      description: 'Page id to link to when clicked.',
+                    },
+                    url: {
+                      type: 'string',
+                      description: 'External url link.',
+                    },
+                    style: {
+                      type: 'object',
+                      description: 'Css style to apply to link.',
+                      docs: {
+                        displayType: 'yaml',
+                      },
+                    },
+                    icon: {
+                      type: ['string', 'object'],
+                      description:
+                        "Name of an React-Icon (See <a href='https://react-icons.github.io/react-icons/'>all icons</a>) or properties of an Icon block to use an icon in breadcrumb link.",
+                      docs: {
+                        displayType: 'icon',
+                      },
+                    },
+                  },
+                },
+              },
+            ],
           },
         },
       },

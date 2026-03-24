@@ -106,7 +106,7 @@ const PageHeaderMenu = ({
                             classNames.logo ??
                             'mx-1.5 sm:mx-2.5 md:mx-4 lg:mx-[30px] shrink w-10 sm:w-[130px]'
                           }
-                          style={mergeObjects([properties.logo?.style, styles.logo])}
+                          style={styles.logo}
                         />
                       </picture>
                     </Link>
@@ -131,6 +131,13 @@ const PageHeaderMenu = ({
                             properties.menuLg,
                           ])}
                           styles={{ element: styles.menu }}
+                          rename={{
+                            events: {
+                              onClick: 'onMenuItemClick',
+                              onSelect: 'onMenuItemSelect',
+                              onToggleMenuGroup: 'onToggleMenuGroup',
+                            },
+                          }}
                         />
                       </div>
                       {content.header &&
@@ -142,11 +149,13 @@ const PageHeaderMenu = ({
                               alignItems: 'center',
                               flexWrap: 'nowrap',
                             },
-                            properties.header?.contentStyle,
+                            styles.headerContent,
                           ])
                         )}
                       {properties.darkModeToggle && (
                         <Button
+                          classNames={{ element: classNames.darkModeToggle ?? 'ml-2' }}
+                          styles={{ element: styles.darkModeToggle }}
                           blockId={`${blockId}_dark_mode_toggle`}
                           components={{ Icon, Link, ShortcutBadge }}
                           events={events}
@@ -163,18 +172,34 @@ const PageHeaderMenu = ({
                           onClick={() => methods.triggerEvent({ name: '__toggleDarkMode' })}
                         />
                       )}
-                      <div className="flex lg:hidden shrink pl-4">
-                        <MobileMenu
-                          blockId={`${blockId}_mobile_menu`}
-                          basePath={basePath}
-                          components={{ Icon, Link, ShortcutBadge }}
-                          events={events}
-                          methods={methods}
-                          menus={menus}
-                          pageId={pageId}
-                          properties={mergeObjects([properties.menu, properties.menuMd])}
-                        />
-                      </div>
+                      <MobileMenu
+                        classNames={{
+                          element: classNames.mobileMenu ?? 'flex lg:hidden shrink pl-4',
+                        }}
+                        styles={{ element: styles.mobileMenu }}
+                        blockId={`${blockId}_mobile_menu`}
+                        basePath={basePath}
+                        components={{ Icon, Link, ShortcutBadge }}
+                        events={events}
+                        methods={methods}
+                        menus={menus}
+                        pageId={pageId}
+                        properties={mergeObjects([
+                          { theme: get(properties, 'header.theme') ?? 'dark' },
+                          properties.menu,
+                          properties.menuMd,
+                        ])}
+                        rename={{
+                          methods: {
+                            toggleOpen: 'toggleMobileMenuOpen',
+                            setOpen: 'setMobileMenuOpen',
+                          },
+                          events: {
+                            onClose: 'onMobileMenuClose',
+                            onOpen: 'onMobileMenuOpen',
+                          },
+                        }}
+                      />
                     </div>
                   </>
                 ),
@@ -232,7 +257,7 @@ const PageHeaderMenu = ({
                 events={events}
                 properties={properties.footer}
                 styles={{
-                  element: mergeObjects([properties.footer?.style, styles.footer]),
+                  element: styles.footer,
                 }}
                 content={{
                   content: () => content.footer(),

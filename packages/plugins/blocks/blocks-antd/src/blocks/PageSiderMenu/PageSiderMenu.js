@@ -241,13 +241,9 @@ const PageSiderMenu = ({
                               ])}
                               styles={{ element: styles.menu }}
                               rename={{
-                                methods: {
-                                  toggleOpen: 'toggleMobileMenuOpen',
-                                  setOpen: 'setMobileMenuOpen',
-                                },
                                 events: {
                                   onClick: 'onMenuItemClick',
-                                  onSelect: 'onMenuItemCSelect',
+                                  onSelect: 'onMenuItemSelect',
                                   onToggleMenuGroup: 'onToggleMenuGroup',
                                 },
                               }}
@@ -255,7 +251,7 @@ const PageSiderMenu = ({
                             <div style={{ flex: '1 0 auto' }}>
                               {content.sider && content.sider()}
                             </div>
-                            {!get(properties, 'sider.hideToggleButton') ?? (
+                            {!get(properties, 'sider.hideToggleButton') && (
                               <Affix
                                 blockId={`${blockId}_toggle_sider_affix`}
                                 components={{ Icon, Link, ShortcutBadge }}
