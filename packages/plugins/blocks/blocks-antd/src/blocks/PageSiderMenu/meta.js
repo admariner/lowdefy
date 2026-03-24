@@ -84,13 +84,7 @@ export default {
         type: 'object',
         description: 'Header properties.',
         additionalProperties: false,
-        properties: {
-          theme: {
-            type: 'string',
-            enum: ['light', 'dark'],
-            description: 'Header theme color.',
-          },
-        },
+        properties: {},
       },
       sider: {
         type: 'object',
@@ -122,12 +116,6 @@ export default {
             type: 'boolean',
             default: false,
             description: 'Direction of arrow, for a sider that expands from the right.',
-          },
-          theme: {
-            type: 'string',
-            enum: ['light', 'dark'],
-            default: 'light',
-            description: 'Color theme of the sidebar.',
           },
           width: {
             type: ['string', 'number'],
@@ -225,12 +213,6 @@ export default {
         type: 'object',
         description: 'Menu properties.',
         properties: {
-          theme: {
-            type: 'string',
-            enum: ['dark', 'light'],
-            default: 'light',
-            description: 'Color theme of menu.',
-          },
           links: {
             type: 'array',
             items: {

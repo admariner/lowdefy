@@ -18,15 +18,11 @@
     - id: psm_basic
       type: PageSiderMenu
       properties:
-        header:
-          theme: dark
         sider:
-          theme: dark
-          initialCollapsed: false
+initialCollapsed: false
           width: 220
           hideToggleButton: true
         menu:
-          theme: dark
           links:
             - id: psm_basic_dash
               type: MenuLink
@@ -85,18 +81,15 @@
                     value: 4820
                     prefix: $
 
-- title: Light Theme with Breadcrumb
+- title: Breadcrumb with Dark Mode Toggle
   fullWidth: true
   blocks:
     - id: psm_light
       type: PageSiderMenu
       properties:
         darkModeToggle: true
-        header:
-          theme: light
         sider:
-          theme: light
-          initialCollapsed: false
+initialCollapsed: false
           width: 230
           hideToggleButton: true
         breadcrumb:
@@ -106,7 +99,6 @@
             - label: Projects
             - label: Website Redesign
         menu:
-          theme: light
           links:
             - id: psm_light_overview
               type: MenuLink
@@ -137,7 +129,7 @@
         - id: psm_light_desc
           type: Paragraph
           properties:
-            content: Breadcrumb items support both simple strings and objects with label, icon, pageId, and url properties. The light theme uses a white background for both header and sider.
+            content: Breadcrumb items support both simple strings and objects with label, icon, pageId, and url properties. Toggle dark mode to see the layout adapt automatically.
         - id: psm_light_alert
           type: Alert
           properties:
@@ -151,15 +143,11 @@
     - id: psm_groups
       type: PageSiderMenu
       properties:
-        header:
-          theme: dark
         sider:
-          theme: dark
-          initialCollapsed: false
+initialCollapsed: false
           width: 240
           hideToggleButton: false
         menu:
-          theme: dark
           links:
             - id: psm_grp_dash
               type: MenuLink
@@ -283,11 +271,8 @@
       type: PageSiderMenu
       properties:
         darkModeToggle: true
-        header:
-          theme: dark
         sider:
-          theme: dark
-          initialCollapsed: false
+initialCollapsed: false
           width: 240
           hideToggleButton: true
         breadcrumb:
@@ -296,7 +281,6 @@
             - Admin
             - Dashboard
         menu:
-          theme: dark
           links:
             - id: psm_full_dash
               type: MenuLink

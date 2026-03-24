@@ -82,7 +82,7 @@ const PageSiderMenu = ({
               components={{ Icon, Link, ShortcutBadge }}
               classNames={{ element: classNames.header }}
               events={events}
-              properties={properties.header ?? {}}
+              properties={{}}
               styles={{
                 element: mergeObjects([
                   {
@@ -135,10 +135,7 @@ const PageSiderMenu = ({
                         menus={menus}
                         pageId={pageId}
                         properties={mergeObjects([
-                          {
-                            mode: 'inline',
-                            theme: get(properties, 'sider.theme') ?? 'light',
-                          },
+                          { mode: 'inline' },
                           properties.menu,
                           properties.menuMd,
                         ])}
@@ -160,16 +157,14 @@ const PageSiderMenu = ({
                           media={`(min-width:${properties.logo?.breakpoint ?? 577}px)`}
                           srcSet={
                             properties.logo?.src ??
-                            `${basePath}/logo-${properties.header?.theme ?? 'dark'}-theme.png`
+                            `${basePath}/logo-${getDarkMode() ? 'dark' : 'light'}-theme.png`
                           }
                         />
                         <img
                           src={
                             properties.logo?.srcMobile ??
                             properties.logo?.src ??
-                            `${basePath}/logo-square-${
-                              properties.header?.theme ?? 'dark'
-                            }-theme.png`
+                            `${basePath}/logo-square-${getDarkMode() ? 'dark' : 'light'}-theme.png`
                           }
                           alt={properties.logo?.alt ?? 'Lowdefy'}
                           className={
@@ -199,12 +194,7 @@ const PageSiderMenu = ({
                       components={{ Icon, Link, ShortcutBadge }}
                       events={events}
                       methods={methods}
-                      properties={mergeObjects([
-                        {
-                          theme: get(properties, 'sider.theme') ?? 'light',
-                        },
-                        properties.sider,
-                      ])}
+                      properties={properties.sider ?? {}}
                       classNames={{ element: classNames.sider ?? 'hidden lg:block' }}
                       styles={{ element: styles.sider }}
                       rename={{
@@ -232,10 +222,7 @@ const PageSiderMenu = ({
                               menus={menus}
                               pageId={pageId}
                               properties={mergeObjects([
-                                {
-                                  mode: 'inline',
-                                  theme: get(properties, 'sider.theme') ?? 'light',
-                                },
+                                { mode: 'inline' },
                                 properties.menu,
                                 properties.menuLg,
                               ])}

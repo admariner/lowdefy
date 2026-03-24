@@ -24,13 +24,6 @@ export default {
   properties: {
     type: 'object',
     additionalProperties: false,
-    properties: {
-      theme: {
-        type: 'string',
-        enum: ['light', 'dark'],
-        default: 'dark',
-        description: 'Page theme.',
-      },
-    },
+    properties: {},
   },
 };

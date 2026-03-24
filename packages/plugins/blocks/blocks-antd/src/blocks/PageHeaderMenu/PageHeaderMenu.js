@@ -71,7 +71,7 @@ const PageHeaderMenu = ({
               events={events}
               components={{ Icon, Link, ShortcutBadge }}
               classNames={{ element: classNames.header }}
-              properties={properties.header ?? {}}
+              properties={{}}
               styles={{
                 element: mergeObjects([
                   {
@@ -90,16 +90,14 @@ const PageHeaderMenu = ({
                           media={`(min-width:${properties.logo?.breakpoint ?? 577}px)`}
                           srcSet={
                             properties.logo?.src ??
-                            `${basePath}/logo-${properties.header?.theme ?? 'dark'}-theme.png`
+                            `${basePath}/logo-${getDarkMode() ? 'dark' : 'light'}-theme.png`
                           }
                         />
                         <img
                           src={
                             properties.logo?.srcMobile ??
                             properties.logo?.src ??
-                            `${basePath}/logo-square-${
-                              properties.header?.theme ?? 'dark'
-                            }-theme.png`
+                            `${basePath}/logo-square-${getDarkMode() ? 'dark' : 'light'}-theme.png`
                           }
                           alt={properties.logo?.alt ?? 'Lowdefy'}
                           className={
@@ -125,7 +123,6 @@ const PageHeaderMenu = ({
                             {
                               mode: 'horizontal',
                               collapsed: false,
-                              theme: get(properties, 'header.theme') ?? 'dark',
                             },
                             properties.menu,
                             properties.menuLg,
@@ -184,11 +181,7 @@ const PageHeaderMenu = ({
                         methods={methods}
                         menus={menus}
                         pageId={pageId}
-                        properties={mergeObjects([
-                          { theme: get(properties, 'header.theme') ?? 'dark' },
-                          properties.menu,
-                          properties.menuMd,
-                        ])}
+                        properties={mergeObjects([properties.menu, properties.menuMd])}
                         rename={{
                           methods: {
                             toggleOpen: 'toggleMobileMenuOpen',

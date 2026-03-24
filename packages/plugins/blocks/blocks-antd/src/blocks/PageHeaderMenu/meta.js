@@ -74,14 +74,7 @@ export default {
         type: 'object',
         description: 'Header properties.',
         additionalProperties: false,
-        properties: {
-          theme: {
-            type: 'string',
-            enum: ['light', 'dark'],
-            default: 'dark',
-            description: 'Header theme color.',
-          },
-        },
+        properties: {},
       },
       footer: {
         type: 'object',
@@ -158,12 +151,6 @@ export default {
         type: 'object',
         description: 'Menu properties.',
         properties: {
-          theme: {
-            type: 'string',
-            enum: ['dark', 'light'],
-            default: 'dark',
-            description: 'Color theme of menu.',
-          },
           links: {
             type: 'array',
             items: {

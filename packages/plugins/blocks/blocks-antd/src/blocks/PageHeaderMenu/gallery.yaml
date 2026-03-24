@@ -18,10 +18,7 @@
     - id: phm_basic
       type: PageHeaderMenu
       properties:
-        header:
-          theme: dark
         menu:
-          theme: dark
           links:
             - id: phm_basic_home
               type: MenuLink
@@ -297,17 +294,14 @@
                   properties:
                     content: View Expense Reports
 
-- title: Light Theme Header
+- title: Dark Mode Toggle with Breadcrumb
   fullWidth: true
   blocks:
     - id: phm_light
       type: PageHeaderMenu
       properties:
         darkModeToggle: true
-        header:
-          theme: light
         menu:
-          theme: light
           links:
             - id: phm_light_guide
               type: MenuLink
