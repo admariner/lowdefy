@@ -76,7 +76,7 @@ const PageSiderMenu = ({
               styles={{
                 element: mergeObjects([
                   {
-                    backgroundColor: 'var(--ant-color-bg-container)',
+                    background: 'var(--ant-color-bg-container)',
                     flexDirection: 'row-reverse',
                   },
                   styles.header,

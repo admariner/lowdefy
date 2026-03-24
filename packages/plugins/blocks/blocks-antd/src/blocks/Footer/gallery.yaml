@@ -262,6 +262,8 @@
   blocks:
     - id: footer_admin_layout
       type: Layout
+      properties:
+        hasSider: true
       blocks:
         - id: footer_admin_sider
           type: Sider

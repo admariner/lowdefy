@@ -120,6 +120,8 @@
                   margin: 0
         - id: content_sider_inner
           type: Layout
+          properties:
+            hasSider: true
           blocks:
             - id: content_sider_nav
               type: Sider
@@ -337,6 +339,8 @@
                 size: small
         - id: content_dashboard_inner
           type: Layout
+          properties:
+            hasSider: true
           blocks:
             - id: content_dashboard_sider
               type: Sider

@@ -89,7 +89,7 @@
                 icon: AiOutlineLogout
                 danger: true
       style:
-        backgroundColor: var(--ant-color-bg-container)
+        background: var(--ant-color-bg-container)
         borderBottom: 1px solid var(--ant-color-border)
       blocks:
         - id: header_profile_logo
@@ -169,7 +169,7 @@
         - id: header_marketing_el
           type: Header
           style:
-            backgroundColor: var(--ant-color-bg-container)
+            background: var(--ant-color-bg-container)
             borderBottom: 1px solid var(--ant-color-border)
           blocks:
             - id: header_marketing_brand
