@@ -15,6 +15,8 @@
 */
 
 import MobileMenuMeta from '../MobileMenu/meta.js';
+import menuLinks from '../../schemas/menuLinks.js';
+import breadcrumbList from '../../schemas/breadcrumbList.js';
 
 export default {
   category: 'container',
@@ -163,95 +165,14 @@ export default {
             default: '/',
             description: 'Use a custom separator string.',
           },
-          list: {
-            oneOf: [
-              {
-                type: 'array',
-                description: 'List of breadcrumb links.',
-                items: {
-                  type: 'string',
-                  description: 'Title of the breadcrumb link.',
-                },
-              },
-              {
-                type: 'array',
-                description: 'List of breadcrumb links.',
-                items: {
-                  type: 'object',
-                  properties: {
-                    label: {
-                      type: 'string',
-                      description: 'Label of the breadcrumb link.',
-                    },
-                    pageId: {
-                      type: 'string',
-                      description: 'Page id to link to when clicked.',
-                    },
-                    url: {
-                      type: 'string',
-                      description: 'External url link.',
-                    },
-                    style: {
-                      type: 'object',
-                      description: 'Css style to apply to link.',
-                      docs: {
-                        displayType: 'yaml',
-                      },
-                    },
-                    icon: {
-                      type: ['string', 'object'],
-                      description:
-                        "Name of an React-Icon (See <a href='https://react-icons.github.io/react-icons/'>all icons</a>) or properties of an Icon block to use an icon in breadcrumb link.",
-                      docs: {
-                        displayType: 'icon',
-                      },
-                    },
-                  },
-                },
-              },
-            ],
-          },
+          list: breadcrumbList,
         },
       },
       menu: {
         type: 'object',
         description: 'Menu properties.',
         properties: {
-          links: {
-            type: 'array',
-            items: {
-              type: 'object',
-              required: ['id', 'type'],
-              properties: {
-                id: {
-                  type: 'string',
-                  description: 'Menu item id.',
-                },
-                pageId: {
-                  type: 'string',
-                  description: 'Page to link to.',
-                },
-                properties: {
-                  type: 'object',
-                  description: 'properties from menu item.',
-                  properties: {
-                    title: {
-                      type: 'string',
-                      description: 'Menu item title.',
-                    },
-                    icon: {
-                      type: ['string', 'object'],
-                      description:
-                        "Name of an React-Icon (See <a href='https://react-icons.github.io/react-icons/'>all icons</a>) or properties of an Icon block to customize icon on menu item.",
-                      docs: {
-                        displayType: 'icon',
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
+          links: menuLinks,
         },
       },
       menuLg: {
