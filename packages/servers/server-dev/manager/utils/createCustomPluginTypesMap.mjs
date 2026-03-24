@@ -26,6 +26,9 @@ async function getPluginDefinitions({ directories }) {
   if (!lowdefyYaml) {
     lowdefyYaml = await readFile(path.join(directories.config, 'lowdefy.yml'));
   }
+  if (!lowdefyYaml) {
+    return [];
+  }
   const lowdefy = YAML.parse(lowdefyYaml);
   return get(lowdefy, 'plugins', { default: [] });
 }
