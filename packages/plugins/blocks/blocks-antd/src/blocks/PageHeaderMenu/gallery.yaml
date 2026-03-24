@@ -165,6 +165,91 @@
                     value: 23.4
                     suffix: '%'
 
+- title: Profile & Notifications
+  fullWidth: true
+  blocks:
+    - id: phm_profile
+      type: PageHeaderMenu
+      properties:
+        darkModeToggle: true
+        notifications:
+          count: 3
+        profile:
+          avatar:
+            content: JD
+            color: '#1677ff'
+          links:
+            - id: phm_prof_my_profile
+              type: MenuLink
+              properties:
+                title: My Profile
+                icon: AiOutlineUser
+            - id: phm_prof_settings
+              type: MenuLink
+              properties:
+                title: Settings
+                icon: AiOutlineSetting
+            - id: phm_prof_divider
+              type: MenuDivider
+            - id: phm_prof_logout
+              type: MenuLink
+              properties:
+                title: Logout
+                icon: AiOutlineLogout
+                danger: true
+        menu:
+          links:
+            - id: phm_prof_home
+              type: MenuLink
+              properties:
+                title: Home
+                icon: AiOutlineHome
+            - id: phm_prof_projects
+              type: MenuLink
+              properties:
+                title: Projects
+                icon: AiOutlineProject
+            - id: phm_prof_reports
+              type: MenuLink
+              properties:
+                title: Reports
+                icon: AiOutlineBarChart
+      blocks:
+        - id: phm_prof_title
+          type: Title
+          properties:
+            content: Dashboard
+            level: 3
+        - id: phm_prof_cards
+          type: Box
+          layout:
+            gap: 16
+          blocks:
+            - id: phm_prof_card_1
+              type: Card
+              layout:
+                flex: 1 1 0
+              properties:
+                size: small
+              blocks:
+                - id: phm_prof_stat_1
+                  type: Statistic
+                  properties:
+                    title: Active Projects
+                    value: 12
+            - id: phm_prof_card_2
+              type: Card
+              layout:
+                flex: 1 1 0
+              properties:
+                size: small
+              blocks:
+                - id: phm_prof_stat_2
+                  type: Statistic
+                  properties:
+                    title: Pending Tasks
+                    value: 8
+
 - title: Full Layout with All Slots
   fullWidth: true
   blocks:
@@ -174,6 +259,11 @@
         darkModeToggle: true
         logo:
           alt: Acme Corp
+        notifications:
+          dot: true
+        profile:
+          avatar:
+            icon: AiOutlineUser
         breadcrumb:
           list:
             - Intranet
@@ -210,32 +300,6 @@
                 title: IT Support
                 icon: AiOutlineQuestionCircle
       slots:
-        header:
-          blocks:
-            - id: phm_full_header_row
-              type: Box
-              layout:
-                gap: 12
-                align: center
-                flex: 0 0 auto
-              blocks:
-                - id: phm_full_notif_btn
-                  type: Button
-                  layout:
-                    flex: 0 0 auto
-                  properties:
-                    icon: AiOutlineBell
-                    color: default
-                    variant: text
-                    hideTitle: true
-                    size: small
-                - id: phm_full_avatar
-                  type: Avatar
-                  layout:
-                    flex: 0 0 auto
-                  properties:
-                    icon: AiOutlineUser
-                    size: small
         footer:
           blocks:
             - id: phm_full_footer_text

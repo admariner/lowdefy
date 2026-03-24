@@ -264,6 +264,95 @@
                     title: Editor
                     color: green
 
+- title: Profile & Notifications
+  fullWidth: true
+  blocks:
+    - id: psm_profile
+      type: PageSiderMenu
+      properties:
+        darkModeToggle: true
+        sider:
+          initialCollapsed: false
+          width: 220
+          hideToggleButton: true
+        notifications:
+          count: 5
+        profile:
+          avatar:
+            content: JC
+            color: '#1677ff'
+          links:
+            - id: psm_prof_my_profile
+              type: MenuLink
+              properties:
+                title: My Profile
+                icon: AiOutlineUser
+            - id: psm_prof_settings
+              type: MenuLink
+              properties:
+                title: Account Settings
+                icon: AiOutlineSetting
+            - id: psm_prof_divider
+              type: MenuDivider
+            - id: psm_prof_logout
+              type: MenuLink
+              properties:
+                title: Sign Out
+                icon: AiOutlineLogout
+                danger: true
+        menu:
+          links:
+            - id: psm_prof_dash
+              type: MenuLink
+              properties:
+                title: Dashboard
+                icon: AiOutlineDashboard
+            - id: psm_prof_users
+              type: MenuLink
+              properties:
+                title: Users
+                icon: AiOutlineTeam
+            - id: psm_prof_reports
+              type: MenuLink
+              properties:
+                title: Reports
+                icon: AiOutlineBarChart
+      blocks:
+        - id: psm_prof_title
+          type: Title
+          properties:
+            content: Admin Dashboard
+            level: 3
+        - id: psm_prof_stats
+          type: Box
+          layout:
+            gap: 16
+          blocks:
+            - id: psm_prof_stat_1
+              type: Card
+              layout:
+                flex: 1 1 0
+              properties:
+                size: small
+              blocks:
+                - id: psm_prof_stat_1_val
+                  type: Statistic
+                  properties:
+                    title: Active Users
+                    value: 1284
+            - id: psm_prof_stat_2
+              type: Card
+              layout:
+                flex: 1 1 0
+              properties:
+                size: small
+              blocks:
+                - id: psm_prof_stat_2_val
+                  type: Statistic
+                  properties:
+                    title: Pending Requests
+                    value: 23
+
 - title: Full Layout with All Slots
   fullWidth: true
   blocks:
@@ -275,6 +364,12 @@
           initialCollapsed: false
           width: 240
           hideToggleButton: true
+        notifications:
+          dot: true
+        profile:
+          avatar:
+            icon: AiOutlineUser
+            color: '#1677ff'
         breadcrumb:
           separator: /
           list:
@@ -298,33 +393,6 @@
                 title: Settings
                 icon: AiOutlineSetting
       slots:
-        header:
-          blocks:
-            - id: psm_full_header_row
-              type: Box
-              layout:
-                gap: 12
-                align: center
-              blocks:
-                - id: psm_full_notif_btn
-                  type: Button
-                  layout:
-                    flex: 0 0 auto
-                  properties:
-                    icon: AiOutlineBell
-                    hideTitle: true
-                    color: default
-                    variant: text
-                    size: small
-                - id: psm_full_avatar
-                  type: Avatar
-                  layout:
-                    flex: 0 0 auto
-                  properties:
-                    icon: AiOutlineUser
-                    size: small
-                    color: '#fff'
-                    backgroundColor: '#1677ff'
         sider:
           blocks:
             - id: psm_full_sider_box

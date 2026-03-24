@@ -15,17 +15,18 @@
 */
 
 import React, { useEffect } from 'react';
+import { Avatar, Badge, Dropdown } from 'antd';
 import { get, mergeObjects, type } from '@lowdefy/helpers';
 import { withBlockDefaults } from '@lowdefy/block-utils';
 
 import Breadcrumb from '../Breadcrumb/Breadcrumb.js';
-import Button from '../Button/Button.js';
 import Content from '../Content/Content.js';
 import Footer from '../Footer/Footer.js';
 import Header from '../Header/Header.js';
 import Layout from '../Layout/Layout.js';
 import Menu from '../Menu/Menu.js';
 import MobileMenu from '../MobileMenu/MobileMenu.js';
+import { buildMenuItems, flattenLinks } from '../buildMenuItems.js';
 
 function getDarkMode() {
   const stored = window.localStorage?.getItem('lowdefy_darkMode');
@@ -55,6 +56,140 @@ const PageHeaderMenu = ({
       methods.triggerEvent({ name: '__toggleDarkMode' });
     });
   });
+
+  function renderNotifications() {
+    if (type.isNone(properties.notifications)) return null;
+    const notif = properties.notifications;
+    return (
+      <div
+        className={classNames.notifications}
+        style={{ cursor: 'pointer', lineHeight: 1, ...styles.notifications }}
+        onClick={() => methods.triggerEvent({ name: 'onNotificationClick' })}
+      >
+        <Badge
+          count={notif.count}
+          dot={notif.dot}
+          showZero={notif.showZero}
+          overflowCount={notif.overflowCount ?? 99}
+          color={notif.color}
+          className={classNames.notificationsBadge}
+          style={styles.notificationsBadge}
+          size="small"
+        >
+          <Icon
+            blockId={`${blockId}_notifications_icon`}
+            events={events}
+            properties={notif.icon ?? { name: 'AiOutlineBell' }}
+            styles={{ element: { fontSize: 16, ...styles.notificationsIcon } }}
+          />
+        </Badge>
+      </div>
+    );
+  }
+
+  function renderProfile() {
+    if (type.isNone(properties.profile)) return null;
+    const prof = properties.profile;
+    const avatarProps = prof.avatar ?? {};
+
+    const avatar = (
+      <Avatar
+        id={`${blockId}_profile_avatar`}
+        className={classNames.profileAvatar}
+        style={{
+          cursor: 'pointer',
+          backgroundColor: !avatarProps.src && avatarProps.color,
+          ...styles.profileAvatar,
+        }}
+        src={avatarProps.src}
+        size={avatarProps.size ?? 'small'}
+        shape={avatarProps.shape ?? 'circle'}
+        icon={
+          !avatarProps.src &&
+          !avatarProps.content && (
+            <Icon
+              blockId={`${blockId}_profile_avatar_icon`}
+              events={events}
+              properties={avatarProps.icon ?? { name: 'AiOutlineUser' }}
+            />
+          )
+        }
+      >
+        {avatarProps.content}
+      </Avatar>
+    );
+
+    const links = prof.links ?? [];
+    if (links.length === 0) {
+      return (
+        <div
+          className={classNames.profile}
+          style={{ cursor: 'pointer', ...styles.profile }}
+          onClick={() => methods.triggerEvent({ name: 'onProfileClick' })}
+        >
+          {avatar}
+        </div>
+      );
+    }
+
+    const items = buildMenuItems({
+      links,
+      components: { Icon, Link, ShortcutBadge },
+      classNames,
+      styles,
+      events,
+    });
+    const linkMap = flattenLinks(links);
+
+    return (
+      <Dropdown
+        className={classNames.profile}
+        style={{ cursor: 'pointer', ...styles.profile }}
+        menu={{
+          items,
+          onClick: ({ key, keyPath }) => {
+            const link = linkMap[key];
+            methods.triggerEvent({
+              name: 'onProfileMenuClick',
+              event: { key, keyPath, pageId: link?.pageId, url: link?.url },
+            });
+          },
+        }}
+        trigger={[prof.trigger ?? 'click']}
+        placement={prof.placement ?? 'bottomRight'}
+        arrow={prof.arrow}
+        popupClassName={classNames.profileMenu}
+        popupStyle={styles.profileMenu}
+        onOpenChange={(open) =>
+          methods.triggerEvent({
+            name: 'onProfileMenuOpen',
+            event: { open },
+          })
+        }
+      >
+        <div>{avatar}</div>
+      </Dropdown>
+    );
+  }
+
+  function renderDarkModeToggle() {
+    if (!properties.darkModeToggle) return null;
+    return (
+      <div
+        className={classNames.darkModeToggle}
+        style={{ cursor: 'pointer', lineHeight: 1, ...styles.darkModeToggle }}
+        onClick={() => methods.triggerEvent({ name: '__toggleDarkMode' })}
+      >
+        <Icon
+          blockId={`${blockId}_dark_mode_toggle_icon`}
+          events={events}
+          properties={{ name: getDarkMode() ? 'AiOutlineSun' : 'AiOutlineMoon' }}
+          styles={{ element: { fontSize: 16 } }}
+        />
+      </div>
+    );
+  }
+
   return (
     <Layout
       blockId={blockId}
@@ -149,25 +284,17 @@ const PageHeaderMenu = ({
                             styles.headerContent,
                           ])
                         )}
-                      {properties.darkModeToggle && (
-                        <Button
-                          classNames={{ element: classNames.darkModeToggle ?? 'ml-2' }}
-                          styles={{ element: styles.darkModeToggle }}
-                          blockId={`${blockId}_dark_mode_toggle`}
-                          components={{ Icon, Link, ShortcutBadge }}
-                          events={events}
-                          properties={{
-                            hideTitle: true,
-                            color: 'default',
-                            variant: 'text',
-                            size: 'small',
-                            icon: {
-                              name: getDarkMode() ? 'AiOutlineSun' : 'AiOutlineMoon',
-                            },
-                          }}
-                          methods={methods}
-                          onClick={() => methods.triggerEvent({ name: '__toggleDarkMode' })}
-                        />
+                      {(!type.isNone(properties.notifications) ||
+                        !type.isNone(properties.profile) ||
+                        properties.darkModeToggle) && (
+                        <div
+                          className={classNames.headerActions ?? 'flex items-center gap-4 ml-4'}
+                          style={styles.headerActions}
+                        >
+                          {renderNotifications()}
+                          {renderProfile()}
+                          {renderDarkModeToggle()}
+                        </div>
                       )}
                       <MobileMenu
                         classNames={{
