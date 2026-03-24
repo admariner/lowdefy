@@ -48,25 +48,29 @@ export default {
     properties: {
       logo: {
         type: 'object',
-        description: 'Header logo settings.',
+        description:
+          'Header logo settings. By default, images are served from the app public folder and auto-swap between light and dark variants based on dark mode. See <a href="/hosting-files">Hosting Files</a> for details.',
         additionalProperties: false,
         properties: {
           src: {
             type: 'string',
-            description: 'Header logo source url.',
+            description:
+              'Logo image URL for desktop. Defaults to logo-light-theme.png or logo-dark-theme.png from the public folder (~250x72px), auto-selected based on dark mode.',
           },
           srcMobile: {
             type: 'string',
-            description: 'Header logo img element for mobile.',
+            description:
+              'Logo image URL for mobile. Defaults to logo-square-light-theme.png or logo-square-dark-theme.png from the public folder (~125x125px), auto-selected based on dark mode.',
           },
           breakpoint: {
             type: 'number',
-            description: 'Header logo breakpoint for switching between mobile and desktop logo.',
+            description:
+              'Viewport width breakpoint (in px) for switching between mobile and desktop logo. Default is 577.',
           },
           alt: {
             type: 'string',
             default: 'Lowdefy',
-            description: 'Header logo alternative text.',
+            description: 'Logo image alt text.',
           },
         },
       },
