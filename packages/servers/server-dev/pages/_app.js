@@ -98,7 +98,16 @@ function App({ Component }) {
       >
         <ThemeTokenResolver lowdefyRef={lowdefyRef}>
           <ErrorBoundary fullPage onError={handleError}>
-            <Suspense fallback="">
+            <Suspense
+              fallback={
+                <div
+                  style={{
+                    minHeight: '100vh',
+                    background: 'var(--ant-color-bg-layout)',
+                  }}
+                />
+              }
+            >
               <Auth>
                 {(auth) => {
                   return <Component auth={auth} lowdefy={lowdefyRef.current} />;
