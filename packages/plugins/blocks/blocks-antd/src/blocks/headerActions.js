@@ -24,6 +24,17 @@ function getDarkMode() {
   return window.__lowdefy_isDark ?? false;
 }
 
+function getDarkModePreference() {
+  return window.localStorage?.getItem('lowdefy_darkMode') ?? 'system';
+}
+
+function getDarkModeIcon() {
+  const pref = getDarkModePreference();
+  if (pref === 'dark') return 'AiOutlineSun';
+  if (pref === 'light') return 'AiOutlineMoon';
+  return 'AiOutlineLaptop';
+}
+
 function renderNotifications({
   blockId,
   classNames,
@@ -178,7 +189,7 @@ function renderDarkModeToggle({ blockId, classNames, styles, methods, events, Ic
       <Icon
         blockId={`${blockId}_dark_mode_toggle_icon`}
         events={events}
-        properties={{ name: getDarkMode() ? 'AiOutlineSun' : 'AiOutlineMoon' }}
+        properties={{ name: getDarkModeIcon() }}
         styles={{ element: { fontSize: 16, color: iconsColor } }}
       />
     </div>
