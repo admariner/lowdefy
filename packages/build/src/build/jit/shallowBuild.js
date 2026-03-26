@@ -81,6 +81,11 @@ async function shallowBuild(options) {
       throw err;
     }
 
+    // Stop early if buildRefs collected errors (e.g., YAML parse errors).
+    // Failed _ref resolutions leave null entries in arrays — logging now
+    // surfaces the real error before downstream code crashes on nulls.
+    logCollectedErrors(context);
+
     // addKeys + testSchema first for error location info
     tryBuildStep(addKeys, 'addKeys', { components, context });
     context.tailwindContentMap = new Map();
