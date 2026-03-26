@@ -275,7 +275,7 @@ export default {
           links: {
             type: 'array',
             description:
-              'Dropdown menu items. Uses the same MenuLink/MenuGroup/MenuDivider pattern as DropdownMenu. When links are provided, clicking the avatar opens a dropdown menu.',
+              'Dropdown menu items. Uses the same MenuLink/MenuGroup/MenuDivider schema as Menu. Compatible with _menu operator output for access-filtered menus.',
             items: {
               type: 'object',
               required: ['id', 'type'],
@@ -302,6 +302,13 @@ export default {
                   type: 'boolean',
                   description: 'Open link in new tab.',
                 },
+                style: {
+                  type: 'object',
+                  description: 'CSS style applied to the link.',
+                  docs: {
+                    displayType: 'yaml',
+                  },
+                },
                 properties: {
                   type: 'object',
                   description: 'Properties for the menu item.',
@@ -324,7 +331,21 @@ export default {
                       default: false,
                       description: 'Disable the menu item.',
                     },
+                    dashed: {
+                      type: 'boolean',
+                      default: false,
+                      description: 'Whether the divider line is dashed.',
+                    },
+                    shortcut: {
+                      type: 'string',
+                      description:
+                        'Keyboard shortcut. Renders a shortcut badge next to the label. Use "mod" for Cmd/Ctrl.',
+                    },
                   },
+                },
+                links: {
+                  type: 'array',
+                  description: 'Nested menu items for MenuGroup.',
                 },
               },
             },
