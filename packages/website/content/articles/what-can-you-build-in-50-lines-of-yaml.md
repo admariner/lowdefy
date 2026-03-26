@@ -11,11 +11,11 @@ tags:
 draft: false
 ---
 
-Most web frameworks tend to make you write a lot of code before anything actually works. A React form needs state hooks, event handlers, validation logic, JSX markup, and probably a CSS file. A dashboard needs a charting library, data fetching, page filter and loading states. A data table needs... you get the idea.
+Most web frameworks tend to make you write a lot of code before anything actually works. A React form needs state hooks, event handlers, validation logic, JSX markup, and probably a CSS file. A dashboard needs a charting library, data fetching, data filtering, and loading states. A data table needs... you get the idea.
 
 Sometimes I don't want to obsess over syntax and convoluted setups. I just want to describe what I need and have it work.
 
-[Lowdefy](https://lowdefy.com) is an open-source, config-first web framework. You write YAML, and it gives you a front-to-back web app. It's built on Next.js with 70+ UI components, database connectors, and built-in auth, without the need to write any React or JavaScript. And when you hit a wall, custom plugins and _js operators allows you to extend the framework for any niche requirement. 
+[Lowdefy](https://lowdefy.com) is an open-source, config-first web framework. You write YAML, and it gives you a front-to-back web app. It's built on Next.js with 70+ UI components, database connectors, and built-in auth, without the need to write any React or JavaScript. When you hit a wall, there's support for custom plugins and a `_js` operator that lets you drop into JavaScript when you need to.
 
 I put together three examples to showcase it, each built in 50 lines of YAML.
 
@@ -295,7 +295,7 @@ These 50-line examples barely scratch the surface. Lowdefy ships with:
 
 - **70+ UI blocks** - from date pickers and file uploads to Google Maps and QR scanners
 - **10+ connectors** - MongoDB, PostgreSQL, MySQL, SQLite, Google Sheets, Elasticsearch, S3, Stripe
-- **Built-in auth with RBAC** - powered by NextAuth.js, with OAuth, custom providers and role based access control (RBAC)
+- **Built-in auth** - powered by NextAuth.js, with OAuth, custom providers, and role-based access control (RBAC)
 - **PDF generation, CSV export, geolocation** - all as config-level actions
 
 If you're curious, the examples above are a good place to start. Honestly, my favourite part about Lowdefy is not having to deal with braces and semicolons.
