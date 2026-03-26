@@ -13,9 +13,9 @@ draft: false
 
 Most web frameworks tend to make you write a lot of code before anything actually works. A React form needs state hooks, event handlers, validation logic, JSX markup, and probably a CSS file. A dashboard needs a charting library, data fetching, and loading states. A data table needs... you get the idea.
 
-What if you could just describe what you want in a config file and get a working app back?
+Sometimes I don't want to obsess over syntax and convoluted setups. I just want to describe what I need and have it work.
 
-[Lowdefy](https://lowdefy.com) is an open-source, config-first web framework. You write YAML, and it gives you a production-ready web app. It's built on Next.js with 70+ UI components, database connectors, and built-in auth, without the need to write any React or JavaScript.
+[Lowdefy](https://lowdefy.com) is an open-source, config-first web framework. You write YAML, and it gives you a front-to-back web app. It's built on Next.js with 70+ UI components, database connectors, and built-in auth, without the need to write any React or JavaScript.
 
 I put together three examples to showcase it, each built in 50 lines of YAML.
 
@@ -92,7 +92,7 @@ blocks:
 
 The `events.onClick` array defines the entire flow. Actions run sequentially: validate first, then save to the database, then reset. If validation *fails*, the chain stops. No `if` statements, no `try-catch`. Just declare the flow.
 
-Notice how the input ids are prefixed with `form.`. That nests them under a `form` object in the page state. The `payload` passes that object to the server via `_state: form`, and the request accesses it with `_payload: form` to save as the document. Clean separation between client and server. We'll explain how `_state` works in the next example.
+Notice how the input ids are prefixed with `form.`. That nests them under a `form` object in the page state. The `payload` passes that object to the server via `_state: form`, and the request accesses it with `_payload: form` to save as the document. Clean separation between client and server. The `connectionId` references a database connection defined in `lowdefy.yaml`, which we'll show at the end.
 
 ---
 
@@ -119,7 +119,6 @@ events:
 blocks:
   - id: chart_type
     type: ButtonSelector
-    defaultValue: bar
     properties:
       label:
         disabled: true
@@ -154,7 +153,7 @@ blocks:
               type: dashed
 ```
 
-**49 lines.** Two series, a legend, tooltips, and an interactive toggle. Hover over any bar to see the tooltip, and click a series name in the legend to toggle it on or off.
+**48 lines.** Two series, a legend, tooltips, and an interactive toggle. Hover over any bar to see the tooltip, and click a series name in the legend to toggle it on or off.
 
 The chart type is **bound to the selector's state** through this line:
 
@@ -163,7 +162,7 @@ type:
   _state: chart_type
 ```
 
-`_state` is a Lowdefy **operator**, a function that runs inline in your config. When the user clicks "Line Chart", the selector's value changes to `line`, and the chart re-renders as a line chart. No event handler. No `setState()`. The binding is *declarative*.
+`_state` is a Lowdefy **operator**, a function that runs inline in your config. When the user clicks "Line Chart", the selector's value changes to `line`, and the chart re-renders as a line chart. No event handler. No manual state wiring. The binding is *declarative*.
 
 Lowdefy has 50+ operators like this. `_if` for conditionals, `_sum` for math, `_string` for text manipulation, `_array` for list operations. You can combine them to handle most logic without needing to write any JavaScript.
 
@@ -276,9 +275,9 @@ Three examples, ~150 lines of YAML total:
 - An interactive chart with state-driven rendering
 - A searchable data table with live MongoDB queries
 
-In React, the equivalent would be somewhere north of 500 lines, plus package installs, component files, hook logic, API routes, and CSS. Here, it's all in the config.
+In React, the equivalent would easily be 300-500 lines across component files, hook logic, API routes, validation, and CSS. Here, it's all in the config.
 
-And these aren't toy demos. We run production apps on Lowdefy. A manufacturing ERP with 390+ pages, a multi-app CRM with complex multi-step workflows, a support desk serving 400+ client companies. All built with the same framework and same YAML-first approach, just scaled up.
+For perspective, we run production apps on Lowdefy, including a manufacturing ERP with 390+ pages, a multi-app CRM with complex multi-step workflows, and a support desk serving 400+ client companies. All built with the same framework and same YAML-first approach, just scaled up.
 
 ### Getting Started
 
@@ -299,7 +298,7 @@ These 50-line examples barely scratch the surface. Lowdefy ships with:
 - **Built-in auth** - powered by NextAuth.js, with OAuth and custom providers
 - **PDF generation, CSV export, geolocation** - all as config-level actions
 
-If you're curious, the examples above are a good place to start.
+If you're curious, the examples above are a good place to start. Honestly, my favourite part about Lowdefy is not having to deal with braces and semicolons.
 
 ---
 
