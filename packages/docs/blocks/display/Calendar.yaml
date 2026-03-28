@@ -25,6 +25,7 @@ _ref:
     github_path: packages/plugins/blocks/blocks-antd/src/blocks/Calendar
     schema: ../plugins/blocks/blocks-antd/src/blocks/Calendar/meta.js
     gallery: ../plugins/blocks/blocks-antd/src/blocks/Calendar/gallery.yaml
+    fullWidthExamples: true
     description: >
       Full-size or compact calendar for date display and selection, with support for
       disabled dates, date cell badges, and panel navigation events.
