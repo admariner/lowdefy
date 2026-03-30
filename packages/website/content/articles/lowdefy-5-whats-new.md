@@ -8,7 +8,7 @@ tags:
   - 'Release'
   - 'Ant Design'
   - 'Tailwind'
-draft: true
+draft: false
 ---
 
 Lowdefy v5 modernizes the stack. Tailwind CSS on every block. Dark mode out of the box. Keyboard shortcuts. A component library upgrade from Ant Design v4 to v6. Moment.js replaced with dayjs. The layout grid rewritten in pure CSS. Areas renamed to slots. 15 new blocks.
