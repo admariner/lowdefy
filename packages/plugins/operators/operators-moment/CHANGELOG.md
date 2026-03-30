@@ -1,5 +1,17 @@
 # Change Log
 
+## 4.7.2
+
+### Patch Changes
+
+- @lowdefy/operators@4.7.2
+
+## 4.7.1
+
+### Patch Changes
+
+- @lowdefy/operators@4.7.1
+
 ## 4.7.0
 
 ### Patch Changes
