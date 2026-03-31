@@ -434,13 +434,13 @@ When the walker encounters a `_ref` at a matching path, it creates a `~shallow` 
 The walker also deletes page content keys (`blocks`, `areas`, `events`, `requests`, `layout`) from page objects during traversal, preventing unnecessary `_build.*` evaluation on content that will be resolved later by JIT.
 
 The shallow build then:
-1. Runs skeleton build steps (buildApp, buildAuth, buildConnections, buildApi, buildMenu)
-2. Creates a **page registry** with raw (unresolved) page content
-3. Creates a **file dependency map** for targeted invalidation
+1. Collects **skeleton source files** from `~r` markers on non-page components (before `addKeys` removes them)
+2. Runs skeleton build steps (buildApp, buildAuth, buildConnections, buildApi, buildMenu)
+3. Creates a **page registry** with raw (unresolved) page content
 4. Adds all types from installed packages (since page-level types aren't counted)
-5. Writes skeleton artifacts + `pageRegistry.json` + `jsMap.json`
+5. Writes skeleton artifacts + `pageRegistry.json` + `jsMap.json` + `skeletonSourceFiles.json`
 
-**Output:** `{ components, pageRegistry, fileDependencyMap, context }`
+**Output:** `{ components, pageRegistry, context }`
 
 ### Phase 2: JIT Page Build (`buildPageJit`)
 
@@ -467,6 +467,7 @@ When a page is requested, uses the walker to resolve page content:
 
 | Module | File | Purpose |
 |--------|------|---------|
+| `collectSkeletonSourceFiles` | `jit/collectSkeletonSourceFiles.js` | Walks `~r` markers to derive skeleton source file set for watcher |
 | `createPageRegistry` | `jit/createPageRegistry.js` | Extracts page metadata + raw content from shallow-built components |
 | `createFileDependencyMap` | `jit/createFileDependencyMap.js` | Maps config files → page IDs for targeted invalidation |
 | `writePageRegistry` | `jit/writePageRegistry.js` | Serializes page registry to `pageRegistry.json` |
@@ -494,10 +495,11 @@ In dev mode, the build directory contains additional JIT artifacts:
 
 ```
 .lowdefy/dev/build/
-├── pageRegistry.json      # Page metadata + raw content for JIT
-├── jsMap.json             # JS hash maps (restored by JIT build context)
-├── invalidatePages.json   # Page IDs to invalidate (cross-process)
-├── pages/{pageId}/        # Written by JIT build on first request
+├── pageRegistry.json         # Page metadata + raw content for JIT
+├── jsMap.json                # JS hash maps (restored by JIT build context)
+├── skeletonSourceFiles.json  # Source files that affect skeleton (for watcher)
+├── invalidatePages           # Timestamp signal file (cross-process page invalidation)
+├── pages/{pageId}/           # Written by JIT build on first request
 │   ├── {pageId}.json
 │   └── requests/{requestId}.json
 └── ... (standard skeleton artifacts)
