@@ -55,6 +55,7 @@ import writePluginImports from '../writePluginImports/writePluginImports.js';
 import addInstalledTypes from './addInstalledTypes.js';
 import buildJsShallow from './buildJsShallow.js';
 import buildShallowPages from './buildShallowPages.js';
+import collectSkeletonSourceFiles from './collectSkeletonSourceFiles.js';
 import writeSourcelessPages from './writeSourcelessPages.js';
 
 async function shallowBuild(options) {
@@ -77,6 +78,9 @@ async function shallowBuild(options) {
       }
       throw err;
     }
+
+    // Collect skeleton source files while ~r markers still exist on objects.
+    const skeletonSourceFiles = collectSkeletonSourceFiles({ components, context });
 
     // addKeys + testSchema first for error location info
     tryBuildStep(addKeys, 'addKeys', { components, context });
@@ -126,7 +130,11 @@ async function shallowBuild(options) {
     await writeMaps({ context });
     await context.writeBuildArtifact(
       'connectionIds.json',
-      JSON.stringify([...context.connectionIds])
+      JSON.stringify([...context.connectionIds].sort())
+    );
+    await context.writeBuildArtifact(
+      'skeletonSourceFiles.json',
+      JSON.stringify([...skeletonSourceFiles].sort())
     );
     await writeMenus({ components, context });
     await writeJs({ context });

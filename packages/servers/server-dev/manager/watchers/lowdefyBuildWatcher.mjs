@@ -17,6 +17,7 @@
 import fs from 'fs';
 import path from 'path';
 import getLowdefyVersion from '../utils/getLowdefyVersion.mjs';
+import loadSkeletonSourceFiles from '../utils/loadSkeletonSourceFiles.mjs';
 import setupWatcher from '../utils/setupWatcher.mjs';
 
 function lowdefyBuildWatcher(context) {
@@ -41,9 +42,11 @@ function lowdefyBuildWatcher(context) {
     }
 
     try {
+      const skeletonSourceFiles = loadSkeletonSourceFiles(context.directories.build);
+
       const isSkeletonChange =
         lowdefyYamlModified ||
-        changedFiles.some((f) => !f.startsWith('pages/') && !f.startsWith('./'));
+        changedFiles.some((f) => skeletonSourceFiles.has(f));
 
       if (isSkeletonChange) {
         await context.lowdefyBuild();
