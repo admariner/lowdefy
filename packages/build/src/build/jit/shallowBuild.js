@@ -57,6 +57,7 @@ import addInstalledTypes from './addInstalledTypes.js';
 import buildJsShallow from './buildJsShallow.js';
 import buildShallowPages from './buildShallowPages.js';
 import collectPageContent from '../collectPageContent.js';
+import collectSkeletonSourceFiles from './collectSkeletonSourceFiles.js';
 import stripPageContent from './stripPageContent.js';
 import writeSourcelessPages from './writeSourcelessPages.js';
 
@@ -85,6 +86,9 @@ async function shallowBuild(options) {
     // Failed _ref resolutions leave null entries in arrays — logging now
     // surfaces the real error before downstream code crashes on nulls.
     logCollectedErrors(context);
+
+    // Collect skeleton source files while ~r markers still exist on objects.
+    const skeletonSourceFiles = collectSkeletonSourceFiles({ components, context });
 
     // addKeys + testSchema first for error location info
     tryBuildStep(addKeys, 'addKeys', { components, context });
@@ -143,7 +147,11 @@ async function shallowBuild(options) {
     await writeMaps({ context });
     await context.writeBuildArtifact(
       'connectionIds.json',
-      JSON.stringify([...context.connectionIds])
+      JSON.stringify([...context.connectionIds].sort())
+    );
+    await context.writeBuildArtifact(
+      'skeletonSourceFiles.json',
+      JSON.stringify([...skeletonSourceFiles].sort())
     );
     await writeMenus({ components, context });
     await writeJs({ context });
