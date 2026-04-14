@@ -18,7 +18,7 @@ import icon from '../../schemas/icon.js';
 
 export default {
   category: 'container',
-  icons: ['AiOutlineBell', 'AiOutlineMoon', 'AiOutlineSun', 'AiOutlineUser'],
+  icons: ['AiOutlineBell', 'AiOutlineLaptop', 'AiOutlineMoon', 'AiOutlineSun', 'AiOutlineUser'],
   valueType: null,
   slots: {
     content: 'Child blocks in the header.',

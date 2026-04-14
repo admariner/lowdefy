@@ -23,6 +23,7 @@ export default {
   category: 'container',
   icons: [
     'AiOutlineBell',
+    'AiOutlineLaptop',
     'AiOutlineMoon',
     'AiOutlineSun',
     'AiOutlineUser',
