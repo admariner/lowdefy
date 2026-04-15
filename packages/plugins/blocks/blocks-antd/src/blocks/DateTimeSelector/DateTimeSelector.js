@@ -16,21 +16,27 @@
 
 import React, { useState } from 'react';
 import { DatePicker } from 'antd';
-import moment from 'moment';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc.js';
 import { type } from '@lowdefy/helpers';
-import { blockDefaultProps } from '@lowdefy/block-utils';
 
+import { withBlockDefaults } from '@lowdefy/block-utils';
 import Label from '../Label/Label.js';
+import withTheme from '../withTheme.js';
 import disabledDate from '../../disabledDate.js';
+
+dayjs.extend(utc);
 
 const DateTimeSelector = ({
   blockId,
+  classNames = {},
   components: { Icon },
   events,
   loading,
   methods,
   properties,
   required,
+  styles = {},
   validation,
   value,
 }) => {
@@ -43,10 +49,12 @@ const DateTimeSelector = ({
         ? 'hour'
         : 'minute';
   const onChange = (newVal) => {
-    const val = !newVal
+    // Wrap with our dayjs — antd v6's internal dayjs may lack the utc plugin.
+    const d = newVal ? dayjs(newVal) : null;
+    const val = !d
       ? null
-      : moment
-          .utc(newVal.add(properties.selectUTC ? newVal.utcOffset() : 0, 'minutes'))
+      : dayjs
+          .utc(d.add(properties.selectUTC ? d.utcOffset() : 0, 'minutes'))
           .startOf(timeUnit)
           .toDate();
     methods.setValue(val);
@@ -55,21 +63,24 @@ const DateTimeSelector = ({
   return (
     <Label
       blockId={blockId}
+      classNames={classNames}
       components={{ Icon }}
       events={events}
       properties={{ title: properties.title, size: properties.size, ...properties.label }}
       validation={validation}
       required={required}
+      styles={styles}
       content={{
         content: () => (
-          <div className={methods.makeCssClass({ width: '100%' })}>
+          <div style={{ width: '100%' }}>
             <div id={`${blockId}_${elementId}_popup`} />
             <DatePicker
               id={`${blockId}_input`}
               allowClear={properties.allowClear !== false}
               autoFocus={properties.autoFocus}
-              bordered={properties.bordered}
-              className={methods.makeCssClass([{ width: '100%' }, properties.inputStyle])}
+              variant={properties.bordered === false ? 'borderless' : properties.variant}
+              className={classNames.element}
+              style={{ width: '100%', ...styles.element }}
               disabled={properties.disabled || loading}
               disabledDate={disabledDate(properties.disabledDates)}
               format={properties.format ?? 'YYYY-MM-DD HH:mm'}
@@ -82,8 +93,10 @@ const DateTimeSelector = ({
               suffixIcon={
                 <Icon
                   blockId={`${blockId}_suffixIcon`}
+                  classNames={{ element: classNames.suffixIcon }}
                   events={events}
                   properties={properties.suffixIcon ?? 'AiOutlineCalendar'}
+                  styles={{ element: styles.suffixIcon }}
                 />
               }
               showTime={{
@@ -99,11 +112,7 @@ const DateTimeSelector = ({
                 onChange
               }
               value={
-                !type.isDate(value)
-                  ? null
-                  : properties.selectUTC
-                    ? moment.utc(value)
-                    : moment(value)
+                !type.isDate(value) ? null : properties.selectUTC ? dayjs.utc(value) : dayjs(value)
               }
             />
           </div>
@@ -113,12 +122,4 @@ const DateTimeSelector = ({
   );
 };
 
-DateTimeSelector.defaultProps = blockDefaultProps;
-DateTimeSelector.meta = {
-  valueType: 'date',
-  category: 'input',
-  icons: [...Label.meta.icons, 'AiOutlineCalendar'],
-  styles: ['blocks/DateTimeSelector/style.less'],
-};
-
-export default DateTimeSelector;
+export default withTheme('DatePicker', withBlockDefaults(DateTimeSelector));

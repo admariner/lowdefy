@@ -14,18 +14,74 @@
   limitations under the License.
 */
 
-import React, { Suspense, useCallback, useRef } from 'react';
+// CSS layer order — MUST be the first CSS import. Turbopack treats this as critical
+// CSS that loads before hydration, locking the cascade priority (antd > base/preflight)
+// before antd's StyleProvider injects @layer antd {} at runtime.
+import '../build/layer-order.css';
+
+import React, { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
+import useSWR from 'swr';
 
 import { ErrorBoundary } from '@lowdefy/block-utils';
+import { useDarkMode } from '@lowdefy/client';
+import { StyleProvider } from '@ant-design/cssinjs';
+import { App as AntdApp, ConfigProvider, theme as antdTheme } from 'antd';
 
 import Auth from '../lib/client/auth/Auth.js';
+import ErrorBar from '../lib/client/ErrorBar.js';
+import request from '../lib/client/utils/request.js';
 
-// Must be in _app due to next specifications.
-import '../build/plugins/styles.less';
+// Full Tailwind CSS — also loaded via <link href="tailwind-jit.css"> in _document.js
+// for hot-reloading. The Turbopack chunk provides layer ordering guarantee on initial load.
+import '../build/globals.css';
+
+function ThemeTokenResolver({ lowdefyRef, children }) {
+  const { token } = antdTheme.useToken();
+  if (!lowdefyRef.current.theme) {
+    lowdefyRef.current.theme = {};
+  }
+  lowdefyRef.current.theme._resolvedAntdToken = token;
+  return children;
+}
 
 function App({ Component }) {
+  const router = useRouter();
   const lowdefyRef = useRef({});
+  const [runtimeErrors, setRuntimeErrors] = useState([]);
+  // Subscribe to rootConfig SWR cache — deduplicates with inner App.js fetch.
+  // Without suspense so _app.js doesn't suspend — just re-renders when data arrives.
+  const { data: rootConfig } = useSWR(`${router.basePath}/api/root`, (url) => request({ url }));
+  if (rootConfig?.theme) {
+    lowdefyRef.current.theme = rootConfig.theme;
+  }
+
+  const algorithm = useDarkMode({
+    baseAlgorithm: lowdefyRef.current.theme?.antd?.algorithm,
+    configDarkMode: lowdefyRef.current.theme?.darkMode,
+  });
+
+  // Runtime error callback — pushes errors to state for ErrorBar display.
+  // Accepts Error objects (with .name) or plain objects (with .type) from build warnings.
+  lowdefyRef.current._runtimeErrorCallback = useCallback((error) => {
+    setRuntimeErrors((prev) => [
+      ...prev,
+      {
+        type: error.type ?? error.name,
+        message: error.message,
+        source: error.source,
+        stack: error.stack,
+      },
+    ]);
+  }, []);
+
+  // Clear runtime errors on route change
+  useEffect(() => {
+    const clearErrors = () => setRuntimeErrors([]);
+    router.events.on('routeChangeStart', clearErrors);
+    return () => router.events.off('routeChangeStart', clearErrors);
+  }, [router.events]);
 
   const handleError = useCallback((error) => {
     if (lowdefyRef.current?._internal?.handleError) {
@@ -36,15 +92,40 @@ function App({ Component }) {
   }, []);
 
   return (
-    <ErrorBoundary fullPage onError={handleError}>
-      <Suspense fallback="">
-        <Auth>
-          {(auth) => {
-            return <Component auth={auth} lowdefy={lowdefyRef.current} />;
-          }}
-        </Auth>
-      </Suspense>
-    </ErrorBoundary>
+    <StyleProvider layer>
+      <ConfigProvider
+        theme={{
+          ...lowdefyRef.current.theme?.antd,
+          cssVar: { key: 'lowdefy' },
+          hashed: false,
+          algorithm,
+        }}
+      >
+        <AntdApp>
+          <ThemeTokenResolver lowdefyRef={lowdefyRef}>
+            <ErrorBoundary fullPage onError={handleError}>
+              <Suspense
+                fallback={
+                  <div
+                    style={{
+                      minHeight: '100vh',
+                      background: 'var(--ant-color-bg-layout)',
+                    }}
+                  />
+                }
+              >
+                <Auth>
+                  {(auth) => {
+                    return <Component auth={auth} lowdefy={lowdefyRef.current} />;
+                  }}
+                </Auth>
+              </Suspense>
+            </ErrorBoundary>
+            <ErrorBar errors={runtimeErrors} />
+          </ThemeTokenResolver>
+        </AntdApp>
+      </ConfigProvider>
+    </StyleProvider>
   );
 }
 
