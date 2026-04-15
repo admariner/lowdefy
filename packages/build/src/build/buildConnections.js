@@ -18,6 +18,7 @@
 
 import countOperators from '../utils/countOperators.js';
 import createCheckDuplicateId from '../utils/createCheckDuplicateId.js';
+import validateId from '../utils/validateId.js';
 
 function buildConnections({ components, context }) {
   // Store connection IDs for validation in buildRequests
@@ -34,6 +35,7 @@ function buildConnections({ components, context }) {
 
     // Check duplicates (schema can't validate this)
     checkDuplicateConnectionId({ id: connection.id, configKey });
+    validateId({ id: connection.id, field: 'Connection id', configKey });
 
     // Track type usage for buildTypes validation
     context.typeCounters.connections.increment(connection.type, configKey);
