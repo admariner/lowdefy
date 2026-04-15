@@ -17,11 +17,12 @@
 */
 
 import { type } from '@lowdefy/helpers';
-import { ConfigError } from '@lowdefy/errors';
+import { ConfigError, ConfigWarning } from '@lowdefy/errors';
 
 import buildBlock from './buildBlock/buildBlock.js';
 import collectExceptions from '../../utils/collectExceptions.js';
 import createCheckDuplicateId from '../../utils/createCheckDuplicateId.js';
+import validateId from '../../utils/validateId.js';
 import createCounter from '../../utils/createCounter.js';
 import validateRequestReferences from './validateRequestReferences.js';
 
@@ -41,12 +42,14 @@ function buildPage({ page, index, context, checkDuplicatePageId }) {
     );
     return { failed: true };
   }
+  validateId({ id: page.id, field: 'Page id', configKey });
   if (checkDuplicatePageId) {
     checkDuplicatePageId({ id: page.id, configKey });
   }
   page.pageId = page.id;
   const requests = [];
   const requestActionRefs = [];
+  const shortcutRefs = [];
   buildBlock(page, {
     auth: page.auth,
     blockIdCounter: createCounter(),
@@ -57,6 +60,7 @@ function buildPage({ page, index, context, checkDuplicatePageId }) {
     pageId: page.pageId,
     requests,
     requestActionRefs,
+    shortcutRefs,
     linkActionRefs: context.linkActionRefs,
     typeCounters: context.typeCounters,
   });
@@ -69,6 +73,21 @@ function buildPage({ page, index, context, checkDuplicatePageId }) {
     requests,
     pageId: page.pageId,
     context,
+  });
+
+  // Warn on duplicate shortcuts within the page
+  const seenShortcuts = {};
+  shortcutRefs.forEach(({ shortcut, blockId, eventId, configKey }) => {
+    if (seenShortcuts[shortcut]) {
+      context.handleWarning(
+        new ConfigWarning(
+          `Duplicate shortcut "${shortcut}" on event "${eventId}" on block "${blockId}" on page "${page.pageId}" — already defined on block "${seenShortcuts[shortcut].blockId}".`,
+          { configKey }
+        )
+      );
+    } else {
+      seenShortcuts[shortcut] = { blockId, eventId };
+    }
   });
 
   page.requests = requests;

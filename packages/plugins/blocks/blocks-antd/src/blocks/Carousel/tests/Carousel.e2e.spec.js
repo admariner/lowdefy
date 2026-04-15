@@ -54,9 +54,9 @@ test.describe('Carousel Block', () => {
     const carousel = getCarousel(page, 'carousel_dots_left');
     await expect(carousel).toBeVisible();
 
-    // Left position class
+    // Left position class (antd v6 maps 'left' to 'start')
     const dots = getDots(carousel);
-    await expect(dots).toHaveClass(/slick-dots-left/);
+    await expect(dots).toHaveClass(/slick-dots-start/);
   });
 
   test('renders dots on top position', async ({ page }) => {
@@ -144,11 +144,15 @@ test.describe('Carousel Block', () => {
     // Ensure first dot is active before clicking
     await expect(dotItems.nth(0)).toHaveClass(/slick-active/);
 
+    // waitForAnimate: true blocks interactions during animations;
+    // wait for initialization animation to complete
+    await page.waitForTimeout(1000);
+
     // Click on second dot
     await dotItems.nth(1).click();
 
     // Wait for second dot to become active (slide transition complete)
-    await expect(dotItems.nth(1)).toHaveClass(/slick-active/, { timeout: 3000 });
+    await expect(dotItems.nth(1)).toHaveClass(/slick-active/, { timeout: 5000 });
 
     // Then verify event fired
     const display = getBlock(page, 'afterchange_display');

@@ -14,10 +14,10 @@
   limitations under the License.
 */
 
-import basicTypes from '@lowdefy/blocks-basic/types';
-import loaderTypes from '@lowdefy/blocks-loaders/types';
 import { ConfigError, ConfigWarning } from '@lowdefy/errors';
 
+import basicTypes from '@lowdefy/blocks-basic/types';
+import loaderTypes from '@lowdefy/blocks-loaders/types';
 import findSimilarString from '../utils/findSimilarString.js';
 
 function buildTypeClass(
@@ -62,6 +62,8 @@ function buildTypes({ components, context }) {
   loaderTypes.blocks.forEach((block) => typeCounters.blocks.increment(block));
   // Used for DisplayMessage in @lowdefy/client
   typeCounters.blocks.increment('Message');
+  // Used by blocks-antd Header/PageHeaderMenu/PageSiderMenu darkModeToggle
+  typeCounters.actions.increment('SetDarkMode');
 
   components.types = {
     actions: {},

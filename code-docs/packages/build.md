@@ -66,7 +66,7 @@ async function build(options) {
   await writeMaps({ components, context });
   await writeMenus({ components, context });
   await writeTypes({ components, context });
-  await writePluginImports({ components, context });
+  await writePluginImports({ components, context });  // includes writeGlobalsCss
   await writeJs({ components, context });
   await updateServerPackageJson({ components, context });
   await copyPublicFolder({ components, context });
@@ -93,7 +93,6 @@ async function build(options) {
 | `buildPageJit.js` | Dev-only: resolve page content on demand |
 | `createPageRegistry.js` | Dev-only: extract page metadata for JIT |
 | `createFileDependencyMap.js` | Dev-only: map files → pages for invalidation |
-| `collectSkeletonSourceFiles.js` | Dev-only: derive skeleton source file set from refMap |
 
 ### Reference Resolution (`buildRefs/`)
 
@@ -145,9 +144,32 @@ Validates config against the Lowdefy JSON schema:
 
 Processes page definitions:
 - Validates block hierarchy
-- Resolves area definitions
+- Resolves area/slot definitions
 - Processes skeleton configurations
 - Handles page-level properties
+
+Each block goes through these build-time transforms in `buildBlock.js`:
+
+#### `moveAreasToSlots` (deprecation transform)
+
+At build time, if a block has `areas`, it is copied to `slots` and the `areas` key is deleted. If both `areas` and `slots` are present, the build throws a `ConfigError`. A `ConfigWarning` is emitted when `areas` is encountered, advising migration to `slots`.
+
+```javascript
+// Before build:
+{ areas: { content: { blocks: [...] } } }
+// After build:
+{ slots: { content: { blocks: [...] } } }
+```
+
+#### `normalizeClassAndStyles` (styling normalization)
+
+Normalizes `class` and `style` config into a canonical shape. Both use `.` (dot) prefix for slot targeting:
+
+1. **`properties.style`** is merged into `style['.element']` (deprecation migration — the component's own style).
+2. **`block.style`** plain CSS keys (no `.` prefix) are moved to the `block` slot. `.` prefixed keys (e.g., `.element`, `.label`) have their prefix stripped. Responsive breakpoint keys are rejected with a `ConfigError`.
+3. **`block.class`** as a string or array is normalized to `{ block: value }`. Object keys with `.` prefix have the prefix stripped.
+
+The `breakpointKeys` used for validation are: `['xs', 'sm', 'md', 'lg', 'xl', '2xl']`. Note: `xxl` has been replaced with `2xl` to align with Tailwind v4 conventions.
 
 ### Menu Building (`buildMenu.js`)
 
@@ -242,6 +264,24 @@ Block and operator types are resolved at build time:
 - Generates import map for code splitting
 - Catches typos early (build fails, not runtime)
 
+### `writeGlobalsCss` (CSS Generation)
+
+Replaces the old `writeStyleImports`. Generates `globals.css` which is imported by the server's `_app.js`. The generated file includes:
+
+1. **Layer order declaration** — `@layer theme, base, antd, components, utilities;` to lock CSS cascade priority.
+2. **Tailwind CSS v4 import** — `@import "tailwindcss";`
+3. **Grid CSS import** — `@import "@lowdefy/layout/grid.css";` for the layout grid system.
+4. **Optional user styles** — imports `public/styles.css` if present (in the `components` layer).
+5. **Content source** — `@source "../lowdefy-build/tailwind/*.html"` for Tailwind to scan per-page content files and block JS content.
+6. **Trigger import** — `@import './tailwind-candidates.css'` that is rewritten on page changes to trigger CSS recompilation.
+7. **Antd-to-Tailwind theme bridge** — `@theme inline` block that maps `--ant-*` CSS variables to Tailwind design tokens (colors, radius, font-size, font-family). Users can override these via `theme.tailwind` in `lowdefy.yaml`.
+
+Also writes:
+- Per-page tailwind HTML files from `context.tailwindContentMap` to `lowdefy-build/tailwind/{pageId}.html`
+- Block plugin JS content via `collectBlockSourceContent()` to `lowdefy-build/tailwind/_blocks.html` (follows pnpm/yarn symlinks to resolve real paths)
+
+If `public/styles.less` is detected, a `ConfigError` is thrown, advising migration.
+
 ### Plugin Schema Map Generation
 
 During `writePluginImports`, schema maps are generated for runtime validation:
@@ -250,11 +290,13 @@ During `writePluginImports`, schema maps are generated for runtime validation:
 
 Each function:
 1. Groups used plugin types by package
-2. Imports the `schemas` export from each package (e.g., `@lowdefy/actions-core/schemas`)
+2. Imports metadata/schemas from each package
 3. Prioritizes custom schemas from `context.typesMap.schemas` over package schemas
 4. Writes a JSON map: `{ "TypeName": { type, properties/params, ... } }`
 
-**Schema export convention:** Plugin packages export schemas via a `/schemas` entry point:
+**Block schemas** are generated from `meta.js` files: `writeBlockSchemaMap` imports the `metas` export from each block package (e.g., `@lowdefy/blocks-antd/metas`), then calls `buildBlockSchema(meta)` from `@lowdefy/block-utils` to generate full JSON Schemas. It falls back to importing from `/schemas` for backward compatibility with older plugin packages. In addition to `plugins/blockSchemas.json`, it also writes `plugins/blockMetas.json` with runtime metadata (category, valueType, initValue) from `context.typesMap.blockMetas` or the meta objects.
+
+**Action and operator schemas** are imported from a `/schemas` entry point:
 
 ```json
 // package.json exports
@@ -347,7 +389,7 @@ const typesMap = createPluginTypesMap(plugins);
 import { shallowBuild, buildPageJit, createContext } from '@lowdefy/build/dev';
 
 // Phase 1: Skeleton build (resolves everything except page content)
-const { components, pageRegistry, context } = await shallowBuild({
+const { components, pageRegistry, fileDependencyMap, context } = await shallowBuild({
   customTypesMap,
   directories,
   logger,
@@ -377,8 +419,8 @@ await buildPageJit({
 | `createPageRegistry` | `jit/createPageRegistry.js` | Extract page metadata + raw content from shallow-built components |
 | `createFileDependencyMap` | `jit/createFileDependencyMap.js` | Map config files → page IDs for targeted invalidation |
 | `writePageRegistry` | `jit/writePageRegistry.js` | Serialize page registry to JSON |
-| `writePageJit` | `jit/writePageJit.js` | Write page/request JSONs + updated maps + JS files |
-| `collectSkeletonSourceFiles` | `jit/collectSkeletonSourceFiles.js` | Walk `~r` markers on non-page components to derive skeleton source files |
+| `writePageJit` | `jit/writePageJit.js` | Write page/request JSONs + updated maps + JS files + per-page tailwind HTML |
+| `collectPageContent` | `collectPageContent.js` | Extract all string content from page blocks for Tailwind scanning |
 | `isPageContentPath` | `jit/isPageContentPath.js` | Semantic segment matching for shallow build stop paths |
 | `pageContentKeys` | `jit/pageContentKeys.js` | List of page content keys used by `isPageContentPath` |
 
@@ -387,7 +429,7 @@ await buildPageJit({
 The walker's `shouldStop` callback uses `isPageContentPath()` for semantic path matching. Any path under `pages.` containing a page content key segment is stopped:
 
 ```javascript
-const PAGE_CONTENT_KEYS = ['blocks', 'areas', 'events', 'requests', 'layout'];
+const PAGE_CONTENT_KEYS = ['blocks', 'areas', 'slots', 'events', 'requests', 'layout'];
 
 function isPageContentPath(jsonPath) {
   if (!jsonPath.startsWith('pages.')) return false;

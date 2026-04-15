@@ -11,6 +11,7 @@ The development server provides:
 - Extended plugin set for development
 - Environment file watching
 - Process management
+- In-browser ErrorBar for build errors and warnings
 
 ## Key Differences from Production
 
@@ -32,11 +33,11 @@ Beyond production server:
 - `dotenv` (16.3.1) - Env loading
 - `opener` (1.5.2) - Browser opener
 - `swr` (2.2.4) - Data fetching
+- `postcss`, `tailwindcss`, `@tailwindcss/postcss` - JIT CSS compilation (used by `compileCss.mjs` and `lib/server/compileCss.js`)
 
 Additional block packages:
 
 - `@lowdefy/blocks-aggrid`
-- `@lowdefy/blocks-color-selectors`
 - `@lowdefy/blocks-echarts`
 - `@lowdefy/blocks-markdown`
 - `@lowdefy/blocks-qr`
@@ -45,11 +46,25 @@ Additional operators:
 
 - `@lowdefy/operators-change-case`
 - `@lowdefy/operators-diff`
-- `@lowdefy/operators-moment`
+- `@lowdefy/operators-dayjs`
 - `@lowdefy/operators-mql`
 - `@lowdefy/operators-nunjucks`
 - `@lowdefy/operators-uuid`
 - `@lowdefy/operators-yaml`
+
+### CRITICAL: Singleton Packages in Local Dev
+
+**`antd` and `@ant-design/cssinjs` use React context for cross-component coordination.** Multiple instances break CSS-in-JS context sharing between `ConfigProvider`, `StyleProvider`, and `useDarkMode` — dark mode and theming silently fail (only some antd components respond to theme changes, no console errors).
+
+Both `server` and `server-dev` have `antd` and `@ant-design/cssinjs` as direct dependencies. This is correct — the published packages need them for pnpm strict mode resolution.
+
+**The singleton risk only exists in the local monorepo dev setup** (`scripts/dev.mjs`), where `rewriteDeps.mjs` rewrites `@lowdefy/*` deps to `link:` paths. Without overrides, pnpm would install a separate npm copy of antd for the dev server while linked `@lowdefy/client` uses the monorepo's copy — two instances.
+
+**Fix:** `rewriteDeps.mjs` has a `SINGLETON_PACKAGES` list (`antd`, `@ant-design/cssinjs`) that adds `pnpm.overrides` entries pointing to the monorepo's `node_modules/` copies. This forces a single instance across the dev server and all linked packages.
+
+**If you add a new package that uses React context across components** (like a UI library), add it to `SINGLETON_PACKAGES` in `scripts/lib/rewriteDeps.mjs`.
+
+**Symptoms of duplicate instances:** Dark mode toggle only partially works — some antd components (like Menu) respond while the rest of the page stays in light mode. No errors in console.
 
 ## Scripts
 
@@ -620,6 +635,12 @@ function App({ children }) {
   );
 }
 ```
+
+### ErrorBar
+
+**File:** `lib/client/ErrorBar.js`
+
+Fixed bottom bar that displays build errors and warnings in the browser. Build warnings propagate from the build pipeline through the SSE reload channel to the client, giving developers immediate feedback without checking the terminal. Includes a copy-to-clipboard button for sharing error details with stack traces.
 
 ### SWR Hooks
 

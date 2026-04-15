@@ -1,5 +1,5 @@
 /*
-  Copyright 2021 Lowdefy, Inc
+  Copyright 2020-2026 Lowdefy, Inc
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -15,7 +15,11 @@
 */
 
 import React from 'react';
-import { blockDefaultProps } from '@lowdefy/block-utils';
+import { withBlockDefaults } from '@lowdefy/block-utils';
+
+import '@ag-grid-community/styles/ag-grid.css';
+import '@ag-grid-community/styles/ag-theme-alpine.css';
+import antdStyles from '../../ag-grid-antd.module.css';
 
 import AgGridInput from '../../AgGridInput.js';
 
@@ -26,36 +30,28 @@ const AgGridInputAlpine = ({
   methods,
   properties,
   required,
+  styles,
   validation,
   value,
-}) => (
-  <div
-    id={blockId}
-    className={`ag-theme-alpine ${methods.makeCssClass({
-      width: '100%',
-      height: properties.height ?? 500,
-      ...properties.style,
-    })}`}
-  >
-    <AgGridInput
-      blockId={blockId}
-      events={events}
-      loading={loading}
-      methods={methods}
-      properties={properties}
-      required={required}
-      validation={validation}
-      value={value}
-    />
-  </div>
-);
-
-AgGridInputAlpine.defaultProps = blockDefaultProps;
-AgGridInputAlpine.meta = {
-  category: 'input',
-  valueType: 'array',
-  icons: [],
-  styles: ['blocks/AgGridInputAlpine/style.less'],
+}) => {
+  return (
+    <div
+      id={blockId}
+      className={`ag-theme-alpine ${antdStyles.antdTheme}`}
+      style={{ width: '100%', height: properties.height ?? 500, ...styles?.element }}
+    >
+      <AgGridInput
+        blockId={blockId}
+        events={events}
+        loading={loading}
+        methods={methods}
+        properties={properties}
+        required={required}
+        validation={validation}
+        value={value}
+      />
+    </div>
+  );
 };
 
-export default AgGridInputAlpine;
+export default withBlockDefaults(AgGridInputAlpine);

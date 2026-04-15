@@ -14,10 +14,18 @@
   limitations under the License.
 */
 
+// CSS layer order — MUST be the first CSS import. Next.js treats this as critical
+// CSS that loads before hydration, locking the cascade priority (antd > base/preflight)
+// before antd's StyleProvider injects @layer antd {} at runtime.
+import '../build/layer-order.css';
+
 import React, { useCallback, useRef } from 'react';
 import dynamic from 'next/dynamic';
 
 import { ErrorBoundary } from '@lowdefy/block-utils';
+import { useDarkMode } from '@lowdefy/client';
+import { StyleProvider } from '@ant-design/cssinjs';
+import { App as AntdApp, ConfigProvider, theme as antdTheme } from 'antd';
 
 import Auth from '../lib/client/auth/Auth.js';
 import createLogUsage from '../lib/client/createLogUsage.js';
@@ -26,7 +34,7 @@ import loggerConfig from '../lib/build/logger.js';
 import setSentryUser from '../lib/client/sentry/setSentryUser.js';
 
 // Must be in _app due to next specifications.
-import '../build/plugins/styles.less';
+import '../build/globals.css';
 
 // Initialize Sentry client once on module load
 initSentryClient({
@@ -34,9 +42,26 @@ initSentryClient({
   sentryConfig: loggerConfig.sentry,
 });
 
+function ThemeTokenResolver({ lowdefyRef, children }) {
+  const { token } = antdTheme.useToken();
+  if (!lowdefyRef.current.theme) {
+    lowdefyRef.current.theme = {};
+  }
+  lowdefyRef.current.theme._resolvedAntdToken = token;
+  return children;
+}
+
 function App({ Component, pageProps: { session, rootConfig, pageConfig } }) {
   const usageDataRef = useRef({});
   const lowdefyRef = useRef({ eventCallback: createLogUsage({ usageDataRef }) });
+  if (rootConfig?.theme) {
+    lowdefyRef.current.theme = rootConfig.theme;
+  }
+
+  const algorithm = useDarkMode({
+    baseAlgorithm: lowdefyRef.current.theme?.antd?.algorithm,
+    configDarkMode: lowdefyRef.current.theme?.darkMode,
+  });
 
   const handleError = useCallback((error) => {
     if (lowdefyRef.current?._internal?.handleError) {
@@ -47,26 +72,41 @@ function App({ Component, pageProps: { session, rootConfig, pageConfig } }) {
   }, []);
 
   return (
-    <ErrorBoundary fullPage onError={handleError}>
-      <Auth session={session}>
-        {(auth) => {
-          usageDataRef.current.user = auth.session?.hashed_id;
-          // Set Sentry user context when auth changes
-          setSentryUser({
-            user: auth.session,
-            sentryConfig: loggerConfig.sentry,
-          });
-          return (
-            <Component
-              auth={auth}
-              lowdefy={lowdefyRef.current}
-              rootConfig={rootConfig}
-              pageConfig={pageConfig}
-            />
-          );
+    <StyleProvider layer>
+      <ConfigProvider
+        theme={{
+          ...lowdefyRef.current.theme?.antd,
+          cssVar: { key: 'lowdefy' },
+          hashed: false,
+          algorithm,
         }}
-      </Auth>
-    </ErrorBoundary>
+      >
+        <AntdApp>
+          <ThemeTokenResolver lowdefyRef={lowdefyRef}>
+            <ErrorBoundary fullPage onError={handleError}>
+              <Auth session={session}>
+                {(auth) => {
+                  usageDataRef.current.user = auth.session?.hashed_id;
+                  // Set Sentry user context when auth changes
+                  setSentryUser({
+                    user: auth.session,
+                    sentryConfig: loggerConfig.sentry,
+                  });
+                  return (
+                    <Component
+                      auth={auth}
+                      lowdefy={lowdefyRef.current}
+                      rootConfig={rootConfig}
+                      pageConfig={pageConfig}
+                    />
+                  );
+                }}
+              </Auth>
+            </ErrorBoundary>
+          </ThemeTokenResolver>
+        </AntdApp>
+      </ConfigProvider>
+    </StyleProvider>
   );
 }
 

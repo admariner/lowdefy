@@ -19,6 +19,7 @@ import path from 'path';
 import getLowdefyVersion from '../utils/getLowdefyVersion.mjs';
 import loadSkeletonSourceFiles from '../utils/loadSkeletonSourceFiles.mjs';
 import setupWatcher from '../utils/setupWatcher.mjs';
+import updatePageTailwindCss from '../utils/updatePageTailwindCss.mjs';
 
 function lowdefyBuildWatcher(context) {
   const fixRelativePathConfigDir = (item) =>
@@ -50,10 +51,11 @@ function lowdefyBuildWatcher(context) {
 
       if (isSkeletonChange) {
         await context.lowdefyBuild();
+        await context.compileCss();
       } else {
-        // Page-only changes: write signal file so the server invalidates its page cache
         const invalidatePath = path.join(context.directories.build, 'invalidatePages');
         fs.writeFileSync(invalidatePath, String(Date.now()));
+        await updatePageTailwindCss({ changedFiles, context });
         context.logger.info('Page files changed, invalidated all pages.');
       }
     } catch (error) {

@@ -16,12 +16,20 @@
 
 import { getFromObject } from '@lowdefy/operators';
 
+function getDarkModePreference(window) {
+  return window.localStorage?.getItem('lowdefy_darkMode') ?? 'system';
+}
+
+function getDarkMode(window) {
+  return window.__lowdefy_isDark ?? false;
+}
+
 const breakpoints = {
-  xs: 576,
+  xs: 640,
   sm: 768,
-  md: 992,
-  lg: 1200,
-  xl: 1600,
+  md: 1024,
+  lg: 1280,
+  xl: 1536,
 };
 
 function _media({ arrayIndices, location, params, globals }) {
@@ -47,13 +55,15 @@ function _media({ arrayIndices, location, params, globals }) {
       size = 'xl';
       break;
     default:
-      size = 'xxl';
+      size = '2xl';
       break;
   }
   const media = {
     size,
     width: window.innerWidth,
     height: window.innerHeight,
+    darkMode: getDarkMode(window),
+    darkModePreference: getDarkModePreference(window),
   };
   return getFromObject({
     arrayIndices,

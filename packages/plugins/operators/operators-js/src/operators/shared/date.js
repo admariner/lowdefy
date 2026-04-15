@@ -90,8 +90,8 @@ const meta = {
     namedArgs: ['year', 'month', 'day', 'hours', 'minutes', 'seconds'],
     validTypes: ['array', 'object'],
   },
-  valueOf: { singleArg: true, prep, validTypes: ['date', 'null'] },
-  __default: { singleArg: true, validTypes: ['number', 'string'] },
+  valueOf: { singleArg: true, prep, validTypes: ['date', 'null'], dynamic: true },
+  __default: { singleArg: true, validTypes: ['number', 'string', 'date'] },
 };
 
 function _date({ params, location, methodName }) {

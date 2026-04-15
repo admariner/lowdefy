@@ -77,7 +77,7 @@ test.describe('PhoneNumberInput Block', () => {
 
   test('renders with default region US', async ({ page }) => {
     const selector = getCodeSelector(page, 'phone_default_region');
-    const selected = selector.locator('.ant-select-selection-item');
+    const selected = selector.locator('.ant-select-content');
     // US dial code is +1
     await expect(selected).toContainText('+1');
   });
@@ -97,7 +97,7 @@ test.describe('PhoneNumberInput Block', () => {
 
   test('hides flags when showFlags is false', async ({ page }) => {
     const selector = getCodeSelector(page, 'phone_no_flags');
-    const selected = selector.locator('.ant-select-selection-item');
+    const selected = selector.locator('.ant-select-content');
     // Should show dial code without flag emoji
     const text = await selected.textContent();
     // Flags are emoji characters - check that dial code shows without flag
@@ -182,7 +182,7 @@ test.describe('PhoneNumberInput Block', () => {
     await ukOption.click();
 
     // Verify UK is selected (+44)
-    const selected = selector.locator('.ant-select-selection-item');
+    const selected = selector.locator('.ant-select-content');
     await expect(selected).toContainText('+44');
   });
 
@@ -200,5 +200,33 @@ test.describe('PhoneNumberInput Block', () => {
     await clearBtn.click();
 
     await expect(input).toHaveValue('');
+  });
+
+  // ============================================
+  // FORMATTING TESTS
+  // ============================================
+
+  test('strips leading zeros from phone number value', async ({ page }) => {
+    const input = getInput(page, 'phone_format_test');
+    await input.fill('0821234567');
+    await expect(input).toHaveValue('0821234567');
+
+    const display = getBlock(page, 'format_display');
+    await expect(display).toHaveText('Formatted: +27821234567');
+  });
+
+  test('strips non-digit characters from phone number value', async ({ page }) => {
+    const input = getInput(page, 'phone_format_test');
+    await input.fill('(082) 123-4567');
+    await expect(input).toHaveValue('(082) 123-4567');
+
+    const display = getBlock(page, 'format_display');
+    await expect(display).toHaveText('Formatted: +27821234567');
+  });
+
+  test('empty input produces empty phone_number, not just dial code', async ({ page }) => {
+    const display = getBlock(page, 'empty_display');
+    // On init with no input, phone_number should not be set to "+27"
+    await expect(display).not.toContainText('+27');
   });
 });
