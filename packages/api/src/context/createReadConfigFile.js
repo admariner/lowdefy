@@ -18,7 +18,7 @@ import path from 'path';
 import { cachedPromises, serializer } from '@lowdefy/helpers';
 import { getFileExtension, readFile } from '@lowdefy/node-utils';
 
-const validPathPattern = /^[A-Za-z0-9\-_/.]+$/;
+const validPathPattern = /^[A-Za-z0-9\-_/.:]+$/;
 
 function createReadConfigFile({ buildDirectory, fileCache }) {
   async function readConfigFile(filePath) {

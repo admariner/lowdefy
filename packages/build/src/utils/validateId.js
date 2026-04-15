@@ -16,12 +16,12 @@
 
 import { ConfigError } from '@lowdefy/errors';
 
-const validIdPattern = /^[A-Za-z0-9\-_/]+$/;
+const validIdPattern = /^[A-Za-z0-9\-_/:]+$/;
 
 function validateId({ id, field, location, configKey }) {
   if (!validIdPattern.test(id)) {
     throw new ConfigError(
-      `${field} "${id}"${location ? ` at ${location}` : ''} contains invalid characters. IDs must only contain A-Z, a-z, 0-9, "-", "_", and "/".`,
+      `${field} "${id}"${location ? ` at ${location}` : ''} contains invalid characters. IDs must only contain A-Z, a-z, 0-9, "-", "_", "/", and ":".`,
       { configKey }
     );
   }

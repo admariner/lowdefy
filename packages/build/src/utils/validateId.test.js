@@ -23,6 +23,9 @@ test('validateId allows valid ids', () => {
   expect(() =>
     validateId({ id: 'folder/page', field: 'Page id', configKey: '1' })
   ).not.toThrow();
+  expect(() =>
+    validateId({ id: ':reject', field: 'Page id', configKey: '1' })
+  ).not.toThrow();
 });
 
 test('validateId throws on period', () => {
