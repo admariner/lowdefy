@@ -97,6 +97,15 @@ async function writeGlobalsCss({ components, context }) {
 @import "tailwindcss";
 @import "@lowdefy/layout/grid.css";
 
+/* Set html background from antd theme token so dark mode persists between page
+   navigations. The inline _document.js script sets an initial background before
+   antd hydrates; this rule takes over once CSS variables are available. */
+@layer base {
+  html.lowdefy {
+    background-color: var(--ant-color-bg-layout);
+  }
+}
+
 ${userStylesImport}/* Content sources for Tailwind JIT — block JS content collected at build time */
 @source "../lowdefy-build/tailwind/*.html";
 
