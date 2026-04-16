@@ -85,11 +85,16 @@ function useDarkMode({ baseAlgorithm, configDarkMode }) {
   const isDark = resolveIsDark({ configDarkMode, userPreference, systemIsDark });
   window.__lowdefy_isDark = isDark;
 
-  // Clear the inline background set by _document.js dark-mode flash prevention script.
-  // Ant Design's CSS variables are now active, so the CSS rule on html.lowdefy handles it.
+  // Keep the <html> background in sync with the resolved mode. The _document.js
+  // inline script sets an initial background before hydration; this effect takes
+  // over once React is active and updates on every dark/light toggle.
   useEffect(() => {
-    document.documentElement.style.removeProperty('background-color');
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    if (isDark) {
+      document.documentElement.style.backgroundColor = '#000';
+    } else {
+      document.documentElement.style.removeProperty('background-color');
+    }
+  }, [isDark]);
 
   return resolveAlgorithm(mergeAlgorithm(cleanAlgorithm, isDark));
 }
