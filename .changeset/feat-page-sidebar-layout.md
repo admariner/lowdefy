@@ -22,7 +22,6 @@ New full-page layout block with a full-height sidebar, no top-level header, and 
 
 **MobileMenu**
 
-- Added `logo` property for drawer header branding
+- Added `logo` property for drawer header branding with dark mode-aware logo switching
 - Added `drawerContent` and `drawerFooter` content slots
 - Changed category from `display` to `container` to support slot resolution
-- Dark drawer theme applied automatically when `theme: dark`
