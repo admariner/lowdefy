@@ -1,5 +1,17 @@
 # @lowdefy/e2e-utils
 
+## 4.7.3
+
+### Patch Changes
+
+- @lowdefy/helpers@4.7.3
+
+## 4.7.2
+
+### Patch Changes
+
+- @lowdefy/helpers@4.7.2
+
 ## 4.7.1
 
 ### Patch Changes

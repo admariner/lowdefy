@@ -11,6 +11,7 @@ The development server provides:
 - Extended plugin set for development
 - Environment file watching
 - Process management
+- In-browser ErrorBar for build errors and warnings
 
 ## Key Differences from Production
 
@@ -32,6 +33,7 @@ Beyond production server:
 - `dotenv` (16.3.1) - Env loading
 - `opener` (1.5.2) - Browser opener
 - `swr` (2.2.4) - Data fetching
+- `postcss`, `tailwindcss`, `@tailwindcss/postcss` - JIT CSS compilation (used by `compileCss.mjs` and `lib/server/compileCss.js`)
 
 Additional block packages:
 
@@ -49,6 +51,20 @@ Additional operators:
 - `@lowdefy/operators-nunjucks`
 - `@lowdefy/operators-uuid`
 - `@lowdefy/operators-yaml`
+
+### CRITICAL: Singleton Packages in Local Dev
+
+**`antd` and `@ant-design/cssinjs` use React context for cross-component coordination.** Multiple instances break CSS-in-JS context sharing between `ConfigProvider`, `StyleProvider`, and `useDarkMode` — dark mode and theming silently fail (only some antd components respond to theme changes, no console errors).
+
+Both `server` and `server-dev` have `antd` and `@ant-design/cssinjs` as direct dependencies. This is correct — the published packages need them for pnpm strict mode resolution.
+
+**The singleton risk only exists in the local monorepo dev setup** (`scripts/dev.mjs`), where `rewriteDeps.mjs` rewrites `@lowdefy/*` deps to `link:` paths. Without overrides, pnpm would install a separate npm copy of antd for the dev server while linked `@lowdefy/client` uses the monorepo's copy — two instances.
+
+**Fix:** `rewriteDeps.mjs` has a `SINGLETON_PACKAGES` list (`antd`, `@ant-design/cssinjs`) that adds `pnpm.overrides` entries pointing to the monorepo's `node_modules/` copies. This forces a single instance across the dev server and all linked packages.
+
+**If you add a new package that uses React context across components** (like a UI library), add it to `SINGLETON_PACKAGES` in `scripts/lib/rewriteDeps.mjs`.
+
+**Symptoms of duplicate instances:** Dark mode toggle only partially works — some antd components (like Menu) respond while the rest of the page stays in light mode. No errors in console.
 
 ## Scripts
 
@@ -93,9 +109,11 @@ server-dev/
 │   │   ├── shutdownServer.mjs
 │   │   ├── readDotEnv.mjs
 │   │   └── reloadClients.mjs
+│   ├── utils/
+│   │   └── loadSkeletonSourceFiles.mjs  # Read skeletonSourceFiles.json as Set
 │   └── watchers/
 │       ├── startWatchers.mjs
-│       ├── lowdefyBuildWatcher.mjs   # Targeted invalidation logic
+│       ├── lowdefyBuildWatcher.mjs   # Skeleton vs page change classification
 │       ├── envWatcher.mjs
 │       └── nextBuildWatcher.mjs
 ├── pages/
@@ -152,7 +170,6 @@ const context = {
   // JIT build state
   pageCache: new PageCache(), // Manager's PageCache instance
   pageRegistry: null, // Set after each skeleton build
-  fileDependencyMap: null, // Set after each skeleton build
   buildContext: null, // Build context from shallowBuild
 
   // Bound functions
@@ -183,14 +200,14 @@ The manager process and the Next.js server run as **separate processes** with no
 Manager Process                    Next.js Server Process
 ┌────────────────────┐            ┌────────────────────┐
 │ PageCache instance │            │ PageCache instance  │
-│ fileDependencyMap  │            │ (jitPageBuilder.js) │
-│ pageRegistry       │            │                     │
-│ buildContext       │            │ cachedRegistry      │
-│                    │            │ cachedBuildContext   │
-│ Watcher → build    │            │ API → buildPageJit  │
+│ pageRegistry       │            │ (jitPageBuilder.js) │
+│ buildContext       │            │                     │
+│                    │            │ cachedRegistry      │
+│ Watcher → build    │            │ cachedBuildContext   │
+│                    │            │ API → buildPageJit  │
 └────────────────────┘            └────────────────────┘
          │                                  ↑
-         │  invalidatePages.json            │
+         │  invalidatePages (signal file)   │
          └──── (file on disk) ─────────────→┘
 ```
 
@@ -198,7 +215,8 @@ Cross-process communication uses files in the build directory:
 
 - `pageRegistry.json`: Page metadata + raw content for JIT resolution
 - `refMap.json`, `keyMap.json`, `jsMap.json`: Shared build state
-- `invalidatePages.json`: List of page IDs invalidated by the watcher
+- `skeletonSourceFiles.json`: Set of files that affect skeleton (read by watcher)
+- `invalidatePages`: Timestamp signal file written by watcher for page-only changes
 
 ### Skeleton Build Flow
 
@@ -213,7 +231,7 @@ function lowdefyBuild({ directories, logger, options, pageCache }) {
     try {
       const result = await shallowBuild({ customTypesMap, directories, logger, ... });
       logger.info('Built config.');
-      return result; // { components, pageRegistry, fileDependencyMap, context }
+      return result; // { components, pageRegistry, context }
     } finally {
       pageCache.invalidateAll();
       pageCache.releaseSkeletonLock();
@@ -230,7 +248,6 @@ context.lowdefyBuild = async () => {
   const result = await buildFn();
   if (result) {
     context.pageRegistry = result.pageRegistry;
-    context.fileDependencyMap = result.fileDependencyMap;
     context.buildContext = result.context;
   }
 };
@@ -301,29 +318,31 @@ Sources of dependencies:
 1. **Page source file**: via `pageEntry.refId` → `refMap[refId].path`
 2. **Child `_ref` paths**: Collected from `_shallow` markers in raw page content
 
-### Targeted vs Full Rebuild
+### Skeleton vs Page Change Classification
 
 **File:** `manager/watchers/lowdefyBuildWatcher.mjs`
 
-When a file changes, the watcher decides:
+When a file changes, the watcher classifies it using the `skeletonSourceFiles.json` artifact (produced by the build's `collectSkeletonSourceFiles`):
 
-| Condition                                      | Action                                                            |
-| ---------------------------------------------- | ----------------------------------------------------------------- |
-| `lowdefy.yaml` changed                         | Full skeleton rebuild                                             |
-| File not in dependency map and not in `pages/` | Full skeleton rebuild                                             |
-| File in dependency map                         | Targeted: invalidate affected pages, write `invalidatePages.json` |
-| No affected pages found                        | Full skeleton rebuild (safety fallback)                           |
+| Condition                        | Action                                                                  |
+| -------------------------------- | ----------------------------------------------------------------------- |
+| `lowdefy.yaml` changed          | Full skeleton rebuild                                                   |
+| File in `skeletonSourceFiles`    | Full skeleton rebuild                                                   |
+| File not in `skeletonSourceFiles`| Page-only change: write `invalidatePages` signal, reload clients        |
+
+The `skeletonSourceFiles` set is derived from `~r` markers on non-page components during the shallow build. It includes every config file that contributes to non-page build artifacts (connections, API endpoints, auth, menus, etc.), traced through the refMap parent chain. This replaces the previous path-based heuristic (`!f.startsWith('pages/')`) which had false negatives for API files referenced from `pages/` and false positives for page templates outside `pages/`.
 
 ### Cross-Process Cache Invalidation
 
-The manager and server run in separate processes with separate `PageCache` instances. When a file change only affects specific pages:
+The manager and server run in separate processes with separate `PageCache` instances. When a file change only affects pages (not skeleton):
 
-1. Manager's watcher calls `pageCache.invalidateByFiles()` on its own cache
-2. Manager writes `invalidatePages.json` with affected page IDs
-3. Manager calls `reloadClients()` (SSE event)
-4. On next page request, server's `checkPageInvalidations()` reads the file
-5. Server's `pageCache.invalidatePages()` clears affected pages
-6. Server's `cachedBuildContext` is set to `null` to refresh maps
+1. Manager writes `invalidatePages` signal file (timestamp)
+2. Manager calls `reloadClients()` (SSE event)
+3. On next page request, server's `checkPageInvalidations()` detects the signal file (mtime-based)
+4. Server's `pageCache.invalidateAll()` clears all compiled pages
+5. Server's `cachedBuildContext` is set to `null` to refresh maps
+
+For skeleton changes, `lowdefyBuild()` triggers a full rebuild which calls `pageCache.invalidateAll()` on the manager side, and the server detects the new artifacts on next request.
 
 ## Server Process and Logging
 
@@ -428,19 +447,17 @@ const callback = async (filePaths) => {
     /* exit if version changed */
   }
 
+  const skeletonSourceFiles = loadSkeletonSourceFiles(context.directories.build);
+
   const isSkeletonChange =
     lowdefyYamlModified ||
-    changedFiles.some((f) => !fileDependencyMap?.has(f) && !f.startsWith('pages/'));
+    changedFiles.some((f) => skeletonSourceFiles.has(f));
 
   if (isSkeletonChange) {
-    await context.lowdefyBuild(); // Full rebuild
+    await context.lowdefyBuild(); // Full skeleton rebuild
   } else {
-    const affectedPages = pageCache.invalidateByFiles(changedFiles, fileDependencyMap);
-    if (affectedPages.size > 0) {
-      fs.writeFileSync(invalidationPath, JSON.stringify([...affectedPages]));
-    } else {
-      await context.lowdefyBuild(); // Fallback to full rebuild
-    }
+    // Page-only change: write signal file so server invalidates its page cache
+    fs.writeFileSync(invalidatePath, String(Date.now()));
   }
   context.reloadClients();
 };
@@ -619,6 +636,12 @@ function App({ children }) {
 }
 ```
 
+### ErrorBar
+
+**File:** `lib/client/ErrorBar.js`
+
+Fixed bottom bar that displays build errors and warnings in the browser. Build warnings propagate from the build pipeline through the SSE reload channel to the client, giving developers immediate feedback without checking the terminal. Includes a copy-to-clipboard button for sharing error details with stack traces.
+
 ### SWR Hooks
 
 **File:** `lib/client/Utils/usePageConfig.js`
@@ -707,7 +730,8 @@ const nextConfig = {
 | `manager/run.mjs`                          | Entry point                                |
 | `manager/getContext.mjs`                   | Context factory with JIT build state       |
 | `manager/processes/lowdefyBuild.mjs`       | Calls `shallowBuild`, captures result      |
-| `manager/watchers/lowdefyBuildWatcher.mjs` | Targeted invalidation or full rebuild      |
+| `manager/utils/loadSkeletonSourceFiles.mjs`| Load skeleton source file set from build artifact |
+| `manager/watchers/lowdefyBuildWatcher.mjs` | Skeleton vs page change classification     |
 | `lib/server/jitPageBuilder.js`             | JIT page build on API request              |
 | `lib/server/pageCache.mjs`                 | PageCache class (compiled tracking, locks) |
 | `pages/api/page/[pageId].js`               | Page API (triggers JIT build)              |
@@ -723,8 +747,8 @@ const nextConfig = {
 
 | Trigger                      | Watcher             | Action                      | Result                              |
 | ---------------------------- | ------------------- | --------------------------- | ----------------------------------- |
-| Page-level config change     | lowdefyBuildWatcher | Targeted invalidation + SSE | Soft reload (page rebuilt JIT)      |
-| Skeleton-level config change | lowdefyBuildWatcher | Full skeleton rebuild + SSE | Soft reload (all pages invalidated) |
+| Page-level config change     | lowdefyBuildWatcher | Signal file + SSE           | Soft reload (all pages invalidated, rebuilt JIT) |
+| Skeleton-level config change | lowdefyBuildWatcher | Full skeleton rebuild + SSE | Soft reload (all pages invalidated)              |
 | .env change                  | envWatcher          | Read env                    | Hard restart                        |
 | Plugin change                | nextBuildWatcher    | Next build                  | Hard restart                        |
 | package.json                 | nextBuildWatcher    | Install + build             | Hard restart                        |

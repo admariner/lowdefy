@@ -18,7 +18,11 @@ export default {
   category: 'container',
   icons: [],
   valueType: null,
-  slots: ['content', 'extra', 'footer'],
+  slots: {
+    content: 'Main Drawer body.',
+    extra: 'Extra content in the header.',
+    footer: 'The Drawer footer.',
+  },
   cssKeys: {
     element: 'The Drawer element.',
     header: 'The Drawer header.',
@@ -73,20 +77,6 @@ export default {
         description: 'When placement is top or bottom, height of the Drawer dialog.',
         docs: {
           displayType: 'string',
-        },
-      },
-      contentWrapperStyle: {
-        type: 'object',
-        description: 'Css style to applied to content area.',
-        docs: {
-          displayType: 'yaml',
-        },
-      },
-      drawerStyle: {
-        type: 'object',
-        description: 'Css style to applied to drawer.',
-        docs: {
-          displayType: 'yaml',
         },
       },
       zIndex: {

@@ -23,6 +23,13 @@ export default {
     hint: 'The hint text inside the dragger.',
   },
   events: {
+    onBeforeUpload: {
+      description:
+        'Triggered before a file is uploaded. If an action throws, the upload is cancelled.',
+      event: {
+        file: 'The file metadata (name, type, size, lastModified, uid, url).',
+      },
+    },
     onChange: 'Triggered when the upload state is changing.',
     onProgress: {
       description: 'Triggered when the upload state is in progress.',
@@ -45,6 +52,11 @@ export default {
     type: 'object',
     required: ['s3PostPolicyRequestId'],
     properties: {
+      height: {
+        type: 'number',
+        description:
+          'Height of the dragger area in pixels. Defaults to the antd control height. Overridden by style .element height if set.',
+      },
       title: {
         type: 'string',
         description: 'Title of the file input to be displayed on the draggable area.',

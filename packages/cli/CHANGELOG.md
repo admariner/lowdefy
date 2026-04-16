@@ -1,5 +1,23 @@
 # Change Log
 
+## 4.7.3
+
+### Patch Changes
+
+- @lowdefy/errors@4.7.3
+- @lowdefy/helpers@4.7.3
+- @lowdefy/logger@4.7.3
+- @lowdefy/node-utils@4.7.3
+
+## 4.7.2
+
+### Patch Changes
+
+- @lowdefy/errors@4.7.2
+- @lowdefy/helpers@4.7.2
+- @lowdefy/logger@4.7.2
+- @lowdefy/node-utils@4.7.2
+
 ## 4.7.1
 
 ### Patch Changes

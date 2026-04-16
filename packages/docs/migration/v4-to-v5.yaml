@@ -40,9 +40,40 @@ _ref:
             | `bordered` → `variant` | 16 input/display blocks | Update property |
             | `visible` → `open` | Modal | Update property |
             | Button `type`/`danger` → `color`/`variant` | Button blocks | Update properties |
-            | Inline style props → `style: { /key }` | Card, Modal, Drawer, etc. | Update properties |
+            | Inline style props → `style: { .key }` | Card, Modal, Drawer, etc. | Update properties |
             | Comment block removed | Apps using Comment | Use Card + Flex + Avatar |
+            | `_menu` returns links directly | Apps using `_menu` with `_get` | Simplify to `_menu: menuId` |
             | Property renames | Various blocks | See table below |
+
+            ## `_menu` returns links array directly
+
+            The `_menu` operator now returns the `links` array directly when selecting a single menu by ID. It also supports dot-path access into the result.
+
+            ### Before (v4)
+            ```yaml
+            # Get links required _get wrapper
+            _get:
+              key: links
+              from:
+                _menu: profile_menu
+
+            # Access through links
+            _get:
+              key: links.0.pageId
+              from:
+                _menu: search_links
+            ```
+
+            ### After (v5)
+            ```yaml
+            # Links returned directly
+            _menu: profile_menu
+
+            # Dot-path access
+            _menu: search_links.0.pageId
+            ```
+
+            `_menu: true` and `_menu: { all: true }` still return the full menus array. A codemod is available to automate the conversion.
 
             ## `_moment` renamed to [`_dayjs`](/_dayjs)
 
@@ -340,20 +371,20 @@ _ref:
               class: "p-16 sm:p-8"
             ```
 
-            ### Inline style props → `style: { /key }`
+            ### Inline style props → `style: { .key }`
 
-            Block-specific inline style properties have been replaced with the unified `style` property using `/`-prefixed CSS slot keys:
+            Block-specific inline style properties have been replaced with the unified `style` property using `.`-prefixed CSS slot keys:
 
             | Block | Remove | Use instead |
             |---|---|---|
-            | [Card](/Card) | `headerStyle`, `bodyStyle` | `style: { /header }`, `style: { /body }` |
-            | [Modal](/Modal) | `bodyStyle`, `maskStyle` | `style: { /body }`, `style: { /mask }` |
-            | [Drawer](/Drawer) | `drawerStyle`, `headerStyle`, `bodyStyle`, `maskStyle`, `contentWrapperStyle` | `style: { /wrapper }`, `style: { /header }`, `style: { /body }`, `style: { /mask }`, `style: { /content }` |
-            | [Tabs](/Tabs) | `tabBarStyle` | `style: { /tabBar }` |
-            | ConfirmModal | `bodyStyle` | `style: { /body }` |
-            | [Statistic](/Statistic) | `valueStyle` | `style: { /value }` |
-            | [Descriptions](/Descriptions) | `contentStyle`, `labelStyle` | `style: { /content }`, `style: { /label }` |
-            | [Tooltip](/Tooltip) | `overlayStyle` | `style: { /inner }` |
+            | [Card](/Card) | `headerStyle`, `bodyStyle` | `style: { .header }`, `style: { .body }` |
+            | [Modal](/Modal) | `bodyStyle`, `maskStyle` | `style: { .body }`, `style: { .mask }` |
+            | [Drawer](/Drawer) | `drawerStyle`, `headerStyle`, `bodyStyle`, `maskStyle`, `contentWrapperStyle` | `style: { .wrapper }`, `style: { .header }`, `style: { .body }`, `style: { .mask }`, `style: { .content }` |
+            | [Tabs](/Tabs) | `tabBarStyle` | `style: { .tabBar }` |
+            | ConfirmModal | `bodyStyle` | `style: { .body }` |
+            | [Statistic](/Statistic) | `valueStyle` | `style: { .value }` |
+            | [Descriptions](/Descriptions) | `contentStyle`, `labelStyle` | `style: { .content }`, `style: { .label }` |
+            | [Tooltip](/Tooltip) | `overlayStyle` | `style: { .inner }` |
 
             #### Before (v4)
             ```yaml
@@ -371,9 +402,9 @@ _ref:
             - id: my_card
               type: Card
               style:
-                /body:
+                .body:
                   backgroundColor: "#f0f0f0"
-                /header:
+                .header:
                   fontWeight: bold
             ```
 
@@ -566,7 +597,7 @@ _ref:
             ## New features
 
             - **`class` property** — Apply Tailwind CSS classes to any block. See [Custom Styling](/custom-styling).
-            - **`style` with `/` keys** — Apply inline styles to specific parts of a block using CSS slot keys (e.g. `style: { /header: {...} }`).
+            - **`style` with `.` keys** — Apply inline styles to specific parts of a block using CSS slot keys (e.g. `style: { .header: {...} }`).
             - **`properties.theme`** — Override antd design tokens per block.
             - **`_theme` operator** — Access theme seed tokens in expressions. See [`_theme`](/_theme).
             - **Theming system** — App-level, component-level, and block-level theme customization. See [Theming](/theming).

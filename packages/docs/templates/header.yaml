@@ -15,7 +15,7 @@
   type: Box
   layout:
     flex: 0 1 auto
-    align: middle
+    selfAlign: middle
   style:
     marginRight: 8
   blocks:
@@ -23,7 +23,7 @@
       type: Search
       layout:
         flex: 0 1 auto
-        align: middle
+        selfAlign: middle
       properties:
         indexUrl: /search-index.json
         placeholder: Search docs...
@@ -130,22 +130,3 @@
     icon: AiFillGithub
     size: small
     href: https://github.com/lowdefy/lowdefy
-- id: dark_mode_toggle
-  type: Button
-  layout:
-    flex: 0 0 auto
-  properties:
-    hideTitle: true
-    color: default
-    variant: text
-    size: small
-    icon:
-      _if:
-        test:
-          _media: darkMode
-        then: AiOutlineSun
-        else: AiOutlineMoon
-  events:
-    onClick:
-      - id: toggle_dark_mode
-        type: SetDarkMode

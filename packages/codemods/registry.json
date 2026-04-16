@@ -104,6 +104,31 @@
           "id": "comment-block-removal",
           "description": "Replace removed Comment block with Flex + Avatar + Paragraph composition",
           "path": "v5-0-0/20-comment-block-removal.md"
+        },
+        {
+          "id": "migrate-custom-block-plugins",
+          "description": "Migrate custom block plugin architecture: types.js, meta.js, withBlockDefaults",
+          "path": "v5-0-0/21-migrate-custom-block-plugins.md"
+        },
+        {
+          "id": "migrate-nested-css-selectors",
+          "description": "Replace Emotion-style nested CSS selectors (&:hover, & > *) with Tailwind classes",
+          "path": "v5-0-0/22-migrate-nested-css-selectors.md"
+        },
+        {
+          "id": "aggrid-dark-blocks-removal",
+          "description": "Replace removed AgGrid*Dark block types with auto-detecting light variants",
+          "path": "v5-0-0/23-aggrid-dark-blocks-removal.md"
+        },
+        {
+          "id": "page-layout-theme-removal",
+          "description": "Remove header.theme, sider.theme, menu.theme from page layout blocks and migrate nested style props",
+          "path": "v5-0-0/24-page-layout-theme-removal.md"
+        },
+        {
+          "id": "plugin-peer-dependencies",
+          "description": "Move react, react-dom, and antd from dependencies to peerDependencies in custom block plugins",
+          "path": "v5-0-0/25-plugin-peer-dependencies.md"
         }
       ]
     }
