@@ -10,8 +10,10 @@ New full-page layout block with a full-height sidebar, no top-level header, and 
 
 - Full-height collapsible sider with inline menu
 - Sider collapse state persists in localStorage (configurable key via `siderStorageKey`)
-- Cascading `theme` property — set `theme: dark` to apply dark mode to sider, menu, headers, and mobile drawer. Individual overrides (`sider.theme`, `header.theme`, `mobileHeader.theme`) take precedence. As an object, applies Ant Design design tokens to all child components
-- Responsive logo: full logo when sider is expanded, square logo when collapsed
+- Dark mode via app-level ConfigProvider — all components adapt automatically via CSS variables
+- `darkModeToggle`, `notifications`, and `profile` properties shown in the sider on desktop and the mobile header on small screens, matching PageHeaderMenu and PageSiderMenu
+- `theme` property accepts an Ant Design design token object for fine-grained color customization via ConfigProvider
+- Responsive logo: full logo when sider is expanded, square logo when collapsed, auto-swaps between light and dark variants based on dark mode
 - 8 content slots: content, footer, header, siderOpen, siderClosed, mobileExtra, mobileDrawerContent, mobileDrawerFooter
 
 **Drawer**

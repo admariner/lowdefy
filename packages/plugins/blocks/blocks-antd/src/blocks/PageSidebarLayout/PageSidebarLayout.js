@@ -28,6 +28,7 @@ import Layout from '../Layout/Layout.js';
 import Menu from '../Menu/Menu.js';
 import MobileMenu from '../MobileMenu/MobileMenu.js';
 import Sider from '../Sider/Sider.js';
+import { getDarkMode, renderHeaderActions, registerDarkModeMethod } from '../headerActions.js';
 
 function getInitialSiderState({ properties }) {
   const storageKey = `lf-${properties.siderStorageKey ?? 'sider'}-open`;
@@ -63,12 +64,9 @@ const PageSidebarLayout = ({
   properties,
   styles = {},
 }) => {
-  const baseTheme = properties.theme ?? 'light';
-  const siderTheme = get(properties, 'sider.theme') ?? baseTheme;
-  const headerTheme = get(properties, 'header.theme') ?? baseTheme;
-  const mobileHeaderTheme = get(properties, 'mobileHeader.theme') ?? baseTheme;
   const [openSiderState, setSiderOpen] = useState(() => getInitialSiderState({ properties }));
   useEffect(() => {
+    registerDarkModeMethod(methods);
     methods.registerMethod('toggleSiderOpen', () => {
       const next = !openSiderState;
       methods._toggleSiderOpen({ open: next });
@@ -99,9 +97,6 @@ const PageSidebarLayout = ({
               events={events}
               methods={methods}
               properties={mergeObjects([
-                {
-                  theme: siderTheme,
-                },
                 properties.sider,
                 {
                   initialCollapsed: !openSiderState,
@@ -163,7 +158,6 @@ const PageSidebarLayout = ({
                       properties={mergeObjects([
                         {
                           mode: 'inline',
-                          theme: siderTheme,
                           collapsed: !openSiderState,
                         },
                         properties.menu,
@@ -193,18 +187,35 @@ const PageSidebarLayout = ({
                       style={{
                         position: 'sticky',
                         bottom: 0,
-                        background: siderTheme === 'dark' ? '#001529' : 'white',
+                        background: 'var(--ant-color-bg-container)',
                         padding: 8,
                       }}
                     >
+                      {renderHeaderActions({
+                        blockId,
+                        classNames: {
+                          ...classNames,
+                          headerActions:
+                            classNames.headerActions ?? 'flex flex-col items-center gap-4 py-4',
+                        },
+                        styles,
+                        properties,
+                        methods,
+                        events,
+                        components: { Icon, Link, ShortcutBadge },
+                        iconsColor: properties.iconsColor,
+                      })}
                       <Link home={true}>
                         <img
                           src={
                             openSiderState
-                              ? properties.logo?.src ?? `${basePath}/logo-${siderTheme}-theme.png`
+                              ? properties.logo?.src ??
+                                `${basePath}/logo-${getDarkMode() ? 'dark' : 'light'}-theme.png`
                               : properties.logo?.srcMobile ??
                                 properties.logo?.src ??
-                                `${basePath}/logo-square-${siderTheme}-theme.png`
+                                `${basePath}/logo-square-${
+                                  getDarkMode() ? 'dark' : 'light'
+                                }-theme.png`
                           }
                           alt={properties.logo?.alt ?? 'Lowdefy'}
                           className={classNames.logo}
@@ -223,87 +234,103 @@ const PageSidebarLayout = ({
               content={{
                 content: () => (
                   <>
-                    <Header
-                      blockId={`${blockId}_mobile_header`}
-                      components={{ Icon, Link, ShortcutBadge }}
-                      classNames={{
-                        element: `${classNames.mobileHeader ?? 'hidden max-lg:flex'} hide-on-print`,
-                      }}
-                      events={events}
-                      properties={{ theme: mobileHeaderTheme }}
-                      styles={{
-                        element: mergeObjects([
-                          {
-                            alignItems: 'center',
-                          },
-                          styles.mobileHeader,
-                        ]),
-                      }}
-                      content={{
-                        content: () => (
-                          <div
-                            style={{
-                              display: 'flex',
+                    <div
+                      className={`${classNames.mobileHeader ?? 'block lg:hidden'} hide-on-print`}
+                    >
+                      <Header
+                        blockId={`${blockId}_mobile_header`}
+                        components={{ Icon, Link, ShortcutBadge }}
+                        events={events}
+                        properties={{}}
+                        styles={{
+                          element: mergeObjects([
+                            {
                               alignItems: 'center',
-                              width: '100%',
-                            }}
-                          >
-                            <Link home={true}>
-                              <img
-                                src={
-                                  properties.logo?.srcMobile ??
-                                  properties.logo?.src ??
-                                  `${basePath}/logo-square-${mobileHeaderTheme}-theme.png`
-                                }
-                                alt={properties.logo?.alt ?? 'Lowdefy'}
-                                className={classNames.logo}
-                                style={mergeObjects([
-                                  { width: 32, marginRight: 12 },
-                                  properties.logo?.style,
-                                  styles.logo,
+                            },
+                            styles.mobileHeader,
+                          ]),
+                        }}
+                        content={{
+                          content: () => (
+                            <div
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                width: '100%',
+                              }}
+                            >
+                              <Link home={true}>
+                                <img
+                                  src={
+                                    properties.logo?.srcMobile ??
+                                    properties.logo?.src ??
+                                    `${basePath}/logo-square-${
+                                      getDarkMode() ? 'dark' : 'light'
+                                    }-theme.png`
+                                  }
+                                  alt={properties.logo?.alt ?? 'Lowdefy'}
+                                  className={classNames.logo}
+                                  style={mergeObjects([
+                                    { width: 32, marginRight: 12 },
+                                    properties.logo?.style,
+                                    styles.logo,
+                                  ])}
+                                />
+                              </Link>
+                              <div style={{ flex: '1 0 auto' }}>
+                                {content.mobileExtra && content.mobileExtra()}
+                              </div>
+                              {renderHeaderActions({
+                                blockId,
+                                classNames,
+                                styles,
+                                properties,
+                                methods,
+                                events,
+                                components: { Icon, Link, ShortcutBadge },
+                                iconsColor: properties.iconsColor,
+                              })}
+                              <MobileMenu
+                                classNames={{
+                                  element: classNames.mobileMenu ?? 'flex lg:hidden shrink pl-4',
+                                }}
+                                styles={{ element: styles.mobileMenu }}
+                                blockId={`${blockId}_mobile_menu`}
+                                components={{ Icon, Link, ShortcutBadge }}
+                                basePath={basePath}
+                                events={events}
+                                methods={methods}
+                                menus={menus}
+                                pageId={pageId}
+                                properties={mergeObjects([
+                                  {
+                                    mode: 'inline',
+                                    logo: properties.logo,
+                                    drawer: { width: '100%', placement: 'right' },
+                                  },
+                                  properties.menu,
+                                  properties.menuMd,
                                 ])}
+                                content={{
+                                  drawerContent: content.mobileDrawerContent,
+                                  drawerFooter: content.mobileDrawerFooter,
+                                }}
+                                rename={{
+                                  methods: {
+                                    toggleOpen: 'toggleMobileMenuOpen',
+                                    setOpen: 'setMobileMenuOpen',
+                                  },
+                                  events: {
+                                    onClose: 'onMobileMenuClose',
+                                    onOpen: 'onMobileMenuOpen',
+                                  },
+                                }}
                               />
-                            </Link>
-                            <div style={{ flex: '1 0 auto' }}>
-                              {content.mobileExtra && content.mobileExtra()}
                             </div>
-                            <MobileMenu
-                              blockId={`${blockId}_mobile_menu`}
-                              components={{ Icon, Link, ShortcutBadge }}
-                              basePath={basePath}
-                              events={events}
-                              methods={methods}
-                              menus={menus}
-                              pageId={pageId}
-                              properties={mergeObjects([
-                                {
-                                  mode: 'inline',
-                                  theme: siderTheme,
-                                  logo: properties.logo,
-                                  drawer: { width: '100%', placement: 'right' },
-                                },
-                                properties.menu,
-                                properties.menuMd,
-                              ])}
-                              content={{
-                                drawerContent: content.mobileDrawerContent,
-                                drawerFooter: content.mobileDrawerFooter,
-                              }}
-                              rename={{
-                                methods: {
-                                  toggleOpen: 'toggleMobileMenuOpen',
-                                  setOpen: 'setMobileMenuOpen',
-                                },
-                                events: {
-                                  onClose: 'onMobileMenuClose',
-                                  onOpen: 'onMobileMenuOpen',
-                                },
-                              }}
-                            />
-                          </div>
-                        ),
-                      }}
-                    />
+                          ),
+                        }}
+                      />
+                    </div>
                     {content.header && (
                       <Header
                         blockId={`${blockId}_header`}
@@ -312,7 +339,7 @@ const PageSidebarLayout = ({
                           element: `${classNames.header ?? ''} hide-on-print`,
                         }}
                         events={events}
-                        properties={{ ...properties.header, theme: headerTheme }}
+                        properties={properties.header ?? {}}
                         styles={{
                           element: mergeObjects([
                             {

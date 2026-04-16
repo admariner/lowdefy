@@ -15,28 +15,49 @@
 */
 
 import MobileMenuMeta from '../MobileMenu/meta.js';
+import icon from '../../schemas/icon.js';
+import menuLinks from '../../schemas/menuLinks.js';
+import breadcrumbList from '../../schemas/breadcrumbList.js';
 
 export default {
   category: 'container',
-  icons: ['AiOutlineMenuFold', 'AiOutlineMenuUnfold', ...MobileMenuMeta.icons],
-  valueType: null,
-  slots: [
-    'content',
-    'footer',
-    'header',
-    'mobileDrawerContent',
-    'mobileDrawerFooter',
-    'mobileExtra',
-    'siderClosed',
-    'siderOpen',
+  icons: [
+    'AiOutlineBell',
+    'AiOutlineLaptop',
+    'AiOutlineMenuFold',
+    'AiOutlineMenuUnfold',
+    'AiOutlineMoon',
+    'AiOutlineSun',
+    'AiOutlineUser',
+    ...MobileMenuMeta.icons,
   ],
+  valueType: null,
+  slots: {
+    content: 'Main page content.',
+    footer: 'Page footer.',
+    header: 'Additional header content.',
+    mobileDrawerContent: 'Content in the mobile menu drawer.',
+    mobileDrawerFooter: 'Footer in the mobile menu drawer.',
+    mobileExtra: 'Extra content in the mobile header bar.',
+    siderClosed: 'Content shown in the sider when collapsed.',
+    siderOpen: 'Content shown in the sider when expanded.',
+  },
   cssKeys: {
     element: 'The PageSidebarLayout element.',
     sider: 'The PageSidebarLayout sider.',
     menu: 'The PageSidebarLayout menu.',
     mobileHeader: 'The PageSidebarLayout mobile header.',
+    mobileMenu: 'The PageSidebarLayout mobile menu.',
     header: 'The PageSidebarLayout header.',
+    headerActions: 'The header actions container (notifications, profile, dark mode toggle).',
     logo: 'The PageSidebarLayout logo.',
+    notifications: 'The notification bell button.',
+    notificationsBadge: 'The notification badge wrapper.',
+    notificationsIcon: 'The notification bell icon.',
+    profile: 'The profile avatar and dropdown wrapper.',
+    profileAvatar: 'The profile avatar element.',
+    profileMenu: 'The profile dropdown menu popup.',
+    darkModeToggle: 'The dark mode toggle button.',
     content: 'The PageSidebarLayout content.',
     breadcrumb: 'The PageSidebarLayout breadcrumb.',
     footer: 'The PageSidebarLayout footer.',
@@ -51,6 +72,19 @@ export default {
     onMobileMenuOpen: 'Trigger action when mobile menu is opened.',
     onMobileMenuClose: 'Trigger action when mobile menu is closed.',
     onToggleDrawer: 'Trigger action when mobile menu drawer is toggled.',
+    onProfileMenuClick: {
+      description: 'Trigger action when a profile dropdown menu item is clicked.',
+      event: {
+        key: 'The menu item key (id).',
+        keyPath: 'The key path of the menu item.',
+        pageId: 'The page id of the menu item.',
+        url: 'The url of the menu item.',
+      },
+    },
+    onProfileMenuOpen: {
+      description: 'Trigger action when the profile dropdown opens or closes.',
+      event: { open: 'Whether the dropdown is open.' },
+    },
   },
   properties: {
     type: 'object',
@@ -61,23 +95,28 @@ export default {
         description: 'Page title. Accepted for compatibility.',
       },
       theme: {
-        type: ['string', 'object'],
-        default: 'light',
+        type: 'object',
         description:
-          "As a string ('light' or 'dark'), sets the base theme for sider, menu, header, and mobile header. Individual component themes (sider.theme, header.theme, mobileHeader.theme) override this value. As an object, applies Ant Design design token overrides to all child components.",
+          'Antd design token overrides for this block. See <a href="https://ant.design/components/overview#design-token">antd design tokens</a>.',
+        docs: {
+          displayType: 'yaml',
+        },
       },
       logo: {
         type: 'object',
-        description: 'Logo settings.',
+        description:
+          'Header logo settings. By default, images are served from the app public folder and auto-swap between light and dark variants based on dark mode. See <a href="/hosting-files">Hosting Files</a> for details.',
         additionalProperties: false,
         properties: {
           src: {
             type: 'string',
-            description: 'Logo source url.',
+            description:
+              'Logo image URL for desktop. Defaults to logo-light-theme.png or logo-dark-theme.png from the public folder (~250x72px), auto-selected based on dark mode.',
           },
           srcMobile: {
             type: 'string',
-            description: 'Mobile logo source url.',
+            description:
+              'Logo image URL for mobile. Defaults to logo-square-light-theme.png or logo-square-dark-theme.png from the public folder (~125x125px), auto-selected based on dark mode.',
           },
           alt: {
             type: 'string',
@@ -113,22 +152,8 @@ export default {
             default: false,
             description: 'Set the initial collapsed state.',
           },
-          theme: {
-            type: 'string',
-            enum: ['light', 'dark'],
-            default: 'light',
-            description: 'Color theme of the sidebar.',
-          },
-          style: {
-            type: 'object',
-            description: 'Css style object to apply to sider.',
-            docs: {
-              displayType: 'yaml',
-            },
-          },
           width: {
             type: ['string', 'number'],
-            default: 'string',
             description: 'Width of the sidebar.',
             docs: {
               displayType: 'string',
@@ -152,37 +177,12 @@ export default {
         description: 'Header properties.',
         additionalProperties: false,
         properties: {
-          theme: {
-            type: 'string',
-            enum: ['light', 'dark'],
-            description: 'Header theme color.',
-          },
           contentStyle: {
             type: 'object',
             description: 'Header content css style object.',
             docs: {
               displayType: 'yaml',
             },
-          },
-          style: {
-            type: 'object',
-            description: 'Header css style object.',
-            docs: {
-              displayType: 'yaml',
-            },
-          },
-        },
-      },
-      mobileHeader: {
-        type: 'object',
-        description: 'Mobile header properties.',
-        additionalProperties: false,
-        properties: {
-          theme: {
-            type: 'string',
-            enum: ['light', 'dark'],
-            default: 'light',
-            description: 'Mobile header theme color.',
           },
         },
       },
@@ -230,69 +230,14 @@ export default {
             default: '/',
             description: 'Use a custom separator string.',
           },
-          list: {
-            type: 'array',
-            description: 'List of breadcrumb links.',
-            items: {
-              type: 'string',
-              description: 'Title of the breadcrumb link.',
-            },
-          },
+          list: breadcrumbList,
         },
       },
       menu: {
         type: 'object',
         description: 'Menu properties.',
         properties: {
-          theme: {
-            type: 'string',
-            enum: ['dark', 'light'],
-            default: 'light',
-            description: 'Color theme of menu.',
-          },
-          defaultOpenKeys: {
-            type: 'array',
-            description: 'Array of initially opened submenu keys.',
-            items: {
-              type: 'string',
-              description: 'Submenu key.',
-            },
-          },
-          links: {
-            type: 'array',
-            items: {
-              type: 'object',
-              required: ['id', 'type'],
-              properties: {
-                id: {
-                  type: 'string',
-                  description: 'Menu item id.',
-                },
-                pageId: {
-                  type: 'string',
-                  description: 'Page to link to.',
-                },
-                properties: {
-                  type: 'object',
-                  description: 'properties from menu item.',
-                  properties: {
-                    title: {
-                      type: 'string',
-                      description: 'Menu item title.',
-                    },
-                    icon: {
-                      type: ['string', 'object'],
-                      description:
-                        "Name of an React-Icon (See <a href='https://react-icons.github.io/react-icons/'>all icons</a>) or properties of an Icon block to customize icon on menu item.",
-                      docs: {
-                        displayType: 'icon',
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
+          links: menuLinks,
         },
       },
       menuLg: {
@@ -308,6 +253,238 @@ export default {
         description: 'Mobile menu properties. Overwrites menu properties on mobile screen sizes.',
         docs: {
           displayType: 'yaml',
+        },
+      },
+      notifications: {
+        type: 'object',
+        description:
+          'Notification bell icon with badge. Shown in the sider on desktop and the mobile header on small screens. Renders when configured. Use the link property to navigate when clicked.',
+        additionalProperties: false,
+        properties: {
+          link: {
+            type: 'object',
+            description: 'Link to navigate to when the notification bell is clicked.',
+            additionalProperties: false,
+            properties: {
+              pageId: {
+                type: 'string',
+                description: 'Page to link to.',
+              },
+              url: {
+                type: 'string',
+                description: 'External URL to link to.',
+              },
+              newTab: {
+                type: 'boolean',
+                description: 'Open link in new tab.',
+              },
+            },
+          },
+          count: {
+            type: 'number',
+            description:
+              'Number to display on the badge. Set to 0 to hide the badge (unless showZero is true).',
+          },
+          dot: {
+            type: 'boolean',
+            default: false,
+            description: 'Show a dot instead of a count number.',
+          },
+          showZero: {
+            type: 'boolean',
+            default: false,
+            description: 'Show badge when count is zero.',
+          },
+          overflowCount: {
+            type: 'number',
+            default: 99,
+            description: 'Max count to show. Values above this display as "N+".',
+          },
+          color: {
+            type: 'string',
+            description: 'Badge color.',
+            docs: {
+              displayType: 'color',
+            },
+          },
+          icon: {
+            ...icon,
+            description: 'Icon for the notification button. Defaults to AiOutlineBell.',
+          },
+          size: {
+            type: 'string',
+            enum: ['small', 'default', 'large'],
+            default: 'small',
+            description: 'Size of the notification button.',
+          },
+        },
+      },
+      profile: {
+        type: 'object',
+        description:
+          'Profile avatar with optional dropdown menu. Shown in the sider on desktop and the mobile header on small screens. Renders when configured. Use with the _user operator to populate from the authenticated user.',
+        additionalProperties: false,
+        properties: {
+          avatar: {
+            type: 'object',
+            description: 'Avatar display properties.',
+            additionalProperties: false,
+            properties: {
+              src: {
+                type: 'string',
+                description: 'Image URL for the avatar. Typically bound to _user: image.',
+              },
+              content: {
+                type: 'string',
+                description:
+                  'Text content inside the avatar (e.g. user initials). Shown when no src is provided.',
+              },
+              icon: {
+                ...icon,
+                description:
+                  'Icon to display in avatar when no src or content is set. Defaults to AiOutlineUser.',
+              },
+              color: {
+                type: 'string',
+                description: 'Background color of the avatar when not using src.',
+                docs: {
+                  displayType: 'color',
+                },
+              },
+              size: {
+                type: ['string', 'number'],
+                default: 'small',
+                enum: ['default', 'small', 'large'],
+                description: 'Size of the avatar.',
+                docs: {
+                  displayType: 'string',
+                },
+              },
+              shape: {
+                type: 'string',
+                enum: ['circle', 'square'],
+                default: 'circle',
+                description: 'Shape of the avatar.',
+              },
+            },
+          },
+          links: {
+            type: 'array',
+            description:
+              'Dropdown menu items. Uses the same MenuLink/MenuGroup/MenuDivider schema as Menu. Compatible with _menu operator output for access-filtered menus.',
+            items: {
+              type: 'object',
+              required: ['id', 'type'],
+              properties: {
+                id: {
+                  type: 'string',
+                  description: 'Menu item id.',
+                },
+                type: {
+                  type: 'string',
+                  enum: ['MenuDivider', 'MenuLink', 'MenuGroup'],
+                  default: 'MenuLink',
+                  description: 'Menu item type.',
+                },
+                pageId: {
+                  type: 'string',
+                  description: 'Page to link to.',
+                },
+                url: {
+                  type: 'string',
+                  description: 'External URL to link to.',
+                },
+                newTab: {
+                  type: 'boolean',
+                  description: 'Open link in new tab.',
+                },
+                style: {
+                  type: 'object',
+                  description: 'CSS style applied to the link.',
+                  docs: {
+                    displayType: 'yaml',
+                  },
+                },
+                properties: {
+                  type: 'object',
+                  description: 'Properties for the menu item.',
+                  properties: {
+                    title: {
+                      type: 'string',
+                      description: 'Menu item title.',
+                    },
+                    icon: {
+                      ...icon,
+                      description: 'Icon for the menu item.',
+                    },
+                    danger: {
+                      type: 'boolean',
+                      default: false,
+                      description: 'Apply danger style to menu item.',
+                    },
+                    disabled: {
+                      type: 'boolean',
+                      default: false,
+                      description: 'Disable the menu item.',
+                    },
+                    dashed: {
+                      type: 'boolean',
+                      default: false,
+                      description: 'Whether the divider line is dashed.',
+                    },
+                    shortcut: {
+                      type: 'string',
+                      description:
+                        'Keyboard shortcut. Renders a shortcut badge next to the label. Use "mod" for Cmd/Ctrl.',
+                    },
+                  },
+                },
+                links: {
+                  type: 'array',
+                  description: 'Nested menu items for MenuGroup.',
+                },
+              },
+            },
+          },
+          trigger: {
+            type: 'string',
+            enum: ['click', 'hover'],
+            default: 'hover',
+            description: 'How the profile dropdown opens.',
+          },
+          placement: {
+            type: 'string',
+            enum: ['bottomLeft', 'bottom', 'bottomRight', 'topLeft', 'top', 'topRight'],
+            default: 'bottomRight',
+            description: 'Dropdown placement relative to the avatar.',
+          },
+          arrow: {
+            anyOf: [
+              { type: 'boolean' },
+              {
+                type: 'object',
+                properties: { pointAtCenter: { type: 'boolean' } },
+              },
+            ],
+            default: false,
+            description: 'Show arrow on the dropdown.',
+            docs: {
+              displayType: 'switch',
+            },
+          },
+        },
+      },
+      darkModeToggle: {
+        type: 'boolean',
+        default: false,
+        description:
+          'Show a dark mode toggle button in the sider and mobile header. Toggles the Ant Design dark theme for the entire page. Preference is persisted to localStorage.',
+      },
+      iconsColor: {
+        type: 'string',
+        description: 'Color for notification and dark mode toggle icons.',
+        docs: {
+          displayType: 'color',
         },
       },
     },

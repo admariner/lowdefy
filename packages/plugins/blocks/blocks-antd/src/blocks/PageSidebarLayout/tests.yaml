@@ -55,16 +55,6 @@
     logo:
       style:
         width: 80
-- id: 'properties.sider.theme: dark'
-  type: PageSidebarLayout
-  properties:
-    sider:
-      theme: dark
-- id: 'properties.sider.theme: light'
-  type: PageSidebarLayout
-  properties:
-    sider:
-      theme: light
 - id: 'properties.sider.initialCollapsed: true'
   type: PageSidebarLayout
   properties:
@@ -102,7 +92,7 @@
     footer:
       style:
         textAlign: center
-  areas:
+  slots:
     footer:
       blocks: []
 - id: 'properties.content.style'
@@ -111,53 +101,73 @@
     content:
       style:
         padding: 0 20px
-  areas:
+  slots:
     content:
-      blocks: []
-- id: 'properties.header.theme: dark'
-  type: PageSidebarLayout
-  properties:
-    header:
-      theme: dark
-  areas:
-    header:
       blocks: []
 - id: 'properties.toggleSiderButton.type'
   type: PageSidebarLayout
   properties:
     toggleSiderButton:
       type: primary
-- id: 'areas.siderOpen:'
+- id: 'properties.darkModeToggle'
   type: PageSidebarLayout
-  areas:
+  properties:
+    darkModeToggle: true
+- id: 'properties.notifications'
+  type: PageSidebarLayout
+  properties:
+    notifications:
+      count: 5
+- id: 'properties.profile'
+  type: PageSidebarLayout
+  properties:
+    profile:
+      avatar:
+        content: JD
+        color: '#1677ff'
+      links:
+        - id: prof_settings
+          type: MenuLink
+          properties:
+            title: Settings
+            icon: AiOutlineSetting
+- id: 'properties.theme (object)'
+  type: PageSidebarLayout
+  properties:
+    theme:
+      colorPrimary: '#7c3aed'
+      borderRadius: 8
+- id: 'slots.siderOpen:'
+  type: PageSidebarLayout
+  slots:
     siderOpen:
       blocks:
         - id: one
           type: Test
-- id: 'areas.siderClosed:'
+- id: 'slots.siderClosed:'
   type: PageSidebarLayout
-  areas:
+  slots:
     siderClosed:
       blocks:
         - id: one
           type: Test
-- id: 'areas.mobileExtra:'
+- id: 'slots.mobileExtra:'
   type: PageSidebarLayout
-  areas:
+  slots:
     mobileExtra:
       blocks:
         - id: one
           type: Test
-- id: 'areas.mobileDrawerContent:'
+- id: 'slots.mobileDrawerContent:'
   type: PageSidebarLayout
-  areas:
+  slots:
     mobileDrawerContent:
       blocks:
         - id: one
           type: Test
-- id: 'areas.mobileDrawerFooter:'
+- id: 'slots.mobileDrawerFooter:'
   type: PageSidebarLayout
-  areas:
+  slots:
     mobileDrawerFooter:
       blocks:
         - id: one

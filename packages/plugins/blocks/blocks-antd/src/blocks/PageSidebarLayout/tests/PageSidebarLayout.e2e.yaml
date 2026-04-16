@@ -17,7 +17,6 @@ type: PageSidebarLayout
 properties:
   siderStorageKey: psl_e2e
   sider:
-    theme: light
     initialCollapsed: false
     collapsible: true
   logo:
