@@ -18,7 +18,10 @@ export default {
   category: 'container',
   icons: ['AiOutlineMenuUnfold', 'AiOutlineMenuFold'],
   valueType: null,
-  slots: ['drawerContent', 'drawerFooter'],
+  slots: {
+    drawerContent: 'Additional content below the menu in the drawer.',
+    drawerFooter: 'Footer content in the drawer.',
+  },
   cssKeys: {
     element: 'The MobileMenu element.',
   },

@@ -165,10 +165,6 @@ const PageSidebarLayout = ({
                       ])}
                       styles={{ element: styles.menu }}
                       rename={{
-                        methods: {
-                          toggleOpen: 'toggleMobileMenuOpen',
-                          setOpen: 'setMobileMenuOpen',
-                        },
                         events: {
                           onClick: 'onMenuItemClick',
                           onSelect: 'onMenuItemSelect',
