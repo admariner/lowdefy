@@ -17,8 +17,15 @@
 import diff from 'microdiff';
 import { type } from '@lowdefy/helpers';
 
+import breadcrumbLabel from './breadcrumbLabel.js';
 import { CHANGE_TYPES, GROUP_ROOT } from './constants.js';
-import { matchesPath, pathLabel, pathToString, resolveFormatter } from './pathUtils.js';
+import {
+  getValueAtPath,
+  matchesPath,
+  pathLabel,
+  pathToString,
+  resolveFormatter,
+} from './pathUtils.js';
 
 const MICRODIFF_TYPE_MAP = {
   CREATE: CHANGE_TYPES.CREATE,
@@ -36,15 +43,26 @@ function toInput(value) {
 
 function enrichChange(entry, { labels, format }) {
   const pathStr = pathToString(entry.path);
+  const mappedType = MICRODIFF_TYPE_MAP[entry.type] ?? CHANGE_TYPES.CHANGE;
+  let formatter = resolveFormatter(pathStr, format);
+  if (
+    type.isNone(formatter) &&
+    mappedType === CHANGE_TYPES.CHANGE &&
+    (type.isArray(entry.value) || type.isObject(entry.value))
+  ) {
+    formatter = { type: 'json' };
+  }
   return {
-    type: MICRODIFF_TYPE_MAP[entry.type] ?? CHANGE_TYPES.CHANGE,
+    type: mappedType,
     path: entry.path.slice(),
     pathStr,
     displayPath: pathToString(entry.path, { display: true }),
     label: pathLabel(entry.path, labels),
     oldValue: entry.type === 'CREATE' ? undefined : entry.oldValue,
     newValue: entry.type === 'REMOVE' ? undefined : entry.value,
-    formatter: resolveFormatter(pathStr, format),
+    formatter,
+    depth: entry.path.length,
+    breadcrumb: breadcrumbLabel(entry.path, labels),
   };
 }
 
@@ -63,15 +81,6 @@ function collectLeafPaths(value, basePath, collected, visited) {
     return;
   }
   collected.push(basePath.slice());
-}
-
-function getValueAtPath(obj, path) {
-  let current = obj;
-  for (const segment of path) {
-    if (type.isNone(current)) return undefined;
-    current = current[segment];
-  }
-  return current;
 }
 
 function synthesiseUnchanged({ before, after, existingPathSet, labels, format }) {
@@ -96,6 +105,8 @@ function synthesiseUnchanged({ before, after, existingPathSet, labels, format })
         oldValue: beforeVal,
         newValue: afterVal,
         formatter: resolveFormatter(pathStr, format),
+        depth: path.length,
+        breadcrumb: breadcrumbLabel(path, labels),
       });
     }
   });
@@ -153,6 +164,39 @@ function groupChanges(changes, { groupByRoot }) {
   }));
 }
 
+function collapseDeep(raw, { maxDepth, before, after }) {
+  if (!type.isInt(maxDepth) || maxDepth < 1) return raw;
+  const passthrough = [];
+  const bucketOrder = [];
+  const buckets = new Map();
+  raw.forEach((entry) => {
+    if (!type.isArray(entry.path) || entry.path.length <= maxDepth) {
+      passthrough.push(entry);
+      return;
+    }
+    const parent = entry.path.slice(0, maxDepth);
+    const key = parent.join('.');
+    if (!buckets.has(key)) {
+      buckets.set(key, parent);
+      bucketOrder.push(key);
+    }
+  });
+  const collapsed = [];
+  bucketOrder.forEach((key) => {
+    const parent = buckets.get(key);
+    const oldValue = getValueAtPath(before, parent);
+    const newValue = getValueAtPath(after, parent);
+    if (JSON.stringify(oldValue) === JSON.stringify(newValue)) return;
+    collapsed.push({
+      type: 'CHANGE',
+      path: parent,
+      oldValue,
+      value: newValue,
+    });
+  });
+  return passthrough.concat(collapsed);
+}
+
 function buildDiffModel({ before, after, options = {} }) {
   const {
     labels,
@@ -161,13 +205,19 @@ function buildDiffModel({ before, after, options = {} }) {
     format,
     showUnchanged = false,
     groupByRoot = true,
+    maxDepth = 4,
   } = options;
 
   const safeBefore = toInput(before);
   const safeAfter = toInput(after);
   const rawChanges = diff(safeBefore, safeAfter);
+  const collapsedRaw = collapseDeep(rawChanges, {
+    maxDepth,
+    before: safeBefore,
+    after: safeAfter,
+  });
 
-  const enriched = rawChanges.map((entry) => enrichChange(entry, { labels, format }));
+  const enriched = collapsedRaw.map((entry) => enrichChange(entry, { labels, format }));
   const changePathSet = new Set(enriched.map((change) => change.pathStr));
 
   let allChanges = enriched;
@@ -185,9 +235,7 @@ function buildDiffModel({ before, after, options = {} }) {
   const filtered = applyFilters(allChanges, { hide, show });
   const groups = groupChanges(filtered, { groupByRoot });
 
-  const hasMeaningfulChanges = filtered.some(
-    (change) => change.type !== CHANGE_TYPES.UNCHANGED
-  );
+  const hasMeaningfulChanges = filtered.some((change) => change.type !== CHANGE_TYPES.UNCHANGED);
 
   return {
     groups,

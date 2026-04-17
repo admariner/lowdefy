@@ -43,9 +43,17 @@ export default {
       },
       mode: {
         type: 'string',
-        enum: ['list', 'sideBySide', 'timeline'],
+        enum: ['list', 'sideBySide', 'timeline', 'gitDiff'],
         default: 'list',
-        description: 'Visual layout. Only "list" is implemented; other values fall back to "list".',
+        description:
+          'Visual layout. `list` groups changes by top-level key; `sideBySide` shows Before / After panels; `timeline` renders a vertical audit trail; `gitDiff` renders a unified-diff YAML patch with +/- markers.',
+      },
+      maxDepth: {
+        type: 'integer',
+        default: 4,
+        minimum: 1,
+        description:
+          'Paths deeper than this collapse into a single "Changed" row rendered as JSON. Defaults to 4 (covers array-of-objects + one nested object + a leaf). Lower to compress deeply nested payloads. Ignored when `mode: gitDiff`.',
       },
       title: {
         type: 'string',

@@ -16,7 +16,7 @@
 
 import { type } from '@lowdefy/helpers';
 
-function isIndex(segment) {
+export function isIndex(segment) {
   return type.isInt(segment) || (type.isString(segment) && /^\d+$/.test(segment));
 }
 
@@ -99,3 +99,30 @@ export function resolveFormatter(pathStr, formatMap) {
   }
   return undefined;
 }
+
+export function getValueAtPath(obj, path) {
+  let current = obj;
+  for (const segment of path) {
+    if (type.isNone(current)) return undefined;
+    current = current[segment];
+  }
+  return current;
+}
+
+const SINGULARISE_MAP = {
+  items: 'Item',
+  orders: 'Order',
+  entries: 'Entry',
+  children: 'Child',
+  people: 'Person',
+};
+
+export function singularise(label) {
+  if (!type.isString(label) || label.length === 0) return label;
+  const mapped = SINGULARISE_MAP[label.toLowerCase()];
+  if (!type.isNone(mapped)) return mapped;
+  if (label.endsWith('s')) return label.slice(0, -1);
+  return label;
+}
+
+export { default as breadcrumbLabel } from './breadcrumbLabel.js';

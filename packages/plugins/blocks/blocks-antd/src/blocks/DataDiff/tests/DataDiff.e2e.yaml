@@ -158,3 +158,92 @@ blocks:
       after:
         name: Sarah
         role: admin
+
+  - id: datadiff_orders_array
+    type: DataDiff
+    properties:
+      before:
+        orders:
+          - id: ord_1
+            total: 10
+            name: Notebook
+          - id: ord_2
+            total: 5
+            name: Pen
+      after:
+        orders:
+          - id: ord_1
+            total: 20
+            name: Notebook
+          - id: ord_2
+            total: 5
+            name: Pen
+          - id: ord_3
+            total: 99
+            name: Stapler
+
+  - id: datadiff_deep_path
+    type: DataDiff
+    properties:
+      before:
+        settings:
+          display:
+            theme:
+              mode: dark
+      after:
+        settings:
+          display:
+            theme:
+              mode: light
+
+  - id: datadiff_max_depth
+    type: DataDiff
+    properties:
+      maxDepth: 3
+      before:
+        settings:
+          display:
+            theme:
+              mode: dark
+      after:
+        settings:
+          display:
+            theme:
+              mode: light
+
+  - id: datadiff_side_by_side
+    type: DataDiff
+    properties:
+      mode: sideBySide
+      before:
+        name: Sarah
+        role: member
+      after:
+        name: Sarah Johnson
+        role: admin
+
+  - id: datadiff_timeline
+    type: DataDiff
+    properties:
+      mode: timeline
+      before:
+        a: 1
+        b: 2
+        c: 3
+      after:
+        a: 10
+        b: 2
+        d: 4
+
+  - id: datadiff_git_diff
+    type: DataDiff
+    properties:
+      mode: gitDiff
+      before:
+        order:
+          status: pending
+          total: 10
+      after:
+        order:
+          status: paid
+          total: 15

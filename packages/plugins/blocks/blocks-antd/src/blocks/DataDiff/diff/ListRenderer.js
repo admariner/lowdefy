@@ -16,11 +16,12 @@
 
 import React from 'react';
 import { Collapse, Descriptions, Space, Tag, Typography } from 'antd';
+import { type } from '@lowdefy/helpers';
 
 import ChangeTypeTag from './ChangeTypeTag.js';
 import ValueCell from './ValueCell.js';
-import { humaniseSegment, pathLabel } from './pathUtils.js';
-import { GROUP_ROOT } from './constants.js';
+import { breadcrumbLabel, humaniseSegment, isIndex, pathLabel, singularise } from './pathUtils.js';
+import { CHANGE_TYPES, GROUP_ROOT } from './constants.js';
 
 const { Text } = Typography;
 
@@ -80,28 +81,92 @@ function ArraySummary({ summary }) {
   );
 }
 
-function buildDescriptionItems(changes, { classNames, changeTypeLabels, collapseNested }) {
-  return changes.map((change, index) => ({
-    key: change.pathStr || `row-${index}`,
-    label: (
-      <Space size={8} align="center" wrap>
-        <span className={classNames?.row}>{change.label || change.displayPath}</span>
-        <ChangeTypeTag type={change.type} labels={changeTypeLabels} className={classNames?.tag} />
-      </Space>
-    ),
-    children: <ValueCell change={change} collapseNested={collapseNested} />,
-  }));
+function partitionGroup(changes) {
+  const byItem = new Map();
+  const direct = [];
+  changes.forEach((change) => {
+    if (change.path.length >= 2 && isIndex(change.path[1])) {
+      const key = String(change.path[1]);
+      if (!byItem.has(key)) byItem.set(key, []);
+      byItem.get(key).push(change);
+      return;
+    }
+    direct.push(change);
+  });
+  return { byItem, direct };
 }
 
-function GroupBody({ group, classNames, changeTypeLabels, collapseNested }) {
-  const items = buildDescriptionItems(group.changes, {
+function summariseSubset(changes) {
+  const summary = { added: 0, removed: 0, changed: 0, unchanged: 0, hasArrayIndices: false };
+  changes.forEach((change) => {
+    if (change.type === CHANGE_TYPES.CREATE) summary.added += 1;
+    else if (change.type === CHANGE_TYPES.REMOVE) summary.removed += 1;
+    else if (change.type === CHANGE_TYPES.CHANGE) summary.changed += 1;
+    else if (change.type === CHANGE_TYPES.UNCHANGED) summary.unchanged += 1;
+    if (change.path.length > 1 && isIndex(change.path[1])) {
+      summary.hasArrayIndices = true;
+    }
+  });
+  return summary;
+}
+
+function buildDescriptionItems(
+  changes,
+  { classNames, changeTypeLabels, collapseNested, labels, inItemBlock = false }
+) {
+  return changes.map((change, index) => {
+    let rowLabel;
+    if (inItemBlock && change.depth >= 4) {
+      rowLabel = breadcrumbLabel(change.path.slice(2), labels);
+    } else if (!inItemBlock && change.depth >= 3) {
+      rowLabel = change.breadcrumb;
+    } else {
+      rowLabel = change.label || change.displayPath;
+    }
+    return {
+      key: change.pathStr || `row-${index}`,
+      label: (
+        <Space size={8} align="center" wrap>
+          <span className={classNames?.row}>{rowLabel}</span>
+          <ChangeTypeTag type={change.type} labels={changeTypeLabels} className={classNames?.tag} />
+        </Space>
+      ),
+      children: <ValueCell change={change} collapseNested={collapseNested} />,
+    };
+  });
+}
+
+function resolveItemLabelBase(group, labels) {
+  if (type.isObject(labels) && type.isString(labels[group.key]) && labels[group.key].length > 0) {
+    return singularise(labels[group.key]);
+  }
+  return singularise(humaniseSegment(String(group.key)));
+}
+
+function ItemBlock({
+  itemKey,
+  itemChanges,
+  itemLabelBase,
+  classNames,
+  changeTypeLabels,
+  collapseNested,
+  labels,
+}) {
+  const subSummary = summariseSubset(itemChanges);
+  const itemLabel = `${itemLabelBase} ${Number(itemKey) + 1}`;
+  const items = buildDescriptionItems(itemChanges, {
     classNames,
     changeTypeLabels,
     collapseNested,
+    labels,
+    inItemBlock: true,
   });
   return (
-    <Space direction="vertical" size={8} style={{ display: 'flex', width: '100%' }}>
-      {group.summary.hasArrayIndices && <ArraySummary summary={group.summary} />}
+    <div style={{ paddingInlineStart: 12 }}>
+      <Space size={8} align="center" style={{ marginBottom: 8 }}>
+        <Text strong>{itemLabel}</Text>
+        <SummaryChips summary={subSummary} />
+      </Space>
       <Descriptions
         size="small"
         column={1}
@@ -110,6 +175,71 @@ function GroupBody({ group, classNames, changeTypeLabels, collapseNested }) {
         items={items}
         className={classNames?.group}
       />
+    </div>
+  );
+}
+
+function GroupBody({ group, classNames, changeTypeLabels, collapseNested, labels }) {
+  const { byItem, direct } = partitionGroup(group.changes);
+
+  if (byItem.size === 0) {
+    const items = buildDescriptionItems(group.changes, {
+      classNames,
+      changeTypeLabels,
+      collapseNested,
+      labels,
+    });
+    return (
+      <Space direction="vertical" size={8} style={{ display: 'flex', width: '100%' }}>
+        {group.summary.hasArrayIndices && <ArraySummary summary={group.summary} />}
+        <Descriptions
+          size="small"
+          column={1}
+          colon={false}
+          bordered
+          items={items}
+          className={classNames?.group}
+        />
+      </Space>
+    );
+  }
+
+  const sortedItems = Array.from(byItem.entries()).sort(([a], [b]) => Number(a) - Number(b));
+  const itemLabelBase = resolveItemLabelBase(group, labels);
+  const directItems =
+    direct.length > 0
+      ? buildDescriptionItems(direct, {
+          classNames,
+          changeTypeLabels,
+          collapseNested,
+          labels,
+        })
+      : null;
+
+  return (
+    <Space direction="vertical" size={8} style={{ display: 'flex', width: '100%' }}>
+      {directItems && (
+        <Descriptions
+          size="small"
+          column={1}
+          colon={false}
+          bordered
+          items={directItems}
+          className={classNames?.group}
+        />
+      )}
+      {sortedItems.map(([itemKey, itemChanges]) => (
+        <ItemBlock
+          key={itemKey}
+          itemKey={itemKey}
+          itemChanges={itemChanges}
+          itemLabelBase={itemLabelBase}
+          classNames={classNames}
+          changeTypeLabels={changeTypeLabels}
+          collapseNested={collapseNested}
+          labels={labels}
+        />
+      ))}
     </Space>
   );
 }
@@ -136,6 +266,7 @@ function ListRenderer({
           classNames={classNames}
           changeTypeLabels={changeTypeLabels}
           collapseNested={collapseNested}
+          labels={labels}
         />
       )}
       {namedGroups.length === 1 && (
@@ -149,6 +280,7 @@ function ListRenderer({
             classNames={classNames}
             changeTypeLabels={changeTypeLabels}
             collapseNested={collapseNested}
+            labels={labels}
           />
         </div>
       )}
@@ -174,6 +306,7 @@ function ListRenderer({
                 classNames={classNames}
                 changeTypeLabels={changeTypeLabels}
                 collapseNested={collapseNested}
+                labels={labels}
               />
             ),
           }))}

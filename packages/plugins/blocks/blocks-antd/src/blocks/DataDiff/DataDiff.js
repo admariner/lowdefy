@@ -18,7 +18,10 @@ import React, { useMemo } from 'react';
 import { Empty, Space, Typography } from 'antd';
 import { renderHtml, withBlockDefaults } from '@lowdefy/block-utils';
 
+import GitDiffRenderer from './diff/GitDiffRenderer.js';
 import ListRenderer from './diff/ListRenderer.js';
+import SideBySideRenderer from './diff/SideBySideRenderer.js';
+import TimelineRenderer from './diff/TimelineRenderer.js';
 import buildDiffModel from './diff/buildDiffModel.js';
 import withTheme from '../withTheme.js';
 
@@ -38,6 +41,8 @@ const DataDiffBlock = ({ blockId, classNames = {}, properties, methods, styles =
     groupByRoot = true,
     collapseNested = true,
     changeTypeLabels,
+    mode = 'list',
+    maxDepth = 4,
   } = properties;
 
   const model = useMemo(
@@ -45,10 +50,73 @@ const DataDiffBlock = ({ blockId, classNames = {}, properties, methods, styles =
       buildDiffModel({
         before,
         after,
-        options: { labels, hide, show, format, showUnchanged, groupByRoot },
+        options: { labels, hide, show, format, showUnchanged, groupByRoot, maxDepth },
       }),
-    [before, after, labels, hide, show, format, showUnchanged, groupByRoot]
+    [before, after, labels, hide, show, format, showUnchanged, groupByRoot, maxDepth]
   );
+
+  const renderEmpty = () => (
+    <Empty
+      image={Empty.PRESENTED_IMAGE_SIMPLE}
+      description={emptyText}
+      style={{ padding: '16px 0' }}
+    />
+  );
+
+  let body;
+  if (mode === 'gitDiff') {
+    body = (
+      <GitDiffRenderer
+        before={before}
+        after={after}
+        hide={hide}
+        show={show}
+        classNames={classNames}
+        styles={styles}
+      />
+    );
+  } else if (mode === 'sideBySide') {
+    body = model.empty ? (
+      renderEmpty()
+    ) : (
+      <SideBySideRenderer
+        model={model}
+        labels={labels}
+        classNames={classNames}
+        styles={styles}
+        collapseNested={collapseNested}
+        changeTypeLabels={changeTypeLabels}
+        before={before}
+        after={after}
+      />
+    );
+  } else if (mode === 'timeline') {
+    body = model.empty ? (
+      renderEmpty()
+    ) : (
+      <TimelineRenderer
+        model={model}
+        showUnchanged={showUnchanged}
+        collapseNested={collapseNested}
+        changeTypeLabels={changeTypeLabels}
+        classNames={classNames}
+        styles={styles}
+      />
+    );
+  } else {
+    body = model.empty ? (
+      renderEmpty()
+    ) : (
+      <ListRenderer
+        model={model}
+        classNames={classNames}
+        styles={styles}
+        collapseNested={collapseNested}
+        changeTypeLabels={changeTypeLabels}
+        labels={labels}
+      />
+    );
+  }
 
   return (
     <div id={blockId} className={classNames.element} style={styles.element}>
@@ -58,22 +126,7 @@ const DataDiffBlock = ({ blockId, classNames = {}, properties, methods, styles =
             {renderHtml({ html: title, methods })}
           </Title>
         )}
-        {model.empty ? (
-          <Empty
-            image={Empty.PRESENTED_IMAGE_SIMPLE}
-            description={emptyText}
-            style={{ padding: '16px 0' }}
-          />
-        ) : (
-          <ListRenderer
-            model={model}
-            classNames={classNames}
-            styles={styles}
-            collapseNested={collapseNested}
-            changeTypeLabels={changeTypeLabels}
-            labels={labels}
-          />
-        )}
+        {body}
       </Space>
     </div>
   );

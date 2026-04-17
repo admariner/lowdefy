@@ -82,4 +82,58 @@ test.describe('DataDiff Block', () => {
     await expect(block).toContainText('Unchanged');
     await expect(block).toContainText('Changed');
   });
+
+  test('renders sideBySide with two Descriptions inside a Row', async ({ page }) => {
+    const block = getBlock(page, 'datadiff_side_by_side');
+    await expect(block).toBeVisible();
+    await expect(block.locator('.ant-row').first()).toBeVisible();
+    const descriptions = block.locator('.ant-row .ant-descriptions');
+    expect(await descriptions.count()).toBeGreaterThanOrEqual(2);
+    await expect(block).toContainText('member');
+    await expect(block).toContainText('admin');
+    await expect(block).toContainText('Sarah');
+    await expect(block).toContainText('Sarah Johnson');
+  });
+
+  test('renders timeline with one item per change', async ({ page }) => {
+    const block = getBlock(page, 'datadiff_timeline');
+    await expect(block.locator('.ant-timeline')).toBeVisible();
+    await expect(block.locator('.ant-timeline-item')).toHaveCount(3);
+  });
+
+  test('array-of-objects sub-groups render per-item subheaders', async ({ page }) => {
+    const block = getBlock(page, 'datadiff_orders_array');
+    await expect(block).toContainText('Order 1');
+    await expect(block).toContainText('Order 3');
+    await expect(block).toContainText('~1');
+    await expect(block).toContainText('+1');
+  });
+
+  test('deep path row uses breadcrumb label', async ({ page }) => {
+    const block = getBlock(page, 'datadiff_deep_path');
+    await expect(block).toContainText('Settings');
+    await expect(block).toContainText('Display');
+    await expect(block).toContainText('Theme');
+    await expect(block).toContainText('Mode');
+  });
+
+  test('maxDepth collapses deep changes', async ({ page }) => {
+    const block = getBlock(page, 'datadiff_max_depth');
+    await expect(block.locator('pre').first()).toBeVisible();
+    await expect(block).toContainText('Settings');
+    await expect(block).toContainText('Display');
+    await expect(block).toContainText('Theme');
+    await expect(block).toContainText('"mode": "light"');
+    await expect(block).toContainText('"mode": "dark"');
+  });
+
+  test('gitDiff renders +/- lines', async ({ page }) => {
+    const block = getBlock(page, 'datadiff_git_diff');
+    await expect(block.locator('pre')).toBeVisible();
+    const lines = await block.locator('pre > span').allTextContents();
+    expect(lines.some((line) => line.startsWith('+ '))).toBe(true);
+    expect(lines.some((line) => line.startsWith('- '))).toBe(true);
+    const joined = lines.join('\n');
+    expect(joined).toContain('status');
+  });
 });
