@@ -451,6 +451,9 @@
         - id: DangerousMarkdown
           type: MenuLink
           pageId: DangerousMarkdown
+        - id: DataDiff
+          type: MenuLink
+          pageId: DataDiff
         - id: Divider
           type: MenuLink
           pageId: Divider
