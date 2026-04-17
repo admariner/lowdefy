@@ -247,4 +247,20 @@ test.describe('Selector Block', () => {
     // No value should be selected
     await expect(selector.locator('.ant-select-placeholder')).toBeVisible();
   });
+
+  // ============================================
+  // SELECTOR CSSKEY TESTS
+  // ============================================
+
+  test('style.selector is forwarded to .ant-select-content', async ({ page }) => {
+    const selector = getSelector(page, 'selector_selector_style');
+    const content = selector.locator('.ant-select-content');
+    await expect(content).toHaveCSS('padding', '12px');
+  });
+
+  test('class.selector is forwarded to .ant-select-content', async ({ page }) => {
+    const selector = getSelector(page, 'selector_selector_class');
+    const content = selector.locator('.ant-select-content');
+    await expect(content).toHaveClass(/selector-selector-tailwind/);
+  });
 });

@@ -333,4 +333,21 @@ test.describe('MultipleSelector Block', () => {
     // No value should be selected
     await expect(selector.locator('.ant-select-placeholder')).toBeVisible();
   });
+
+  // ============================================
+  // SELECTOR CSSKEY TESTS
+  // ============================================
+
+  test('style.selector is forwarded to .ant-select-content', async ({ page }) => {
+    const selector = getSelector(page, 'ms_selector_style');
+    const content = selector.locator('.ant-select-content');
+    await expect(content).toHaveCSS('max-height', '96px');
+    await expect(content).toHaveCSS('overflow-y', 'auto');
+  });
+
+  test('class.selector is forwarded to .ant-select-content', async ({ page }) => {
+    const selector = getSelector(page, 'ms_selector_class');
+    const content = selector.locator('.ant-select-content');
+    await expect(content).toHaveClass(/ms-selector-tailwind/);
+  });
 });
