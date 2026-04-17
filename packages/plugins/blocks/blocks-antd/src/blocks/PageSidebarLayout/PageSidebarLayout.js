@@ -105,7 +105,12 @@ const PageSidebarLayout = ({
               classNames={{
                 element: `${classNames.sider ?? 'hidden lg:block'} hide-on-print`,
               }}
-              styles={{ element: styles.sider }}
+              styles={{
+                element: mergeObjects([
+                  { borderInlineEnd: '1px solid var(--ant-color-border)' },
+                  styles.sider,
+                ]),
+              }}
               rename={{
                 methods: {
                   toggleOpen: '_toggleSiderOpen',
@@ -185,6 +190,9 @@ const PageSidebarLayout = ({
                         bottom: 0,
                         background: 'var(--ant-color-bg-container)',
                         padding: 8,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
                       }}
                     >
                       {renderHeaderActions({
@@ -215,7 +223,11 @@ const PageSidebarLayout = ({
                           }
                           alt={properties.logo?.alt ?? 'Lowdefy'}
                           className={classNames.logo}
-                          style={mergeObjects([properties.logo?.style, styles.logo])}
+                          style={mergeObjects([
+                            { maxHeight: 32 },
+                            properties.logo?.style,
+                            styles.logo,
+                          ])}
                         />
                       </Link>
                     </div>

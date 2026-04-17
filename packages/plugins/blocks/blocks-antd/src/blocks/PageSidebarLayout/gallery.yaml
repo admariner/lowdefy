@@ -123,8 +123,8 @@
       properties:
         siderStorageKey: psl_logo
         logo:
-          src: /logo.png
-          srcMobile: /logo-square.png
+          src: /logo_example.png
+          srcMobile: /logo_example.png
           alt: Custom Logo
           style:
             width: 80
@@ -140,46 +140,6 @@
           type: Paragraph
           properties:
             content: Custom logo with style overrides. The full logo (src) shows when the sider is expanded, and the square logo (srcMobile) shows when collapsed.
-
-- title: Ant Design Theme Overrides
-  fullWidth: true
-  blocks:
-    - id: psl_theme
-      type: PageSidebarLayout
-      properties:
-        siderStorageKey: psl_theme
-        sider:
-          width: 220
-        breadcrumb:
-          list:
-            - Home
-            - Dashboard
-        menu:
-          links:
-            - id: psl_theme_dash
-              type: MenuLink
-              properties:
-                title: Dashboard
-                icon: AiOutlineDashboard
-            - id: psl_theme_users
-              type: MenuLink
-              properties:
-                title: Users
-                icon: AiOutlineUser
-            - id: psl_theme_settings
-              type: MenuLink
-              properties:
-                title: Settings
-                icon: AiOutlineSetting
-        theme:
-          colorPrimary: '#7c3aed'
-          borderRadius: 8
-          colorBgContainer: '#faf5ff'
-      blocks:
-        - id: psl_theme_content
-          type: Paragraph
-          properties:
-            content: The theme property applies Ant Design design token overrides to all child components — menu, breadcrumb, buttons, and content all inherit the purple primary color, rounded corners, and tinted background.
 
 - title: Admin Dashboard
   fullWidth: true
@@ -259,22 +219,14 @@
             - id: psl_admin_sider_open
               type: Box
               style:
-                padding: 12px
+                padding: 8px 12px
               blocks:
-                - id: psl_admin_user_avatar
-                  type: Avatar
+                - id: psl_admin_env_tag
+                  type: Tag
                   properties:
-                    icon: AiOutlineUser
-                    size: 48
-                    color: '#fff'
-                    backgroundColor: '#1677ff'
-                - id: psl_admin_user_name
-                  type: Paragraph
-                  properties:
-                    content: Admin User
-                    style:
-                      margin: 4px 0 0 0
-                      fontSize: 14
+                    title: Production
+                    color: green
+                    icon: AiOutlineCloudServer
         siderClosed:
           blocks:
             - id: psl_admin_sider_closed
@@ -283,13 +235,11 @@
                 padding: 8px
                 textAlign: center
               blocks:
-                - id: psl_admin_user_avatar_sm
-                  type: Avatar
+                - id: psl_admin_env_tag_sm
+                  type: Tag
                   properties:
-                    icon: AiOutlineUser
-                    size: 32
-                    color: '#fff'
-                    backgroundColor: '#1677ff'
+                    title: Prod
+                    color: green
         footer:
           blocks:
             - id: psl_admin_footer_text
