@@ -92,6 +92,24 @@ export default {
         description:
           'The data field to use in `getRowId` which results in Row Selection being maintained across Row Data changes (assuming the Row exists in both sets). See Ag Grid docs for more details (https://www.ag-grid.com/react-data-grid/data-update-row-data/).',
       },
+      enableBrowserTooltips: {
+        type: 'boolean',
+        default: false,
+        description:
+          "Set to `true` to use the browser native `title` attribute tooltips instead of AG Grid's styled tooltip component.",
+      },
+      tooltipShowDelay: {
+        type: 'number',
+        default: 2000,
+        description:
+          'The delay in milliseconds before a tooltip is shown. Not applied when `enableBrowserTooltips` is `true`.',
+      },
+      tooltipHideDelay: {
+        type: 'number',
+        default: 10000,
+        description:
+          'The delay in milliseconds before a tooltip is hidden. Not applied when `enableBrowserTooltips` is `true`.',
+      },
       defaultColDef: {
         type: 'object',
         description:
@@ -157,6 +175,21 @@ export default {
               type: ['object', 'string'],
               description:
                 'A function (using the `_function` operator) or expression to format a value, should return a string. Not used for CSV export or copy to clipboard, only for UI cell rendering.',
+            },
+            tooltipField: {
+              type: 'string',
+              description:
+                "The field of the row object to read the tooltip value from. When set, hovering a cell shows a tooltip with that value using the grid's default tooltip component.",
+            },
+            tooltipValueGetter: {
+              type: 'object',
+              description:
+                'Provide a function (using the `_function` operator) that returns the tooltip value for a cell. Overrides `tooltipField`.',
+            },
+            tooltipComponent: {
+              type: 'object',
+              description:
+                'Provide a custom tooltip component. See AG Grid tooltip component docs (https://www.ag-grid.com/react-data-grid/component-tooltip/).',
             },
           },
         },
