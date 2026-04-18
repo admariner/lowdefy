@@ -33,7 +33,6 @@ export { default as ConfigProvider } from './blocks/ConfigProvider/ConfigProvide
 export { default as ConfirmModal } from './blocks/ConfirmModal/ConfirmModal.js';
 export { default as Content } from './blocks/Content/Content.js';
 export { default as ControlledList } from './blocks/ControlledList/ControlledList.js';
-export { default as DataDiff } from './blocks/DataDiff/DataDiff.js';
 export { default as DateRangeSelector } from './blocks/DateRangeSelector/DateRangeSelector.js';
 export { default as DateSelector } from './blocks/DateSelector/DateSelector.js';
 export { default as DateTimeSelector } from './blocks/DateTimeSelector/DateTimeSelector.js';

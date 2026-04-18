@@ -15,8 +15,8 @@
 - title: Profile change
   fullWidth: true
   blocks:
-    - id: datadiff_profile
-      type: DataDiff
+    - id: diff_list_profile
+      type: DiffList
       properties:
         title: Profile updated
         before:
@@ -64,8 +64,8 @@
 - title: Order update
   fullWidth: true
   blocks:
-    - id: datadiff_order
-      type: DataDiff
+    - id: diff_list_order
+      type: DiffList
       properties:
         title: Order #A-10422
         before:
@@ -113,8 +113,8 @@
 - title: Inventory with unchanged
   fullWidth: true
   blocks:
-    - id: datadiff_inventory
-      type: DataDiff
+    - id: diff_list_inventory
+      type: DiffList
       properties:
         title: Inventory snapshot
         showUnchanged: true
@@ -142,8 +142,8 @@
 - title: Empty state
   fullWidth: true
   blocks:
-    - id: datadiff_empty
-      type: DataDiff
+    - id: diff_list_empty
+      type: DiffList
       properties:
         title: Settings saved
         emptyText: No changes since last save.
@@ -157,8 +157,8 @@
 - title: Orders array — per-item sub-grouping
   fullWidth: true
   blocks:
-    - id: datadiff_orders_array
-      type: DataDiff
+    - id: diff_list_orders_array
+      type: DiffList
       properties:
         title: Orders updated
         before:
@@ -185,92 +185,3 @@
           'orders.0.total': Total
         format:
           'orders.*.total': { type: currency, currency: USD }
-
-- title: Side-by-side mode
-  fullWidth: true
-  blocks:
-    - id: datadiff_side_by_side
-      type: DataDiff
-      properties:
-        title: Profile updated
-        mode: sideBySide
-        before:
-          name: Sarah Johnson
-          email: sarah@example.com
-          role: member
-        after:
-          name: Sarah M. Johnson
-          email: sarah.j@example.com
-          role: admin
-
-- title: Timeline mode
-  fullWidth: true
-  blocks:
-    - id: datadiff_timeline
-      type: DataDiff
-      properties:
-        title: Order #A-10422
-        mode: timeline
-        before:
-          status: pending
-          subtotal: 129.5
-          tax: 10.36
-          total: 139.86
-          items:
-            - Notebook (A5)
-            - Pen (blue)
-          internal:
-            createdBy: sys
-            traceId: abc-123
-        after:
-          status: paid
-          subtotal: 129.5
-          tax: 10.36
-          total: 139.86
-          items:
-            - Notebook (A5)
-            - Pen (blue)
-            - Sticky notes
-          internal:
-            createdBy: sys
-            traceId: abc-999
-        hide:
-          - 'internal.*'
-        labels:
-          status: Status
-          subtotal: Subtotal
-          tax: Tax
-          total: Total
-          items: Line items
-        format:
-          subtotal: { type: currency, currency: USD }
-          tax: { type: currency, currency: USD }
-          total: { type: currency, currency: USD }
-          status:
-            type: enum
-            map:
-              pending: { label: Pending, color: warning }
-              paid: { label: Paid, color: success }
-              cancelled: { label: Cancelled, color: error }
-
-- title: gitDiff mode — YAML patch
-  fullWidth: true
-  blocks:
-    - id: datadiff_git_diff
-      type: DataDiff
-      properties:
-        title: Order patch
-        mode: gitDiff
-        before:
-          order:
-            status: pending
-            total: 10
-            notes:
-              - draft
-        after:
-          order:
-            status: paid
-            total: 15
-            notes:
-              - draft
-              - sent

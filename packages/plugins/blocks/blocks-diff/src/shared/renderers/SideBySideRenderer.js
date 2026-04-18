@@ -18,10 +18,10 @@ import React from 'react';
 import { Col, Descriptions, Row, Space, Typography } from 'antd';
 import { type } from '@lowdefy/helpers';
 
-import ValueCell from './ValueCell.js';
-import formatValue from './formatValue.js';
-import { CHANGE_TYPES } from './constants.js';
-import { humaniseSegment, isIndex, singularise } from './pathUtils.js';
+import ValueCell from '../ValueCell.js';
+import formatValue from '../formatValue.js';
+import { CHANGE_TYPES } from '../constants.js';
+import { humaniseSegment, isIndex, singularise } from '../pathUtils.js';
 
 const { Text } = Typography;
 

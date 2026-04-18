@@ -1,14 +1,13 @@
 {
-  "name": "@lowdefy/blocks-antd",
+  "name": "@lowdefy/blocks-diff",
   "version": "5.0.0",
   "license": "Apache-2.0",
-  "description": "Lowdefy Ant Design Blocks",
+  "description": "Lowdefy diff blocks — list, side-by-side, timeline, and git-diff views for before/after object comparisons.",
   "homepage": "https://lowdefy.com",
   "keywords": [
     "lowdefy",
     "lowdefy blocks",
-    "antd",
-    "ant design",
+    "diff",
     "lowdefy plugin"
   ],
   "bugs": {
@@ -22,10 +21,6 @@
     {
       "name": "Gerrie van Wyk",
       "url": "https://github.com/Gervwyk"
-    },
-    {
-      "name": "Sandile Memela",
-      "url": "https://github.com/sah-memela"
     }
   ],
   "repository": {
@@ -55,10 +50,11 @@
     "@ant-design/icons": "6.1.0",
     "@lowdefy/block-utils": "5.0.0",
     "@lowdefy/helpers": "5.0.0",
-    "@rc-component/motion": "1.3.1",
-    "classnames": "2.3.2",
     "dayjs": "1.11.19",
-    "minisearch": "7.2.0"
+    "diff": "^5.2.0",
+    "microdiff": "1.4.0",
+    "pluralize": "^8.0.0",
+    "yaml": "2.3.4"
   },
   "peerDependencies": {
     "antd": ">=6",
@@ -68,7 +64,6 @@
   "devDependencies": {
     "@lowdefy/block-dev-e2e": "5.0.0",
     "@lowdefy/e2e-utils": "5.0.0",
-    "@lowdefy/node-utils": "5.0.0",
     "@playwright/test": "1.50.1",
     "@swc/cli": "0.8.0",
     "@swc/core": "1.15.18",

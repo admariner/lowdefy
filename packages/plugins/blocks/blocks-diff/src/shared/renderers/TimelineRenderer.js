@@ -23,8 +23,8 @@ import {
   PlusCircleOutlined,
 } from '@ant-design/icons';
 
-import ValueCell from './ValueCell.js';
-import { CHANGE_TYPES } from './constants.js';
+import ValueCell from '../ValueCell.js';
+import { CHANGE_TYPES } from '../constants.js';
 
 const { Text } = Typography;
 

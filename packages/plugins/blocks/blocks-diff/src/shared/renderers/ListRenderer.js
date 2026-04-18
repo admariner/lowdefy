@@ -18,10 +18,10 @@ import React from 'react';
 import { Collapse, Descriptions, Space, Tag, Typography } from 'antd';
 import { type } from '@lowdefy/helpers';
 
-import ChangeTypeTag from './ChangeTypeTag.js';
-import ValueCell from './ValueCell.js';
-import { breadcrumbLabel, humaniseSegment, isIndex, pathLabel, singularise } from './pathUtils.js';
-import { CHANGE_TYPES, GROUP_ROOT } from './constants.js';
+import ChangeTypeTag from '../ChangeTypeTag.js';
+import ValueCell from '../ValueCell.js';
+import { breadcrumbLabel, humaniseSegment, isIndex, pathLabel, singularise } from '../pathUtils.js';
+import { CHANGE_TYPES, GROUP_ROOT } from '../constants.js';
 
 const { Text } = Typography;
 

@@ -19,8 +19,8 @@ export default {
   icons: [],
   valueType: null,
   cssKeys: {
-    element: 'The DataDiff wrapper element.',
-    title: 'The DataDiff title.',
+    element: 'The DiffList wrapper element.',
+    title: 'The DiffList title.',
     group: 'A group panel wrapper around changes sharing a top-level key.',
     row: 'A single change row label.',
     tag: 'The change-type tag element (Added / Removed / Changed / Unchanged).',
@@ -41,19 +41,12 @@ export default {
         docs: { displayType: 'yaml' },
         oneOf: [{ type: 'object' }, { type: 'array' }, { type: 'null' }],
       },
-      mode: {
-        type: 'string',
-        enum: ['list', 'sideBySide', 'timeline', 'gitDiff'],
-        default: 'list',
-        description:
-          'Visual layout. `list` groups changes by top-level key; `sideBySide` shows Before / After panels; `timeline` renders a vertical audit trail; `gitDiff` renders a unified-diff YAML patch with +/- markers.',
-      },
       maxDepth: {
         type: 'integer',
         default: 4,
         minimum: 1,
         description:
-          'Paths deeper than this collapse into a single "Changed" row rendered as JSON. Defaults to 4 (covers array-of-objects + one nested object + a leaf). Lower to compress deeply nested payloads. Ignored when `mode: gitDiff`.',
+          'Paths deeper than this collapse into a single "Changed" row rendered as JSON. Defaults to 4 (covers array-of-objects + one nested object + a leaf). Lower to compress deeply nested payloads.',
       },
       title: {
         type: 'string',

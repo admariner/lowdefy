@@ -12,16 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-id: data-diff
+id: diff-list
 type: Box
 
 blocks:
-  # ============================================
-  # EMPTY STATE
-  # ============================================
-
-  - id: datadiff_empty
-    type: DataDiff
+  - id: diff_list_empty
+    type: DiffList
     properties:
       title: No changes
       emptyText: Nothing to show here.
@@ -30,12 +26,8 @@ blocks:
       after:
         theme: dark
 
-  # ============================================
-  # BASIC CHANGE RENDERING
-  # ============================================
-
-  - id: datadiff_basic
-    type: DataDiff
+  - id: diff_list_basic
+    type: DiffList
     properties:
       title: Profile
       before:
@@ -45,12 +37,8 @@ blocks:
         name: Sarah
         role: admin
 
-  # ============================================
-  # LABELS
-  # ============================================
-
-  - id: datadiff_labels
-    type: DataDiff
+  - id: diff_list_labels
+    type: DiffList
     properties:
       before:
         email: a@example.com
@@ -59,12 +47,8 @@ blocks:
       labels:
         email: Email address
 
-  # ============================================
-  # HIDE FILTER
-  # ============================================
-
-  - id: datadiff_hide
-    type: DataDiff
+  - id: diff_list_hide
+    type: DiffList
     properties:
       before:
         email: a@example.com
@@ -77,12 +61,8 @@ blocks:
       hide:
         - 'internal.*'
 
-  # ============================================
-  # BOOLEAN FORMATTER
-  # ============================================
-
-  - id: datadiff_boolean
-    type: DataDiff
+  - id: diff_list_boolean
+    type: DiffList
     properties:
       before:
         active: false
@@ -94,12 +74,8 @@ blocks:
           yes: Enabled
           no: Disabled
 
-  # ============================================
-  # ENUM FORMATTER
-  # ============================================
-
-  - id: datadiff_enum
-    type: DataDiff
+  - id: diff_list_enum
+    type: DiffList
     properties:
       before:
         status: pending
@@ -112,12 +88,8 @@ blocks:
             pending: { label: Pending, color: warning }
             paid: { label: Paid, color: success }
 
-  # ============================================
-  # ADDED AND REMOVED
-  # ============================================
-
-  - id: datadiff_add_remove
-    type: DataDiff
+  - id: diff_list_add_remove
+    type: DiffList
     properties:
       before:
         name: Sarah
@@ -126,12 +98,8 @@ blocks:
         name: Sarah
         email: sarah@example.com
 
-  # ============================================
-  # GROUPED CHANGES (multiple root keys)
-  # ============================================
-
-  - id: datadiff_grouped
-    type: DataDiff
+  - id: diff_list_grouped
+    type: DiffList
     properties:
       before:
         profile:
@@ -144,12 +112,8 @@ blocks:
         address:
           city: Paris
 
-  # ============================================
-  # SHOW UNCHANGED
-  # ============================================
-
-  - id: datadiff_unchanged
-    type: DataDiff
+  - id: diff_list_unchanged
+    type: DiffList
     properties:
       showUnchanged: true
       before:
@@ -159,8 +123,8 @@ blocks:
         name: Sarah
         role: admin
 
-  - id: datadiff_orders_array
-    type: DataDiff
+  - id: diff_list_orders_array
+    type: DiffList
     properties:
       before:
         orders:
@@ -182,8 +146,8 @@ blocks:
             total: 99
             name: Stapler
 
-  - id: datadiff_deep_path
-    type: DataDiff
+  - id: diff_list_deep_path
+    type: DiffList
     properties:
       before:
         settings:
@@ -196,8 +160,8 @@ blocks:
             theme:
               mode: light
 
-  - id: datadiff_max_depth
-    type: DataDiff
+  - id: diff_list_max_depth
+    type: DiffList
     properties:
       maxDepth: 3
       before:
@@ -210,40 +174,3 @@ blocks:
           display:
             theme:
               mode: light
-
-  - id: datadiff_side_by_side
-    type: DataDiff
-    properties:
-      mode: sideBySide
-      before:
-        name: Sarah
-        role: member
-      after:
-        name: Sarah Johnson
-        role: admin
-
-  - id: datadiff_timeline
-    type: DataDiff
-    properties:
-      mode: timeline
-      before:
-        a: 1
-        b: 2
-        c: 3
-      after:
-        a: 10
-        b: 2
-        d: 4
-
-  - id: datadiff_git_diff
-    type: DataDiff
-    properties:
-      mode: gitDiff
-      before:
-        order:
-          status: pending
-          total: 10
-      after:
-        order:
-          status: paid
-          total: 15

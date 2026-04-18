@@ -17,7 +17,7 @@
 import React from 'react';
 import { diffLines } from 'diff';
 
-import serializeYaml from './serializeYaml.js';
+import serializeYaml from '../serializeYaml.js';
 
 const ADDED_STYLE = {
   background: 'var(--ant-color-success-bg, rgba(82,196,26,0.1))',
