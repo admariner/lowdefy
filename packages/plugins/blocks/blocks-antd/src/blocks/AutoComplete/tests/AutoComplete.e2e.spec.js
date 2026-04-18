@@ -144,8 +144,11 @@ test.describe('AutoComplete Block', () => {
   test('onBlur event fires when input loses focus', async ({ page }) => {
     const input = getInput(page, 'ac_onblur');
 
+    // AutoComplete is built on antd's Select internally; the focusable input
+    // is the combobox inside `.ant-select`. Clicking body doesn't blur it, so
+    // explicitly blur the active element.
     await input.click();
-    await page.click('body');
+    await page.evaluate(() => document.activeElement?.blur());
 
     const display = getBlock(page, 'ac_onblur_display');
     await expect(display).toHaveText('Blur fired');

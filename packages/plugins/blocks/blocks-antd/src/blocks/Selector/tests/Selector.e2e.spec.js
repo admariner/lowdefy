@@ -161,10 +161,12 @@ test.describe('Selector Block', () => {
   test('onBlur event fires when selector loses focus', async ({ page }) => {
     const selector = getSelector(page, 'selector_onblur');
 
-    // Focus then blur
+    // antd v6 wraps the focusable combobox input inside `.ant-select`;
+    // clicking body does not steal focus, so explicitly blur active element
+    // to trigger onBlur.
     await selector.click();
     await page.keyboard.press('Escape');
-    await page.click('body');
+    await page.evaluate(() => document.activeElement?.blur());
 
     const display = getBlock(page, 'onblur_display');
     await expect(display).toHaveText('Blur fired');

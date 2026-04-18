@@ -207,9 +207,12 @@ test.describe('MultipleSelector Block', () => {
   test('onBlur event fires when selector loses focus', async ({ page }) => {
     const selector = getSelector(page, 'ms_onblur');
 
+    // antd v6's Select holds focus on its inner combobox input even after
+    // Escape closes the dropdown, and clicking body won't blur a combobox, so
+    // we explicitly blur the active element to trigger onBlur.
     await selector.click();
     await page.keyboard.press('Escape');
-    await page.click('body');
+    await page.evaluate(() => document.activeElement?.blur());
 
     const display = getBlock(page, 'ms_onblur_display');
     await expect(display).toHaveText('Blur fired');
