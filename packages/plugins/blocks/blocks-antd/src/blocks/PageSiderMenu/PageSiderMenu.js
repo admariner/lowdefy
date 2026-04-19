@@ -69,12 +69,12 @@ const PageSiderMenu = ({
     registerDarkModeMethod(methods);
     methods.registerMethod('toggleSiderOpen', () => {
       const next = !openSiderState;
-      methods._toggleSiderOpen({ open: next });
+      methods._setSiderOpen({ open: next });
       setSiderOpen(next);
       writeSiderState({ properties, open: next });
     });
     methods.registerMethod('setSiderOpen', ({ open }) => {
-      methods._toggleSiderOpen({ open });
+      methods._setSiderOpen({ open });
       setSiderOpen(open);
       writeSiderState({ properties, open });
     });
@@ -198,7 +198,10 @@ const PageSiderMenu = ({
                       components={{ Icon, Link, ShortcutBadge }}
                       events={events}
                       methods={methods}
-                      properties={properties.sider ?? {}}
+                      properties={{
+                        ...(properties.sider ?? {}),
+                        initialCollapsed: !openSiderState,
+                      }}
                       classNames={{ element: classNames.sider ?? 'hidden lg:block' }}
                       styles={{
                         element: mergeObjects([
