@@ -29,6 +29,25 @@ const configColorMode = VALID_COLOR_MODES.includes(themeConfig.darkMode)
 const darkBg = themeConfig?.antd?.darkToken?.colorBgLayout ?? '#000';
 const lightBg = themeConfig?.antd?.lightToken?.colorBgLayout ?? '';
 
+// Escape characters that could break out of the enclosing <script> tag or
+// terminate a JS string literal. Used to defuse the js/bad-code-sanitization
+// class of injection for values embedded into the pre-hydration inline script.
+const SCRIPT_ESCAPES = {
+  '<': '\\u003C',
+  '>': '\\u003E',
+  '\b': '\\b',
+  '\f': '\\f',
+  '\n': '\\n',
+  '\r': '\\r',
+  '\t': '\\t',
+  '\0': '\\0',
+  '\u2028': '\\u2028',
+  '\u2029': '\\u2029',
+};
+function safeScriptJson(value) {
+  return JSON.stringify(value).replace(/[<>\b\f\n\r\t\0\u2028\u2029]/g, (c) => SCRIPT_ESCAPES[c]);
+}
+
 class LowdefyDocument extends Document {
   render() {
     return (
@@ -53,9 +72,9 @@ class LowdefyDocument extends Document {
               in light so default behavior is unchanged. */}
           <script
             dangerouslySetInnerHTML={{
-              __html: `(function(){var c=${JSON.stringify(configColorMode)};var db=${JSON.stringify(
+              __html: `(function(){var c=${safeScriptJson(configColorMode)};var db=${safeScriptJson(
                 darkBg
-              )};var lb=${JSON.stringify(
+              )};var lb=${safeScriptJson(
                 lightBg
               )};var d;if(c==="dark")d=true;else if(c==="light")d=false;else{try{var p=localStorage.getItem("lowdefy_darkMode");if(p==="dark")d=true;else if(p==="light")d=false;else d=window.matchMedia("(prefers-color-scheme:dark)").matches}catch(e){d=window.matchMedia("(prefers-color-scheme:dark)").matches}}var bg=d?db:lb;if(bg)document.documentElement.style.backgroundColor=bg})();`,
             }}
