@@ -805,13 +805,13 @@ importers:
         specifier: 1.11.19
         version: 1.11.19
       diff:
-        specifier: ^5.2.0
+        specifier: 5.2.2
         version: 5.2.2
       microdiff:
         specifier: 1.4.0
         version: 1.4.0
       pluralize:
-        specifier: ^8.0.0
+        specifier: 8.0.0
         version: 8.0.0
       react:
         specifier: '>=18'
