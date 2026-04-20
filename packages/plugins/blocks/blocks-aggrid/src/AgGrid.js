@@ -21,6 +21,7 @@ import { CsvExportModule } from '@ag-grid-community/csv-export';
 
 import processColDefs from './processColDefs.js';
 import assignRowId from './assignRowId.js';
+import LoadingOverlay from './LoadingOverlay.js';
 
 const AgGrid = ({ properties, methods, loading, events }) => {
   const {
@@ -135,21 +136,6 @@ const AgGrid = ({ properties, methods, loading, events }) => {
   }, []);
 
   useEffect(() => {
-    if (!gridRef.current?.api) return;
-    if (loading) {
-      gridRef.current.api.showLoadingOverlay();
-    } else {
-      gridRef.current.api.hideOverlay();
-    }
-  }, [loading]);
-
-  const onGridReady = useCallback(() => {
-    if (loading) {
-      gridRef.current.api.showLoadingOverlay();
-    }
-  }, []);
-
-  useEffect(() => {
     if (JSON.stringify(rowData) !== JSON.stringify(newRowData)) {
       setRowData(newRowData);
     }
@@ -159,22 +145,25 @@ const AgGrid = ({ properties, methods, loading, events }) => {
     gridRef.current.api.setQuickFilter(quickFilterValue); // check if empty string matches all
   }
   return (
-    <AgGridReact
-      {...someProperties}
-      rowData={rowData}
-      defaultColDef={memoDefaultColDef}
-      onGridReady={onGridReady}
-      onFilterChanged={onFilterChanged}
-      onSortChanged={onSortChanged}
-      onSelectionChanged={onSelectionChanged}
-      onRowSelected={onRowSelected}
-      onRowClicked={onRowClick}
-      onCellClicked={onCellClicked}
-      modules={[ClientSideRowModelModule, CsvExportModule]}
-      columnDefs={processColDefs(columnDefs, methods)}
-      ref={gridRef}
-      getRowId={getRowId}
-    />
+    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+      <AgGridReact
+        {...someProperties}
+        rowData={rowData}
+        defaultColDef={memoDefaultColDef}
+        onFilterChanged={onFilterChanged}
+        onSortChanged={onSortChanged}
+        onSelectionChanged={onSelectionChanged}
+        onRowSelected={onRowSelected}
+        onRowClicked={onRowClick}
+        onCellClicked={onCellClicked}
+        modules={[ClientSideRowModelModule, CsvExportModule]}
+        columnDefs={processColDefs(columnDefs, methods)}
+        ref={gridRef}
+        getRowId={getRowId}
+        suppressLoadingOverlay
+      />
+      {loading && <LoadingOverlay />}
+    </div>
   );
 };
 
