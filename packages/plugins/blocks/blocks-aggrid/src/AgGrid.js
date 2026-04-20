@@ -1,5 +1,5 @@
 /*
-  Copyright 2021 Lowdefy, Inc
+  Copyright 2020-2026 Lowdefy, Inc
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -132,13 +132,20 @@ const AgGrid = ({ properties, methods, loading, events }) => {
       }
       gridRef.current.columnApi.autoSizeColumns(allColumnIds, skipHeader);
     });
-    if (gridRef.current.api) {
-      if (loading) {
-        gridRef.current.api.showLoadingOverlay();
-      }
-      if (!loading) {
-        gridRef.current.api.hideOverlay();
-      }
+  }, []);
+
+  useEffect(() => {
+    if (!gridRef.current?.api) return;
+    if (loading) {
+      gridRef.current.api.showLoadingOverlay();
+    } else {
+      gridRef.current.api.hideOverlay();
+    }
+  }, [loading]);
+
+  const onGridReady = useCallback(() => {
+    if (loading) {
+      gridRef.current.api.showLoadingOverlay();
     }
   }, []);
 
@@ -156,6 +163,7 @@ const AgGrid = ({ properties, methods, loading, events }) => {
       {...someProperties}
       rowData={rowData}
       defaultColDef={memoDefaultColDef}
+      onGridReady={onGridReady}
       onFilterChanged={onFilterChanged}
       onSortChanged={onSortChanged}
       onSelectionChanged={onSelectionChanged}
