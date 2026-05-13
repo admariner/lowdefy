@@ -187,10 +187,12 @@ async function resolveLocalManifest({ entry, resolvedPaths, context }) {
     }
   }
 
-  // Validate required vars without defaults (needs raw defs + consumer values only).
-  // Type validation moves to after Phase 2 because defaults are resolved lazily.
+  // Capture var definitions for the registered module entry.
+  // Required-var validation is deferred to Phase 2.5 (buildModuleDefs.js)
+  // because entry.vars may contain unresolved _refs at this point.
+  // Type validation runs at the end of Phase 3 against the lazily-populated
+  // resolvedVarCache.
   const varDefs = manifest.vars ?? {};
-  validateRequiredVars(varDefs, entry.vars ?? {}, entry.id, entry.source);
 
   // Validate plugin dependencies against app's declared plugins
   const requiredPlugins = manifest.plugins ?? [];
@@ -298,4 +300,4 @@ async function resolveFullManifest({ entryId, context }) {
   }
 }
 
-export { resolveLocalManifest, resolveFullManifest };
+export { resolveLocalManifest, resolveFullManifest, validateRequiredVars };
