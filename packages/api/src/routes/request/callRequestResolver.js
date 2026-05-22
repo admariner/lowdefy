@@ -26,7 +26,7 @@ async function callRequestResolver(
   // stepId for endpoint steps (after build), requestId for page requests
   const stepOrRequestId = requestConfig.stepId ?? requestConfig.requestId;
 
-  const callApi = async (targetEndpointId, targetPayload) => {
+  const callApi = async ({ endpointId: targetEndpointId, payload: targetPayload } = {}) => {
     logger.debug({
       event: 'debug_start_call_api',
       connectionId: requestConfig.connectionId,

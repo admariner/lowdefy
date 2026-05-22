@@ -113,7 +113,7 @@ test('callApi runs the target endpoint routine and returns the response', async 
   });
   let result;
   const requestResolver = async ({ callApi }) => {
-    result = await callApi('target', {});
+    result = await callApi({ endpointId: 'target', payload: {} });
     return result;
   };
   const ret = await callRequestResolver(context, {
@@ -137,7 +137,8 @@ test('callApi works with module endpoint id (slash in id)', async () => {
       },
     },
   });
-  const requestResolver = async ({ callApi }) => callApi('moduleA/inner', {});
+  const requestResolver = async ({ callApi }) =>
+    callApi({ endpointId: 'moduleA/inner', payload: {} });
   const ret = await callRequestResolver(context, {
     connectionProperties: {},
     endpointDepth: 0,
@@ -150,7 +151,8 @@ test('callApi works with module endpoint id (slash in id)', async () => {
 
 test('callApi throws ConfigError when endpoint is missing', async () => {
   const context = createTestContext();
-  const requestResolver = async ({ callApi }) => callApi('missing', {});
+  const requestResolver = async ({ callApi }) =>
+    callApi({ endpointId: 'missing', payload: {} });
   await expect(
     callRequestResolver(context, {
       connectionProperties: {},
@@ -172,7 +174,8 @@ test('callApi throws UserError on :throw in target routine', async () => {
       },
     },
   });
-  const requestResolver = async ({ callApi }) => callApi('target', {});
+  const requestResolver = async ({ callApi }) =>
+    callApi({ endpointId: 'target', payload: {} });
   await expect(
     callRequestResolver(context, {
       connectionProperties: {},
@@ -194,7 +197,8 @@ test('callApi throws UserError on :reject in target routine', async () => {
       },
     },
   });
-  const requestResolver = async ({ callApi }) => callApi('target', {});
+  const requestResolver = async ({ callApi }) =>
+    callApi({ endpointId: 'target', payload: {} });
   await expect(
     callRequestResolver(context, {
       connectionProperties: {},
@@ -216,7 +220,8 @@ test('depth cap throws ConfigError at depth >= 10', async () => {
       },
     },
   });
-  const requestResolver = async ({ callApi }) => callApi('target', {});
+  const requestResolver = async ({ callApi }) =>
+    callApi({ endpointId: 'target', payload: {} });
   await expect(
     callRequestResolver(context, {
       connectionProperties: {},
@@ -239,7 +244,7 @@ test('callApi target routine without :return resolves to null', async () => {
     },
   });
   const requestResolver = async ({ callApi }) => {
-    const v = await callApi('target', {});
+    const v = await callApi({ endpointId: 'target', payload: {} });
     return { wrapped: v };
   };
   const ret = await callRequestResolver(context, {
@@ -262,7 +267,8 @@ test('debug events emitted on success: start and end', async () => {
       },
     },
   });
-  const requestResolver = async ({ callApi }) => callApi('target', {});
+  const requestResolver = async ({ callApi }) =>
+    callApi({ endpointId: 'target', payload: {} });
   await callRequestResolver(context, {
     connectionProperties: {},
     endpointDepth: 0,
@@ -304,7 +310,8 @@ test('debug end event NOT emitted when callApi throws', async () => {
       },
     },
   });
-  const requestResolver = async ({ callApi }) => callApi('target', {});
+  const requestResolver = async ({ callApi }) =>
+    callApi({ endpointId: 'target', payload: {} });
   await callRequestResolver(context, {
     connectionProperties: {},
     endpointDepth: 0,

@@ -104,10 +104,6 @@ beforeEach(() => {
 });
 
 test('9.1 resolver-to-endpoint chain: response, depth, inherited closure', async () => {
-  const innerSeen = {};
-  const targetResolverFromInner = (val) => {
-    innerSeen.user = val;
-  };
   const context = createContext({
     endpointConfigs: {
       inner_endpoint: {
@@ -124,7 +120,7 @@ test('9.1 resolver-to-endpoint chain: response, depth, inherited closure', async
     },
   });
   outerResolver.mockImplementation(async ({ callApi, payload }) => {
-    return await callApi('inner_endpoint', { id: payload.id });
+    return await callApi({ endpointId: 'inner_endpoint', payload: { id: payload.id } });
   });
   const result = await callRequest(context, {
     blockId: 'b1',
@@ -132,8 +128,6 @@ test('9.1 resolver-to-endpoint chain: response, depth, inherited closure', async
     pageId: 'pageId',
     requestId: 'outerReq',
   });
-  void targetResolverFromInner;
-  void innerSeen;
   expect(result.success).toBe(true);
   expect(result.response).toEqual({
     payloadId: 42,
@@ -153,7 +147,7 @@ test('9.2 module endpoint id (slash) resolves as opaque string', async () => {
     },
   });
   outerResolver.mockImplementation(async ({ callApi }) => {
-    return await callApi('mod/inner', {});
+    return await callApi({ endpointId: 'mod/inner', payload: {} });
   });
   const result = await callRequest(context, {
     blockId: 'b1',
@@ -178,7 +172,7 @@ test('9.3a :throw in target surfaces as UserError', async () => {
   let caught;
   outerResolver.mockImplementation(async ({ callApi }) => {
     try {
-      return await callApi('inner', {});
+      return await callApi({ endpointId: 'inner', payload: {} });
     } catch (e) {
       caught = e;
       throw e;
@@ -209,7 +203,7 @@ test('9.3b :reject in target surfaces as UserError', async () => {
   let caught;
   outerResolver.mockImplementation(async ({ callApi }) => {
     try {
-      return await callApi('inner', {});
+      return await callApi({ endpointId: 'inner', payload: {} });
     } catch (e) {
       caught = e;
       throw e;
@@ -255,7 +249,7 @@ test('9.5 depth cap: 11 deep chain throws ConfigError', async () => {
     if (!request.target) {
       return 'leaf';
     }
-    return await callApi(request.target, {});
+    return await callApi({ endpointId: request.target, payload: {} });
   });
 
   // Drive the chain via the page-level outerReq which calls ep1.
@@ -310,9 +304,9 @@ test('9.6 single handleError invocation for a deep failing chain', async () => {
   context.handleError = handleErrorMock;
   outerResolver.mockImplementation(async ({ callApi, request }) => {
     if (request.mode === 'callInner2') {
-      return await callApi('inner2', {});
+      return await callApi({ endpointId: 'inner2', payload: {} });
     }
-    return await callApi('inner1', {});
+    return await callApi({ endpointId: 'inner1', payload: {} });
   });
   // Drive via outerReq → inner1 → inner2 → :throw.
   context.readConfigFile = buildReadConfigFile({
@@ -346,7 +340,9 @@ test('9.7 InternalApi endpoint is reachable via callApi', async () => {
       },
     },
   });
-  outerResolver.mockImplementation(async ({ callApi }) => callApi('internal', {}));
+  outerResolver.mockImplementation(async ({ callApi }) =>
+    callApi({ endpointId: 'internal', payload: {} })
+  );
   const result = await callRequest(context, {
     blockId: 'b1',
     payload: {},
@@ -373,7 +369,9 @@ test('9.8 debug events emitted on success path', async () => {
     },
     logger,
   });
-  outerResolver.mockImplementation(async ({ callApi }) => callApi('inner', {}));
+  outerResolver.mockImplementation(async ({ callApi }) =>
+    callApi({ endpointId: 'inner', payload: {} })
+  );
   await callRequest(context, {
     blockId: 'b1',
     payload: {},
@@ -481,7 +479,9 @@ test('9.3c raw error from target propagates as RequestError', async () => {
     }),
     session: { user: { id: 'user_1' } },
   });
-  outerResolver.mockImplementation(async ({ callApi }) => callApi('inner', {}));
+  outerResolver.mockImplementation(async ({ callApi }) =>
+    callApi({ endpointId: 'inner', payload: {} })
+  );
   let caught;
   await callRequest(context, {
     blockId: 'b1',
