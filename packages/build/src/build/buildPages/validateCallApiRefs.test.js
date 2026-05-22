@@ -83,3 +83,86 @@ test('empty refs and configs produce no warnings', () => {
   validateCallApiRefs({ callApiActionRefs: [], endpointConfigs: [], context });
   expect(mockHandleWarning).not.toHaveBeenCalled();
 });
+
+test('CallAPI targeting existing endpoint produces no warning', () => {
+  const callApiActionRefs = [
+    {
+      endpointId: 'public_api',
+      action: {
+        id: 'call_1',
+        type: 'CallAPI',
+        params: { endpointId: 'public_api' },
+        '~k': 'pages.page1.events.onClick.0',
+      },
+      sourcePageId: 'page1',
+    },
+  ];
+  const endpointConfigs = [{ endpointId: 'public_api', type: 'Api' }];
+  validateCallApiRefs({ callApiActionRefs, endpointConfigs, context });
+  expect(mockHandleWarning).not.toHaveBeenCalled();
+});
+
+test('CallAPI targeting non-existent endpoint produces warning', () => {
+  const callApiActionRefs = [
+    {
+      endpointId: 'missing_api',
+      action: {
+        id: 'call_1',
+        type: 'CallAPI',
+        params: { endpointId: 'missing_api' },
+        '~k': 'pages.page1.events.onClick.0',
+      },
+      sourcePageId: 'page1',
+    },
+  ];
+  const endpointConfigs = [{ endpointId: 'public_api', type: 'Api' }];
+  validateCallApiRefs({ callApiActionRefs, endpointConfigs, context });
+  expect(mockHandleWarning).toHaveBeenCalledTimes(1);
+  const warning = mockHandleWarning.mock.calls[0][0];
+  expect(warning).toBeInstanceOf(ConfigWarning);
+  expect(warning.message).toBe(
+    'CallAPI action on page "page1" references non-existent endpoint "missing_api".'
+  );
+  expect(warning.configKey).toBe('pages.page1.events.onClick.0');
+  expect(warning.prodError).toBe(true);
+  expect(warning.checkSlug).toBe('callapi-refs');
+});
+
+test('skipped action with missing endpoint produces no warning', () => {
+  const callApiActionRefs = [
+    {
+      endpointId: 'missing_api',
+      action: {
+        id: 'call_1',
+        type: 'CallAPI',
+        skip: true,
+        params: { endpointId: 'missing_api' },
+      },
+      sourcePageId: 'page1',
+    },
+  ];
+  const endpointConfigs = [{ endpointId: 'public_api', type: 'Api' }];
+  validateCallApiRefs({ callApiActionRefs, endpointConfigs, context });
+  expect(mockHandleWarning).not.toHaveBeenCalled();
+});
+
+test('missing endpoint warning takes precedence over InternalApi warning', () => {
+  const callApiActionRefs = [
+    {
+      endpointId: 'missing_api',
+      action: {
+        id: 'call_1',
+        type: 'CallAPI',
+        params: { endpointId: 'missing_api' },
+        '~k': 'pages.page1.events.onClick.0',
+      },
+      sourcePageId: 'page1',
+    },
+  ];
+  const endpointConfigs = [{ endpointId: 'internal_api', type: 'InternalApi' }];
+  validateCallApiRefs({ callApiActionRefs, endpointConfigs, context });
+  expect(mockHandleWarning).toHaveBeenCalledTimes(1);
+  const warning = mockHandleWarning.mock.calls[0][0];
+  expect(warning.checkSlug).toBe('callapi-refs');
+  expect(warning.message).toContain('non-existent endpoint "missing_api"');
+});

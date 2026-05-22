@@ -6632,12 +6632,12 @@
     },
     "4": {
       "parent": "pages.0.blocks.1",
-      "lineNumber": 16,
+      "lineNumber": 10,
       "path": "<FIXTURES_DIR>/71-cross-module-mutual-refs/modules/contacts/components/contact-selector.yaml"
     },
     "5": {
       "parent": "3",
-      "lineNumber": 20,
+      "lineNumber": 14,
       "path": "<FIXTURES_DIR>/71-cross-module-mutual-refs/modules/contacts/pages/contact-detail.yaml"
     },
     "6": {
@@ -6652,7 +6652,7 @@
     },
     "7": {
       "parent": "6",
-      "lineNumber": 16,
+      "lineNumber": 10,
       "path": "<FIXTURES_DIR>/71-cross-module-mutual-refs/modules/companies/components/company-selector.yaml"
     },
     "8": {
@@ -6660,7 +6660,7 @@
     },
     "pages.0": {
       "parent": "2",
-      "lineNumber": 20,
+      "lineNumber": 14,
       "path": "<FIXTURES_DIR>/71-cross-module-mutual-refs/modules/companies/pages/company-detail.yaml"
     },
     "pages.0.blocks.1": {

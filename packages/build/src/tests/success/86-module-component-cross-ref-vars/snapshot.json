@@ -65,22 +65,22 @@
     "10": {
       "key": "root.pages[2:orders/order-list:Box]",
       "~k_parent": "a",
-      "~l": 15
+      "~l": 9
     },
     "11": {
       "key": "root.pages[2:orders/order-list:Box].blocks",
       "~k_parent": "10",
-      "~l": 17
+      "~l": 11
     },
     "12": {
       "key": "root.pages[2:orders/order-list:Box].blocks[0:placeholder:Paragraph]",
       "~k_parent": "11",
-      "~l": 18
+      "~l": 12
     },
     "13": {
       "key": "root.pages[2:orders/order-list:Box].blocks[0:placeholder:Paragraph].properties",
       "~k_parent": "12",
-      "~l": 20
+      "~l": 14
     },
     "15": {
       "key": "root.pages",
@@ -359,7 +359,7 @@
       "key": "root.pages[0:app-home:Box].blocks[1:order-detail:Box].properties.summary",
       "~k_parent": "j",
       "~r": "pages.0.blocks.1.properties.summary",
-      "~l": 25
+      "~l": 19
     },
     "l": {
       "key": "root.pages[0:app-home:Box].blocks[1:order-detail:Box].properties.summary.audit",
@@ -421,27 +421,27 @@
       "key": "root.pages[0:app-home:Box].blocks[3:link-section:Box].properties.link",
       "~k_parent": "u",
       "~r": "pages.0.blocks.3.properties.link",
-      "~l": 35
+      "~l": 28
     },
     "w": {
       "key": "root.pages[1:core/core-home:Box]",
       "~k_parent": "a",
-      "~l": 22
+      "~l": 15
     },
     "x": {
       "key": "root.pages[1:core/core-home:Box].blocks",
       "~k_parent": "w",
-      "~l": 24
+      "~l": 17
     },
     "y": {
       "key": "root.pages[1:core/core-home:Box].blocks[0:placeholder:Paragraph]",
       "~k_parent": "x",
-      "~l": 25
+      "~l": 18
     },
     "z": {
       "key": "root.pages[1:core/core-home:Box].blocks[0:placeholder:Paragraph].properties",
       "~k_parent": "y",
-      "~l": 27
+      "~l": 20
     },
     "1a": {
       "key": "root.pages[3:404:Result].slots",
@@ -5910,17 +5910,17 @@
     },
     "5": {
       "parent": "pages.0.blocks.0.properties.stamp",
-      "lineNumber": 32,
+      "lineNumber": 25,
       "path": "<CONFIG_DIR>/modules/core/defaults/stamp.yaml"
     },
     "6": {
       "parent": "pages.0.blocks.1.properties.summary.audit",
-      "lineNumber": 32,
+      "lineNumber": 25,
       "path": "<CONFIG_DIR>/modules/core/defaults/stamp.yaml"
     },
     "7": {
       "parent": "pages.0.blocks.2.properties.just_audit.audit",
-      "lineNumber": 32,
+      "lineNumber": 25,
       "path": "<CONFIG_DIR>/modules/core/defaults/stamp.yaml"
     },
     "pages.0.blocks.0.properties.stamp": {
@@ -5975,22 +5975,22 @@
     },
     "pages.0.blocks.1.properties.summary.audit": {
       "parent": "pages.0.blocks.1.properties.summary",
-      "lineNumber": 34,
+      "lineNumber": 28,
       "path": null,
       "original": {
         "module": "core",
         "component": "stamp",
-        "~l": 35
+        "~l": 29
       }
     },
     "pages.0.blocks.2.properties.just_audit.audit": {
       "parent": "pages.0.blocks.2.properties.just_audit",
-      "lineNumber": 34,
+      "lineNumber": 28,
       "path": null,
       "original": {
         "module": "core",
         "component": "stamp",
-        "~l": 35
+        "~l": 29
       }
     }
   },

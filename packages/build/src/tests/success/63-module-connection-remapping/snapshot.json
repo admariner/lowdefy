@@ -5890,12 +5890,12 @@
     },
     "4": {
       "parent": "3",
-      "lineNumber": 20,
+      "lineNumber": 14,
       "path": "<CONFIG_DIR>/modules/notifier/connections/email.yaml"
     },
     "5": {
       "parent": "3",
-      "lineNumber": 23,
+      "lineNumber": 17,
       "path": "<CONFIG_DIR>/modules/notifier/pages/inbox.yaml"
     },
     "6": {
@@ -5903,12 +5903,12 @@
     },
     "connections.0": {
       "parent": "2",
-      "lineNumber": 20,
+      "lineNumber": 14,
       "path": "<CONFIG_DIR>/modules/notifier/connections/email.yaml"
     },
     "pages.0": {
       "parent": "2",
-      "lineNumber": 23,
+      "lineNumber": 17,
       "path": "<CONFIG_DIR>/modules/notifier/pages/inbox.yaml"
     }
   },

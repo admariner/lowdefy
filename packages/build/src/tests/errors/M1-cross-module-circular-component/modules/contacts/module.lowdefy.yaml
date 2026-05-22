@@ -3,12 +3,6 @@ name: Contacts
 dependencies:
   - id: companies
 
-exports:
-  pages:
-    - id: contact-list
-  components:
-    - id: contact-selector
-
 pages:
   - id: contact-list
     type: Box

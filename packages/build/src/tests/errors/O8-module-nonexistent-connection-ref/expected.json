@@ -3,7 +3,7 @@
     {
       "mode": "prod",
       "expectThrow": true,
-      "errorContains": ["does not export connection \"nonexistent-db\"", "widget"]
+      "errorContains": ["non-existent connection", "widget/nonexistent-db", "get-data"]
     }
   ]
 }

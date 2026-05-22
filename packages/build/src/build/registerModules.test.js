@@ -442,7 +442,7 @@ pages: []
   ).rejects.toThrow('each item in "dependencies" must have a string "id"');
 });
 
-test('resolveLocalManifest parses exports object from manifest', async () => {
+test('resolveLocalManifest silently ignores manifest.exports', async () => {
   const context = createTestContext();
   const files = [
     {
@@ -451,14 +451,6 @@ test('resolveLocalManifest parses exports object from manifest', async () => {
 exports:
   pages:
     - id: company-list
-    - id: company-detail
-  components:
-    - id: company-selector
-      description: Dropdown selector
-  menus:
-    - id: default
-  connections:
-    - id: companies-db
   api:
     - id: save-company
 pages: []
@@ -477,100 +469,8 @@ pages: []
     context,
   });
 
-  expect(context.modules['my-mod'].exports).toEqual({
-    pages: [{ id: 'company-list' }, { id: 'company-detail' }],
-    components: [{ id: 'company-selector', description: 'Dropdown selector' }],
-    menus: [{ id: 'default' }],
-    connections: [{ id: 'companies-db' }],
-    api: [{ id: 'save-company' }],
-  });
-});
-
-test('resolveLocalManifest defaults exports sections to empty arrays when absent', async () => {
-  const context = createTestContext();
-  const files = [
-    {
-      path: '/modules/my-mod/module.lowdefy.yaml',
-      content: `
-pages: []
-`,
-    },
-  ];
-  mockReadConfigFile.mockImplementation(readConfigFileMockImplementation(files));
-
-  await resolveLocalManifest({
-    entry: { id: 'my-mod', source: 'file:../mod', vars: {} },
-    resolvedPaths: {
-      packageRoot: '/modules/my-mod',
-      moduleRoot: '/modules/my-mod',
-      isLocal: true,
-    },
-    context,
-  });
-
-  expect(context.modules['my-mod'].exports).toEqual({
-    pages: [],
-    components: [],
-    menus: [],
-    connections: [],
-    api: [],
-  });
-});
-
-test('resolveLocalManifest throws when exports section item has no string id', async () => {
-  const context = createTestContext();
-  const files = [
-    {
-      path: '/modules/my-mod/module.lowdefy.yaml',
-      content: `
-exports:
-  pages:
-    - description: Missing id
-pages: []
-`,
-    },
-  ];
-  mockReadConfigFile.mockImplementation(readConfigFileMockImplementation(files));
-
-  await expect(
-    resolveLocalManifest({
-      entry: { id: 'my-mod', source: 'file:../mod', vars: {} },
-      resolvedPaths: {
-        packageRoot: '/modules/my-mod',
-        moduleRoot: '/modules/my-mod',
-        isLocal: true,
-      },
-      context,
-    })
-  ).rejects.toThrow('each item in exports.pages must have a string "id"');
-});
-
-test('resolveLocalManifest throws for unknown exports sections', async () => {
-  const context = createTestContext();
-  const files = [
-    {
-      path: '/modules/my-mod/module.lowdefy.yaml',
-      content: `
-exports:
-  widgets:
-    - id: foo
-pages: []
-`,
-    },
-  ];
-  mockReadConfigFile.mockImplementation(readConfigFileMockImplementation(files));
-
-  await expect(
-    resolveLocalManifest({
-      entry: { id: 'my-mod', source: 'file:../mod', vars: {} },
-      resolvedPaths: {
-        packageRoot: '/modules/my-mod',
-        moduleRoot: '/modules/my-mod',
-        isLocal: true,
-      },
-      context,
-    })
-  ).rejects.toThrow('unknown exports section "widgets"');
+  expect(context.modules['my-mod']).toBeDefined();
+  expect(context.modules['my-mod'].exports).toBeUndefined();
 });
 
 test('resolveLocalManifest stores moduleDependencies from entry dependencies', async () => {

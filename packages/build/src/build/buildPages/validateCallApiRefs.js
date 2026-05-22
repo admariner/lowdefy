@@ -17,6 +17,7 @@
 import { ConfigWarning } from '@lowdefy/errors';
 
 function validateCallApiRefs({ callApiActionRefs, endpointConfigs, context }) {
+  const existingEndpointIds = new Set(endpointConfigs.map((config) => config.endpointId));
   const internalEndpoints = new Set(
     endpointConfigs
       .filter((config) => config.type === 'InternalApi')
@@ -25,6 +26,16 @@ function validateCallApiRefs({ callApiActionRefs, endpointConfigs, context }) {
 
   callApiActionRefs.forEach(({ endpointId, action, sourcePageId }) => {
     if (action.skip === true) {
+      return;
+    }
+
+    if (!existingEndpointIds.has(endpointId)) {
+      context.handleWarning(
+        new ConfigWarning(
+          `CallAPI action on page "${sourcePageId}" references non-existent endpoint "${endpointId}".`,
+          { configKey: action['~k'], prodError: true, checkSlug: 'callapi-refs' }
+        )
+      );
       return;
     }
 

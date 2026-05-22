@@ -352,13 +352,13 @@
       "key": "root.pages[2:contacts/contact-list:Box].blocks[0:layout-box:Box]",
       "~k_parent": "h",
       "~r": "pages.0.blocks.0",
-      "~l": 13
+      "~l": 9
     },
     "j": {
       "key": "root.pages[2:contacts/contact-list:Box].blocks[0:layout-box:Box].blocks",
       "~k_parent": "i",
       "~r": "pages.0.blocks.0",
-      "~l": 16
+      "~l": 12
     },
     "k": {
       "key": "root.pages[2:contacts/contact-list:Box].blocks[0:layout-box:Box].blocks[0:contact-table:Title]",
@@ -400,13 +400,13 @@
       "key": "root.pages[2:contacts/contact-list:Box].blocks[0:layout-box:Box].blocks[2:view-events:Anchor]",
       "~k_parent": "j",
       "~r": "pages.0.blocks.0",
-      "~l": 21
+      "~l": 17
     },
     "r": {
       "key": "root.pages[2:contacts/contact-list:Box].blocks[0:layout-box:Box].blocks[2:view-events:Anchor].properties",
       "~k_parent": "q",
       "~r": "pages.0.blocks.0",
-      "~l": 23
+      "~l": 19
     },
     "t": {
       "key": "root.pages",
@@ -5763,12 +5763,12 @@
     },
     "5": {
       "parent": "4",
-      "lineNumber": 11,
+      "lineNumber": 7,
       "path": "<CONFIG_DIR>/modules/contacts/pages/contact-list.yaml"
     },
     "6": {
       "parent": "pages.0.blocks.0.blocks.1",
-      "lineNumber": 12,
+      "lineNumber": 6,
       "path": "<CONFIG_DIR>/modules/events/components/event-log-panel.yaml"
     },
     "7": {
@@ -5776,7 +5776,7 @@
     },
     "pages.0": {
       "parent": "2",
-      "lineNumber": 16,
+      "lineNumber": 10,
       "path": "<CONFIG_DIR>/modules/events/pages/event-log.yaml"
     },
     "pages.0.blocks.0": {
@@ -5803,12 +5803,12 @@
     },
     "pages.0.blocks.0.blocks.1": {
       "parent": "pages.0.blocks.0",
-      "lineNumber": 18,
+      "lineNumber": 14,
       "path": null,
       "original": {
         "module": "events",
         "component": "event-log-panel",
-        "~l": 18
+        "~l": 14
       }
     }
   },

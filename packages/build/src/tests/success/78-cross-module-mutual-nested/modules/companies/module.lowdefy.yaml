@@ -3,12 +3,6 @@ name: Companies
 dependencies:
   - id: contacts
 
-exports:
-  pages:
-    - id: company-detail
-  components:
-    - id: company-selector
-
 components:
   - id: company-selector
     type: Component
