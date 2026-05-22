@@ -23,7 +23,11 @@ import evaluateStaticOperators from './buildRefs/evaluateStaticOperators.js';
 import collectDynamicIdentifiers from './collectDynamicIdentifiers.js';
 import validateOperatorsDynamic from './validateOperatorsDynamic.js';
 import fetchModules from './fetchModules.js';
-import { resolveLocalManifest, resolveFullManifest } from './registerModules.js';
+import {
+  resolveLocalManifest,
+  resolveFullManifest,
+  validateRequiredVars,
+} from './registerModules.js';
 import resolveModuleDependencies from './resolveModuleDependencies.js';
 
 validateOperatorsDynamic({ operators });
@@ -31,6 +35,9 @@ const dynamicIdentifiers = collectDynamicIdentifiers({ operators });
 
 async function parseLowdefyYaml({ context }) {
   const refDef = makeRefDefinition('lowdefy.yaml', null, context.refMap);
+  // Stash for Phase 2.5 — consumer vars come from lowdefy.yaml, so refs
+  // within them must be parented to lowdefy.yaml's refDef.
+  context.lowdefyYamlRefDef = refDef;
 
   const content = await getRefContent({
     context,
@@ -50,6 +57,10 @@ async function parseLowdefyYaml({ context }) {
     env: process.env,
     dynamicIdentifiers,
     shouldStop: (path) => {
+      // Defer entry vars and connections: they may contain cross-module
+      // refs that require modules to be registered first.
+      if (/^modules\.\d+\.vars$/.test(path)) return 'preserve';
+      if (/^modules\.\d+\.connections$/.test(path)) return 'preserve';
       if (path.startsWith('modules')) return false;
       return 'preserve';
     },
@@ -60,6 +71,42 @@ async function parseLowdefyYaml({ context }) {
   config = evaluateStaticOperators({ context, input: config, refDef });
 
   return config ?? {};
+}
+
+async function resolveEntryConfig({ entry, context }) {
+  const moduleEntry = context.modules[entry.id];
+  const lowdefyYamlRefDef = context.lowdefyYamlRefDef;
+
+  function makeAppLevelCtx() {
+    return new WalkContext({
+      buildContext: context,
+      refId: lowdefyYamlRefDef.id,
+      sourceRefId: null,
+      vars: {},
+      path: '',
+      currentFile: lowdefyYamlRefDef.path,
+      refChain: new Set(lowdefyYamlRefDef.path ? [lowdefyYamlRefDef.path] : []),
+      operators,
+      env: process.env,
+      dynamicIdentifiers,
+    });
+  }
+
+  const refDef = lowdefyYamlRefDef;
+
+  let resolvedVars = await resolve(moduleEntry.consumerVars, makeAppLevelCtx());
+  resolvedVars = evaluateStaticOperators({ context, input: resolvedVars, refDef });
+  moduleEntry.consumerVars = resolvedVars ?? {};
+
+  let resolvedConnections = await resolve(moduleEntry.connections, makeAppLevelCtx());
+  resolvedConnections = evaluateStaticOperators({
+    context,
+    input: resolvedConnections,
+    refDef,
+  });
+  moduleEntry.connections = resolvedConnections ?? {};
+
+  validateRequiredVars(moduleEntry.varDefs, moduleEntry.consumerVars, entry.id, entry.source);
 }
 
 async function buildModuleDefs({ context }) {
@@ -84,6 +131,12 @@ async function buildModuleDefs({ context }) {
 
   // Step 2: Auto-wire and validate dependency wiring
   resolveModuleDependencies({ context });
+
+  // Step 2.5: Resolve deferred entry vars and connections at app level,
+  // then validate required vars against the resolved values.
+  for (const entry of moduleEntries) {
+    await resolveEntryConfig({ entry, context });
+  }
 
   // Step 3: Full resolve — cross-module refs, preserved content
   for (const entryId of Object.keys(context.modules)) {
