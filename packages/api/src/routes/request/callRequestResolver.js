@@ -14,20 +14,55 @@
   limitations under the License.
 */
 
-import { ConfigError, RequestError, ServiceError } from '@lowdefy/errors';
+import { RequestError, ServiceError } from '@lowdefy/errors';
+
+import invokeEndpoint from '../endpoints/invokeEndpoint.js';
 
 async function callRequestResolver(
-  { blockId, endpointId, logger, pageId, payload },
-  { connectionProperties, requestConfig, requestProperties, requestResolver }
+  context,
+  { connectionProperties, endpointDepth, requestConfig, requestProperties, requestResolver }
 ) {
+  const { blockId, endpointId, logger, pageId, payload } = context;
   // stepId for endpoint steps (after build), requestId for page requests
   const stepOrRequestId = requestConfig.stepId ?? requestConfig.requestId;
+
+  const callApi = async (targetEndpointId, targetPayload) => {
+    logger.debug({
+      event: 'debug_start_call_api',
+      connectionId: requestConfig.connectionId,
+      requestId: stepOrRequestId,
+      endpointId: targetEndpointId,
+    });
+
+    const result = await invokeEndpoint(context, {
+      endpointId: targetEndpointId,
+      payload: targetPayload,
+      endpointDepth,
+    });
+
+    if (result.status === 'error' || result.status === 'reject') {
+      throw result.error;
+    }
+
+    const response = result.status === 'return' ? result.response : null;
+
+    logger.debug({
+      event: 'debug_end_call_api',
+      connectionId: requestConfig.connectionId,
+      requestId: stepOrRequestId,
+      endpointId: targetEndpointId,
+    });
+
+    return response;
+  };
+
   try {
     const response = await requestResolver({
       blockId,
-      endpointId,
+      callApi,
       connection: connectionProperties,
       connectionId: requestConfig.connectionId,
+      endpointId,
       pageId,
       payload,
       request: requestProperties,
@@ -40,7 +75,9 @@ async function callRequestResolver(
       error.configKey = requestConfig['~k'];
     }
 
-    if (error instanceof ConfigError) {
+    // Lowdefy errors pass through unchanged — re-wrapping every boundary would
+    // nest causes and truncate the deepest (most informative) frame.
+    if (error.isLowdefyError) {
       logger.debug(
         { params: { id: stepOrRequestId, type: requestConfig.type }, err: error },
         error.message

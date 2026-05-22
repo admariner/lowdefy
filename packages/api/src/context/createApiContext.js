@@ -18,7 +18,6 @@ import createAuthorize from './createAuthorize.js';
 import createReadConfigFile from './createReadConfigFile.js';
 
 function createApiContext(context) {
-  context.state = {};
   context.user = context?.session?.user;
 
   context.authorize = createAuthorize(context);

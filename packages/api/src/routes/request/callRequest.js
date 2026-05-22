@@ -53,6 +53,7 @@ async function callRequest(context, { blockId, pageId, payload, requestId }) {
     connectionConfig,
     payload: requestPayload,
     requestConfig,
+    state: {},
     steps: {},
   });
 
@@ -77,6 +78,7 @@ async function callRequest(context, { blockId, pageId, payload, requestId }) {
   });
   const response = await callRequestResolver(context, {
     connectionProperties,
+    endpointDepth: 0,
     requestConfig,
     requestProperties,
     requestResolver,

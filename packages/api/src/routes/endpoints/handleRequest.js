@@ -46,6 +46,7 @@ async function handleRequest(context, routineContext, { request }) {
     items,
     payload: routineContext.payload,
     requestConfig,
+    state: routineContext.state,
     steps: routineContext.steps,
   });
   checkConnectionRead(context, {
@@ -69,6 +70,7 @@ async function handleRequest(context, routineContext, { request }) {
   });
   const result = await callRequestResolver(context, {
     connectionProperties,
+    endpointDepth: routineContext.endpointDepth,
     requestConfig,
     requestProperties,
     requestResolver,

@@ -21,8 +21,9 @@ async function controlReturn(context, routineContext, { control }) {
     input: control[':return'],
     items,
     location: control['~k'] ?? ':return',
-    steps: routineContext.steps,
     payload: routineContext.payload,
+    state: routineContext.state,
+    steps: routineContext.steps,
   });
 
   context.logger.debug({

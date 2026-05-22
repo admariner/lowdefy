@@ -14,12 +14,8 @@
   limitations under the License.
 */
 
-import { ConfigError } from '@lowdefy/errors';
-
 import addStepResult from './addStepResult.js';
-import authorizeApiEndpoint from './authorizeApiEndpoint.js';
-import getEndpointConfig from './getEndpointConfig.js';
-import runRoutine from './runRoutine.js';
+import invokeEndpoint from './invokeEndpoint.js';
 
 async function handleEndpointCall(context, routineContext, { step }) {
   const { logger, evaluateOperators } = context;
@@ -35,37 +31,14 @@ async function handleEndpointCall(context, routineContext, { step }) {
     items: routineContext.items,
     location: step.stepId,
     payload: routineContext.payload,
+    state: routineContext.state,
     steps: routineContext.steps,
   });
 
-  // Check recursion depth
-  const currentDepth = routineContext.endpointDepth ?? 0;
-  if (currentDepth >= 10) {
-    throw new ConfigError(
-      'Endpoint call depth exceeded maximum of 10. Check for recursive endpoint calls.'
-    );
-  }
-
-  // Load target endpoint config
-  const endpointConfig = await getEndpointConfig(context, {
+  const result = await invokeEndpoint(context, {
     endpointId: evaluatedProperties.endpointId,
-  });
-
-  // Authorize current user against target endpoint
-  authorizeApiEndpoint(context, { endpointConfig });
-
-  // Create isolated routineContext for the called endpoint
-  const childRoutineContext = {
-    steps: {},
-    payload: evaluatedProperties.payload ?? {},
-    arrayIndices: [],
-    items: {},
-    endpointDepth: currentDepth + 1,
-  };
-
-  // Run the target endpoint's routine
-  const result = await runRoutine(context, childRoutineContext, {
-    routine: endpointConfig.routine,
+    payload: evaluatedProperties.payload,
+    endpointDepth: routineContext.endpointDepth,
   });
 
   // Store the return value in the caller's steps
