@@ -4,7 +4,7 @@
 '@lowdefy/operators': minor
 ---
 
-feat(api): Add `callApi(endpointId, payload)` to the request-resolver argument bag.
+feat(api): Add `callApi({ endpointId, payload })` to the request-resolver argument bag.
 
 Request resolvers (the JS resolvers shipped by connection plugins — e.g. `plugin-http`'s `get`, `plugin-mongodb`'s `find`) now receive a `callApi` function in their argument bag. Calling it invokes another Lowdefy endpoint in-process with the same semantics as the routine `:call_api` step: depth cap (10), caller's user identity, isolated routine context, inherited parser closure (`_user`, `_secret`, `_env`, `_payload`), and `InternalApi` endpoints reachable. Returns the target routine's response or throws on failure — `UserError` for `:throw`/`:reject`, original Lowdefy error class preserved otherwise.
 
