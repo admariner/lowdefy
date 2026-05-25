@@ -734,6 +734,9 @@
         title: List Blocks
         icon: AiOutlineOrderedList
       links:
+        - id: CardList
+          type: MenuLink
+          pageId: CardList
         - id: ControlledList
           type: MenuLink
           pageId: ControlledList

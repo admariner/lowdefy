@@ -180,6 +180,7 @@
 - _ref: blocks/container/Tooltip.yaml
 - _ref: blocks/container/Watermark.yaml
 
+- _ref: blocks/list/CardList.yaml
 - _ref: blocks/list/ControlledList.yaml
 - _ref: blocks/list/List.yaml
 - _ref: blocks/list/MasonryList.yaml
