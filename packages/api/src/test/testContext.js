@@ -46,7 +46,6 @@ function testContext({
     readConfigFile,
     secrets,
     session,
-    state: {},
     steps: {},
     user: session?.user,
   };

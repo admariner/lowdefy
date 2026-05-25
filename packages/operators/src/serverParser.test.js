@@ -80,8 +80,8 @@ test('parse location not string', () => {
 
 test('operator returns value with ~k present', () => {
   const input = { a: { _test: { params: true, '~k': 'c' }, '~k': 'b' }, '~k': 'a' };
-  const parser = new ServerParser({ operators, secrets, state, user });
-  const res = parser.parse({ args, input, location, payload, steps });
+  const parser = new ServerParser({ operators, secrets, user });
+  const res = parser.parse({ args, input, location, payload, state, steps });
   expect(res.output).toEqual({ a: 'test' });
   expect(operators._test.mock.calls.length).toBe(1);
   const operatorContext = operators._test.mock.calls[0][0];
