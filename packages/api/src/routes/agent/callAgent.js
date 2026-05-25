@@ -50,6 +50,7 @@ async function callAgent(
     input: agentConfig.properties ?? {},
     location: agentConfig.agentId,
     payload: agentContext,
+    state: {},
     steps: {},
   });
 
@@ -67,6 +68,7 @@ async function callAgent(
     input: connectionConfig.properties || {},
     location: connectionConfig.connectionId,
     payload: {},
+    state: {},
     steps: {},
   });
 
@@ -85,6 +87,7 @@ async function callAgent(
         input,
         location: agentConfig.agentId,
         payload: agentContext,
+        state: {},
         steps: {},
       }),
     callEndpoint: async (endpointId, { payload, abortSignal }) => {
@@ -95,6 +98,7 @@ async function callAgent(
         payload: payload ?? {},
         arrayIndices: [],
         items: {},
+        state: {},
         endpointDepth: 0,
       };
       const { error, response, status } = await runRoutine(context, routineContext, {
@@ -124,6 +128,7 @@ async function callAgent(
         input: subConnectionConfig.properties || {},
         location: subConnectionConfig.connectionId,
         payload: {},
+        state: {},
         steps: {},
       });
       return subConnection.create({ connection: subConnectionProperties });
@@ -141,6 +146,7 @@ async function callAgent(
             input: mcpConnConfig.properties || {},
             location: mcpConnConfig.connectionId,
             payload: {},
+            state: {},
             steps: {},
           });
           const mcpConfig = mcpConnection.create({ connection: mcpConnProps });
@@ -169,6 +175,7 @@ async function callAgent(
         input: mcpConnConfig.properties || {},
         location: mcpConnConfig.connectionId,
         payload: {},
+        state: {},
         steps: {},
       });
       const mcpConfig = mcpConnection.create({ connection: mcpConnProps });

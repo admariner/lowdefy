@@ -1,9 +1,5 @@
 name: Widgets
 
-exports:
-  components:
-    - id: nav-widget
-
 components:
   - id: nav-widget
     type: Component

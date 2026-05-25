@@ -366,12 +366,12 @@
     "g": {
       "key": "root.connections[0:events/event-store:AxiosHttp]",
       "~k_parent": "f",
-      "~l": 11
+      "~l": 5
     },
     "h": {
       "key": "root.connections[0:events/event-store:AxiosHttp].properties",
       "~k_parent": "g",
-      "~l": 13
+      "~l": 7
     },
     "i": {
       "key": "root.api",
@@ -5686,12 +5686,12 @@
     },
     "api.0": {
       "parent": "2",
-      "lineNumber": 17,
+      "lineNumber": 11,
       "path": "<CONFIG_DIR>/modules/events/api/log-event.yaml"
     },
     "pages.0": {
       "parent": "3",
-      "lineNumber": 12,
+      "lineNumber": 8,
       "path": "<CONFIG_DIR>/modules/companies/pages/company-detail.yaml"
     }
   },

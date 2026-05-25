@@ -6649,12 +6649,12 @@
     },
     "4": {
       "parent": "pages.0.blocks.1",
-      "lineNumber": 16,
+      "lineNumber": 10,
       "path": "<CONFIG_DIR>/modules/companies/components/company-selector.yaml"
     },
     "5": {
       "parent": "3",
-      "lineNumber": 20,
+      "lineNumber": 14,
       "path": "<CONFIG_DIR>/modules/companies/pages/company-detail.yaml"
     },
     "6": {
@@ -6669,7 +6669,7 @@
     },
     "7": {
       "parent": "6",
-      "lineNumber": 16,
+      "lineNumber": 10,
       "path": "<CONFIG_DIR>/modules/contacts/components/contact-selector.yaml"
     },
     "8": {
@@ -6677,7 +6677,7 @@
     },
     "pages.0": {
       "parent": "2",
-      "lineNumber": 20,
+      "lineNumber": 14,
       "path": "<CONFIG_DIR>/modules/contacts/pages/contact-detail.yaml"
     },
     "pages.0.blocks.1": {

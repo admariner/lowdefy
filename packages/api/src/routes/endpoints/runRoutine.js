@@ -48,7 +48,10 @@ async function runRoutine(context, routineContext, { routine }) {
     }
     throw new Error('Invalid routine.', { cause: { routine } });
   } catch (error) {
-    await context.handleError(error);
+    if (!error.handled) {
+      await context.handleError(error);
+      error.handled = true;
+    }
     return { status: 'error', error };
   }
 }

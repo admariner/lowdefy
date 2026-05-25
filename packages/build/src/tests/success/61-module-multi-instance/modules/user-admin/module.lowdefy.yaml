@@ -15,13 +15,6 @@ secrets:
   - name: MONGODB
     description: MongoDB connection URI
 
-exports:
-  pages:
-    - id: users-list
-    - id: user-edit
-  connections:
-    - id: users-db
-
 connections:
   - _ref: connections/users-db.yaml
 

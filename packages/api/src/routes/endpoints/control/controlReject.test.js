@@ -14,6 +14,8 @@
   limitations under the License.
 */
 
+import { UserError } from '@lowdefy/errors';
+
 import runTest from '../test/runTest.js';
 
 test('single reject', async () => {
@@ -23,9 +25,11 @@ test('single reject', async () => {
   const { res, context } = await runTest({ routine });
   expect(res.status).toEqual('reject');
   expect(context.logger.warn.mock.calls).toEqual([
-    [{ event: 'warn_control_reject', error: new Error('Rejected') }],
+    [{ event: 'warn_control_reject', error: new UserError('Rejected') }],
   ]);
-  expect(res.error).toEqual(new Error('Rejected'));
+  expect(res.error).toEqual(new UserError('Rejected'));
+  expect(res.error).toBeInstanceOf(UserError);
+  expect(res.error.isLowdefyError).toBe(true);
 });
 
 test('reject null', async () => {
@@ -34,7 +38,7 @@ test('reject null', async () => {
   };
   const { res } = await runTest({ routine });
   expect(res.status).toEqual('reject');
-  expect(res.error).toEqual(new Error(null));
+  expect(res.error).toEqual(new UserError(null));
 });
 
 test('reject at end of routine', async () => {
@@ -63,7 +67,7 @@ test('reject at end of routine', async () => {
   ];
   const { res, context } = await runTest({ routine });
   expect(res.status).toEqual('reject');
-  expect(res.error).toEqual(new Error('Rejected'));
+  expect(res.error).toEqual(new UserError('Rejected'));
   expect(context.logger.debug.mock.calls).toEqual([
     [
       {
@@ -156,7 +160,7 @@ test('reject in the middle of routine', async () => {
       },
     ],
   ]);
-  expect(res.error).toEqual(new Error('Rejected'));
+  expect(res.error).toEqual(new UserError('Rejected'));
 });
 
 test('multiple rejects in routine', async () => {
@@ -204,7 +208,7 @@ test('multiple rejects in routine', async () => {
       },
     ],
   ]);
-  expect(res.error).toEqual(new Error('First'));
+  expect(res.error).toEqual(new UserError('First'));
 });
 
 test('truthy guard statement reject', async () => {
@@ -237,7 +241,7 @@ test('truthy guard statement reject', async () => {
   ];
   const { res, context } = await runTest({ routine });
   expect(res.status).toEqual('reject');
-  expect(res.error).toEqual(new Error('rejected by guard statement'));
+  expect(res.error).toEqual(new UserError('rejected by guard statement'));
   expect(context.logger.debug.mock.calls).toEqual([
     [{ event: 'debug_control_if', condition: { input: true, evaluated: true } }],
     [{ event: 'debug_control_if_run_then' }],
@@ -295,7 +299,7 @@ test('falsy guard statement reject', async () => {
   ];
   const { res, context } = await runTest({ routine });
   expect(res.status).toEqual('reject');
-  expect(res.error).toEqual(new Error('made it to the end'));
+  expect(res.error).toEqual(new UserError('made it to the end'));
   expect(context.logger.debug.mock.calls).toEqual([
     [{ event: 'debug_control_if', condition: { input: false, evaluated: false } }],
     [
@@ -342,7 +346,7 @@ test('reject in a try catch block', async () => {
   ];
   const { res, context } = await runTest({ routine });
   expect(res.status).toEqual('reject');
-  expect(res.error).toEqual(new Error('reject in try block'));
+  expect(res.error).toEqual(new UserError('reject in try block'));
   expect(context.logger.debug.mock.calls).toEqual([
     [{ event: 'debug_control_try' }],
     [
@@ -414,7 +418,7 @@ test('deep nested reject', async () => {
   ];
   const { res, context } = await runTest({ routine });
   expect(res.status).toEqual('reject');
-  expect(res.error).toEqual(new Error('rejected by first if'));
+  expect(res.error).toEqual(new UserError('rejected by first if'));
   expect(context.logger.debug.mock.calls).toEqual([
     [{ event: 'debug_control_if', condition: { input: true, evaluated: true } }],
     [{ event: 'debug_control_if_run_then' }],

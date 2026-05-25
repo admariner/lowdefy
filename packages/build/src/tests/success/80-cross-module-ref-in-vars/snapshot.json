@@ -297,13 +297,13 @@
       "key": "root.pages[1:contacts/contact-list:Box].blocks[0:layout-box:Box]",
       "~k_parent": "d",
       "~r": "pages.0.blocks.0",
-      "~l": 13
+      "~l": 9
     },
     "f": {
       "key": "root.pages[1:contacts/contact-list:Box].blocks[0:layout-box:Box].blocks",
       "~k_parent": "e",
       "~r": "pages.0.blocks.0",
-      "~l": 16
+      "~l": 12
     },
     "g": {
       "key": "root.pages[1:contacts/contact-list:Box].blocks[0:layout-box:Box].blocks[0:nav-links:Box]",
@@ -5669,7 +5669,7 @@
     },
     "6": {
       "parent": "5",
-      "lineNumber": 10,
+      "lineNumber": 6,
       "path": "<CONFIG_DIR>/modules/widgets/components/nav-widget.yaml"
     },
     "7": {
@@ -5677,7 +5677,7 @@
     },
     "pages.0": {
       "parent": "4",
-      "lineNumber": 12,
+      "lineNumber": 8,
       "path": "<CONFIG_DIR>/modules/contacts/pages/contact-list.yaml"
     },
     "pages.0.blocks.0": {

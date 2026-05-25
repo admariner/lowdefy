@@ -24,8 +24,9 @@ function controlSetState(context, routineContext, { control }) {
     input: control[':set_state'],
     items,
     location: control['~k'] ?? ':set_state',
-    steps: routineContext.steps,
     payload: routineContext.payload,
+    state: routineContext.state,
+    steps: routineContext.steps,
   });
 
   logger.debug({
@@ -35,7 +36,7 @@ function controlSetState(context, routineContext, { control }) {
   });
 
   Object.entries(evaluatedSetState).forEach(([key, value]) => {
-    set(context.state, key, value);
+    set(routineContext.state, key, value);
   });
 
   return { status: 'continue' };

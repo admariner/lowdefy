@@ -255,7 +255,7 @@ test('buildModules throws ConfigError for invalid connection remapping key', () 
 
   expect(() => buildModules({ components, context })).toThrow(
     'Module "team-users" connection remapping references "nonexistent-db", ' +
-      'but the module does not export a connection with that id.'
+      'but the module has no connection with that id.'
   );
 });
 

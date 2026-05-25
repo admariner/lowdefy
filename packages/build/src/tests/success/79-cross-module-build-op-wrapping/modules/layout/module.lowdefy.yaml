@@ -1,9 +1,5 @@
 name: Layout
 
-exports:
-  components:
-    - id: header
-
 components:
   - id: header
     type: Component

@@ -27,16 +27,18 @@ async function controlLog(context, routineContext, { control }) {
     input: control[':log'],
     items,
     location,
-    steps: routineContext.steps,
     payload: routineContext.payload,
+    state: routineContext.state,
+    steps: routineContext.steps,
   });
   const logLevel =
     evaluateOperators({
       input: control[':level'],
       items,
       location,
-      steps: routineContext.steps,
       payload: routineContext.payload,
+      state: routineContext.state,
+      steps: routineContext.steps,
     }) ?? 'info';
 
   if (!type.isString(logLevel)) {

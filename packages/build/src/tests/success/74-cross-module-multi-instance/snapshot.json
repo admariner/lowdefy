@@ -5951,17 +5951,17 @@
     },
     "6": {
       "parent": "3",
-      "lineNumber": 24,
+      "lineNumber": 18,
       "path": "<CONFIG_DIR>/modules/contacts/pages/contact-detail.yaml"
     },
     "7": {
       "parent": "4",
-      "lineNumber": 24,
+      "lineNumber": 18,
       "path": "<CONFIG_DIR>/modules/companies/pages/company-detail.yaml"
     },
     "8": {
       "parent": "5",
-      "lineNumber": 24,
+      "lineNumber": 18,
       "path": "<CONFIG_DIR>/modules/companies/pages/company-detail.yaml"
     },
     "9": {
@@ -5969,7 +5969,7 @@
     },
     "pages.0": {
       "parent": "2",
-      "lineNumber": 24,
+      "lineNumber": 18,
       "path": "<CONFIG_DIR>/modules/contacts/pages/contact-detail.yaml"
     }
   },

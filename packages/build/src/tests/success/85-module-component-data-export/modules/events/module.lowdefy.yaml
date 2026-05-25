@@ -18,12 +18,6 @@ vars:
     description: Additional event type display metadata
     default: {}
 
-exports:
-  components:
-    - id: change_stamp
-    - id: event_types
-    - id: regions
-
 components:
   - id: change_stamp
     component:

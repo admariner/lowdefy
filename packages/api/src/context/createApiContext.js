@@ -19,7 +19,6 @@ import createReadConfigFile from './createReadConfigFile.js';
 import resolveLocale from './resolveLocale.js';
 
 function createApiContext(context) {
-  context.state = {};
   context.user = context?.session?.user;
 
   if (context.i18n?.defaultLocale) {

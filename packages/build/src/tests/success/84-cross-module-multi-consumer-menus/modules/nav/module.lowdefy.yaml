@@ -1,11 +1,5 @@
 name: Nav
 
-exports:
-  menus:
-    - id: shared-nav
-  pages:
-    - id: dashboard
-
 menus:
   - id: shared-nav
     links:

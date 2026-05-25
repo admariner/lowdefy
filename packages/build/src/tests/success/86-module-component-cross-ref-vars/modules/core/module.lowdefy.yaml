@@ -11,13 +11,6 @@ vars:
       user:
         _user: id
 
-exports:
-  pages:
-    - id: core-home
-  components:
-    - id: stamp
-    - id: link_to_home
-
 pages:
   - id: core-home
     type: Box

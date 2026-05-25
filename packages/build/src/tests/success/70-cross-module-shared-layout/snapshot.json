@@ -297,25 +297,25 @@
       "key": "root.pages[1:contacts/contact-list:Box].blocks[0:layout-box:Box]",
       "~k_parent": "a",
       "~r": "pages.0.blocks.0",
-      "~l": 16
+      "~l": 12
     },
     "c": {
       "key": "root.pages[1:contacts/contact-list:Box].blocks[0:layout-box:Box].blocks",
       "~k_parent": "b",
       "~r": "pages.0.blocks.0",
-      "~l": 19
+      "~l": 15
     },
     "d": {
       "key": "root.pages[1:contacts/contact-list:Box].blocks[0:layout-box:Box].blocks[0:site-header:Title]",
       "~k_parent": "c",
       "~r": "pages.0.blocks.0",
-      "~l": 20
+      "~l": 16
     },
     "e": {
       "key": "root.pages[1:contacts/contact-list:Box].blocks[0:layout-box:Box].blocks[0:site-header:Title].properties",
       "~k_parent": "d",
       "~r": "pages.0.blocks.0",
-      "~l": 22
+      "~l": 18
     },
     "f": {
       "key": "root.pages[1:contacts/contact-list:Box].blocks[0:layout-box:Box].blocks[1:contact-table:Title]",
@@ -5622,7 +5622,7 @@
     },
     "pages.0": {
       "parent": "3",
-      "lineNumber": 13,
+      "lineNumber": 9,
       "path": "<CONFIG_DIR>/modules/contacts/pages/contact-list.yaml"
     },
     "pages.0.blocks.0": {
