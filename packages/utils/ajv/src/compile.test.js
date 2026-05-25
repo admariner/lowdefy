@@ -162,3 +162,36 @@ test('nullable column pattern via type array', () => {
   expect(validator('').valid).toBe(false);
   expect(validator(7).valid).toBe(false);
 });
+
+test('compiled validator caps errors at MAX_VALIDATION_ERRORS (DoS guard)', () => {
+  const validator = compile({
+    schema: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {},
+    },
+  });
+  const data = {};
+  for (let i = 0; i < 50; i++) {
+    data[`extra_${i}`] = i;
+  }
+  const result = validator(data);
+  expect(result.valid).toBe(false);
+  expect(result.errors).toHaveLength(20);
+});
+
+test('compiled validator returns every failure below the cap', () => {
+  const validator = compile({
+    schema: {
+      type: 'object',
+      properties: {
+        string: { type: 'string' },
+        number: { type: 'number' },
+        boolean: { type: 'boolean' },
+      },
+    },
+  });
+  const result = validator({ string: 7, number: '7', boolean: 7 });
+  expect(result.valid).toBe(false);
+  expect(result.errors).toHaveLength(3);
+});
