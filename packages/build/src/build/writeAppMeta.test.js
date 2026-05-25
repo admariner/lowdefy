@@ -47,26 +47,3 @@ test('writeAppMeta', async () => {
     ],
   ]);
 });
-
-test('writeAppMeta empty appMeta', async () => {
-  const components = {
-    appMeta: {},
-  };
-  await writeAppMeta({ components, context });
-  expect(mockWriteBuildArtifact.mock.calls).toEqual([['appMeta.json', '{}']]);
-});
-
-test('writeAppMeta appMeta undefined', async () => {
-  const components = {};
-  await writeAppMeta({ components, context });
-  expect(mockWriteBuildArtifact.mock.calls).toEqual([['appMeta.json', '{}']]);
-});
-
-test('writeAppMeta appMeta not an object', async () => {
-  const components = {
-    appMeta: 'meta',
-  };
-  await expect(writeAppMeta({ components, context })).rejects.toThrow(
-    'AppMeta is not an object.'
-  );
-});

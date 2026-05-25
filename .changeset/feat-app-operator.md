@@ -29,9 +29,6 @@ commit env var via shell expansion in the build command.
 
 Build emits a new `appMeta.json` artifact alongside `app.json`. The
 existing `app.git_sha` field is removed; consumers (internal telemetry)
-read `gitSha` from `appMeta` instead. The pre-existing `secrets`→`secret`
-mismatch in the server `_js` function prototype is fixed as part of the
-same edit — user `_js` destructuring `{ secrets }` previously got
-`undefined`.
+read `gitSha` from `appMeta` instead.
 
 See the `_app` operator reference for the full key set and examples.

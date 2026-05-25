@@ -13,14 +13,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 */
-
 import { serializer } from '@lowdefy/helpers';
+import raw from '../../build/appMeta.json';
 
-async function writeAppMeta({ components, context }) {
-  await context.writeBuildArtifact(
-    'appMeta.json',
-    serializer.serializeToString(components.appMeta)
-  );
-}
-
-export default writeAppMeta;
+export default serializer.deserialize(raw);

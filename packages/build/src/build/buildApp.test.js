@@ -128,13 +128,6 @@ test('buildApp app not an object', () => {
   expect(() => buildApp({ components, context })).toThrow('lowdefy.app is not an object.');
 });
 
-test('buildApp appMeta not an object', () => {
-  const components = {
-    appMeta: 'meta',
-  };
-  expect(() => buildApp({ components, context })).toThrow('lowdefy.appMeta is not an object.');
-});
-
 test('buildApp populates appMeta from root fields', () => {
   const components = {
     slug: 'my-app',

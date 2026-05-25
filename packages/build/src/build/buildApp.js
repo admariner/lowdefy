@@ -45,12 +45,6 @@ function buildApp({ components }) {
   if (type.isNone(components.app.html.appendHead)) {
     components.app.html.appendHead = '';
   }
-  if (type.isNone(components.appMeta)) {
-    components.appMeta = {};
-  }
-  if (!type.isObject(components.appMeta)) {
-    throw new Error('lowdefy.appMeta is not an object.');
-  }
   components.appMeta = {
     slug: components.slug ?? null,
     name: components.name ?? null,

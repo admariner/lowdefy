@@ -41,7 +41,8 @@ test('getNextAuthConfig resolves `_app` in authJson using appMeta and stays sync
     secrets: {},
   });
   // synchronous: a real object, not a Promise
-  expect(result && typeof result.then).not.toBe('function');
+  expect(result).not.toBeInstanceOf(Promise);
+  expect(result).toEqual(expect.any(Object));
   // createCallbacks receives the resolved authConfig (object form), confirming
   // the parser ran the `_app` lookup against the supplied appMeta.
   expect(mockCallbacks).toHaveBeenCalled();

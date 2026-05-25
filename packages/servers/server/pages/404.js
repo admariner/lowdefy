@@ -17,6 +17,7 @@
 import path from 'path';
 import { createApiContext, getPageConfig, getRootConfig } from '@lowdefy/api';
 
+import appMeta from '../lib/build/appMeta.js';
 import config from '../lib/build/config.js';
 import fileCache from '../lib/server/fileCache.js';
 import Page from '../lib/client/Page.js';
@@ -24,6 +25,7 @@ import Page from '../lib/client/Page.js';
 export async function getStaticProps() {
   // Important to give absolute path so Next can trace build files
   const context = {
+    appMeta,
     buildDirectory: path.join(process.cwd(), 'build'),
     config,
     fileCache,
