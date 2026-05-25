@@ -20,6 +20,7 @@ export default {
       '_actions',
       '_and',
       '_api',
+      '_app',
       '_args',
       '_array',
       '_base64',
@@ -73,6 +74,7 @@ export default {
     ],
     server: [
       '_and',
+      '_app',
       '_args',
       '_array',
       '_base64',

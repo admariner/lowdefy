@@ -19,6 +19,7 @@ import { createApiContext } from '@lowdefy/api';
 import { serializer } from '@lowdefy/helpers';
 import { v4 as uuid } from 'uuid';
 
+import appMeta from '../build/appMeta.js';
 import config from '../build/config.js';
 import connections from '../../build/plugins/connections.js';
 import createLogger from './log/createLogger.js';
@@ -37,6 +38,7 @@ function apiWrapper(handler) {
     const context = {
       // Important to give absolute path so Next can trace build files
       rid: uuid(),
+      appMeta,
       buildDirectory: path.join(process.cwd(), 'build'),
       configDirectory: process.env.LOWDEFY_DIRECTORY_CONFIG || process.cwd(),
       config,

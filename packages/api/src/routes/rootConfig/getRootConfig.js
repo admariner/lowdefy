@@ -29,6 +29,7 @@ async function getRootConfig(context) {
   return {
     home,
     i18n,
+    lowdefyApp: context.appMeta,
     lowdefyGlobal,
     menus,
     theme,

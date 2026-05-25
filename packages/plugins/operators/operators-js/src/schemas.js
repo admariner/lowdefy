@@ -16,6 +16,7 @@
 
 // Shared operators
 export { default as _and } from './operators/shared/and.schema.js';
+export { default as _app } from './operators/shared/app.schema.js';
 export { default as _args } from './operators/shared/args.schema.js';
 export { default as _array } from './operators/shared/array.schema.js';
 export { default as _date } from './operators/shared/date.schema.js';

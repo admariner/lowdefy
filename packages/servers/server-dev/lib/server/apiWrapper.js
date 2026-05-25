@@ -21,6 +21,7 @@ import { serializer } from '@lowdefy/helpers';
 import { v4 as uuid } from 'uuid';
 
 import agents from '../../build/plugins/agents.js';
+import appMeta from '../build/appMeta.js';
 import config from '../build/config.js';
 import i18nConfig from '../build/i18n.js';
 import connections from '../../build/plugins/connections.js';
@@ -68,6 +69,7 @@ function apiWrapper(handler) {
       // Important to give absolute path so Next can trace build files
       rid: uuid(),
       agents,
+      appMeta,
       buildDirectory,
       configDirectory: process.env.LOWDEFY_DIRECTORY_CONFIG || process.cwd(),
       config,

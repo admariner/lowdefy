@@ -1544,6 +1544,21 @@ export default {
         type: 'App "version" should be a string.',
       },
     },
+    slug: {
+      type: 'string',
+      pattern: '^[a-z][a-z0-9]*(-[a-z0-9]+)*$',
+      errorMessage: {
+        type: 'App "slug" should be a string.',
+        pattern:
+          'App "slug" must be kebab-case: lowercase letters and digits, hyphen-separated, starting with a letter, no leading/trailing/consecutive hyphens, no underscores.',
+      },
+    },
+    description: {
+      type: 'string',
+      errorMessage: {
+        type: 'App "description" should be a string.',
+      },
+    },
     app: {
       $ref: '#/definitions/app',
     },
