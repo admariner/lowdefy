@@ -19,7 +19,7 @@ import { ConfigError } from '@lowdefy/errors';
 
 async function getUserJavascriptFunction({ context, filePath }) {
   try {
-    const fileUrl = pathToFileURL(path.join(context.directories.config, filePath));
+    const fileUrl = pathToFileURL(path.resolve(context.directories.config, filePath));
     // Bust Node.js module cache so edits to resolver/transformer JS files are
     // picked up during dev rebuilds. Each import gets a unique URL.
     fileUrl.searchParams.set('t', Date.now());

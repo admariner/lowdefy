@@ -1136,6 +1136,30 @@ _ref:
     const res = await buildRefs({ context });
     expect(res).toEqual({ async: true });
   });
+
+  test('buildRefs transformer error reports filePath as referencing manifest', async () => {
+    const files = [
+      {
+        path: 'lowdefy.yaml',
+        content: `
+_ref:
+  path: target.yaml
+  transformer: src/test-utils/buildRefs/testBuildRefsErrorResolver.js`,
+      },
+      {
+        path: 'target.yaml',
+        content: 'a: 1',
+      },
+    ];
+    mockReadConfigFile.mockImplementation(readConfigFileMockImplementation(files));
+    await buildRefs({ context });
+    expect(context.errors).toHaveLength(1);
+    expect(context.errors[0].message).toMatch(
+      /Error calling transformer ".*testBuildRefsErrorResolver\.js" from "target\.yaml"\./
+    );
+    // filePath points to the referencing manifest, not the transformer JS file.
+    expect(context.errors[0].filePath).toBe('lowdefy.yaml');
+  });
 });
 
 describe('resolver functions', () => {

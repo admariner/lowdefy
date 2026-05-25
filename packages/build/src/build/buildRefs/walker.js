@@ -545,8 +545,16 @@ async function resolveRef(node, ctx) {
   }
 
   // 4. Module path resolution: resolve relative paths from the module root
-  if (ctx.moduleRoot && type.isString(refDef.path) && !path.isAbsolute(refDef.path)) {
-    refDef.path = path.resolve(ctx.moduleRoot, refDef.path);
+  if (ctx.moduleRoot) {
+    if (type.isString(refDef.path) && !path.isAbsolute(refDef.path)) {
+      refDef.path = path.resolve(ctx.moduleRoot, refDef.path);
+    }
+    if (type.isString(refDef.resolver) && !path.isAbsolute(refDef.resolver)) {
+      refDef.resolver = path.resolve(ctx.moduleRoot, refDef.resolver);
+    }
+    if (type.isString(refDef.transformer) && !path.isAbsolute(refDef.transformer)) {
+      refDef.transformer = path.resolve(ctx.moduleRoot, refDef.transformer);
+    }
   }
 
   // 5. Update refMap with resolved path; store original for resolver refs
@@ -556,9 +564,16 @@ async function resolveRef(node, ctx) {
   }
 
   // 6. Path escape constraint: module refs cannot escape the package root
-  if (ctx.packageRoot && refDef.path) {
-    if (!refDef.path.startsWith(ctx.packageRoot + '/') && refDef.path !== ctx.packageRoot) {
-      throw new ConfigError(`Module ref path "${refDef.path}" escapes the package root.`);
+  if (ctx.packageRoot) {
+    for (const field of ['path', 'resolver', 'transformer']) {
+      const value = refDef[field];
+      if (
+        type.isString(value) &&
+        !value.startsWith(ctx.packageRoot + '/') &&
+        value !== ctx.packageRoot
+      ) {
+        throw new ConfigError(`Module ref ${field} "${value}" escapes the package root.`);
+      }
     }
   }
 
@@ -672,6 +687,7 @@ async function resolveRef(node, ctx) {
       context: ctx.buildContext,
       input: content,
       refDef,
+      referencedFrom: ctx.currentFile,
     });
 
     // 14. Extract key
