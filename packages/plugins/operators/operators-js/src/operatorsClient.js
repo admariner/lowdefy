@@ -15,6 +15,7 @@
 */
 
 export { default as _and } from './operators/shared/and.js';
+export { default as _app } from './operators/shared/app.js';
 export { default as _args } from './operators/shared/args.js';
 export { default as _array } from './operators/shared/array.js';
 export { default as _date } from './operators/shared/date.js';
