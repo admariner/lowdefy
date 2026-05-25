@@ -51,7 +51,7 @@
   "dependencies": {
     "@lowdefy/helpers": "5.3.0",
     "@lowdefy/operators": "5.3.0",
-    "intl-messageformat": "10.7.16"
+    "intl-messageformat": "11.2.7"
   },
   "devDependencies": {
     "@jest/globals": "28.1.3",
