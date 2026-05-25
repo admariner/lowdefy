@@ -155,42 +155,12 @@ async function resolveLocalManifest({ entry, resolvedPaths, context }) {
     }
   }
 
-  // Parse exports object from manifest
-  const rawExports = manifest.exports ?? {};
-  const exportSections = ['pages', 'components', 'menus', 'connections', 'api'];
-  const exports = {};
-
-  for (const section of exportSections) {
-    const items = rawExports[section] ?? [];
-    if (!type.isArray(items)) {
-      throw new ConfigError(
-        `Module "${entry.id}": exports.${section} must be an array.`
-      );
-    }
-    for (const item of items) {
-      if (!type.isString(item.id)) {
-        throw new ConfigError(
-          `Module "${entry.id}": each item in exports.${section} must have a string "id".`
-        );
-      }
-    }
-    exports[section] = items;
-  }
-
-  // Reject unknown keys in exports
-  for (const key of Object.keys(rawExports)) {
-    if (!exportSections.includes(key)) {
-      throw new ConfigError(
-        `Module "${entry.id}": unknown exports section "${key}". ` +
-          `Valid sections: ${exportSections.join(', ')}.`
-      );
-    }
-  }
-
-  // Validate required vars without defaults (needs raw defs + consumer values only).
-  // Type validation moves to after Phase 2 because defaults are resolved lazily.
+  // Capture var definitions for the registered module entry.
+  // Required-var validation is deferred to Phase 2.5 (buildModuleDefs.js)
+  // because entry.vars may contain unresolved _refs at this point.
+  // Type validation runs at the end of Phase 3 against the lazily-populated
+  // resolvedVarCache.
   const varDefs = manifest.vars ?? {};
-  validateRequiredVars(varDefs, entry.vars ?? {}, entry.id, entry.source);
 
   // Validate plugin dependencies against app's declared plugins
   const requiredPlugins = manifest.plugins ?? [];
@@ -244,7 +214,6 @@ async function resolveLocalManifest({ entry, resolvedPaths, context }) {
     connections: entry.connections ?? {},
     manifest,
     dependencies,
-    exports,
     moduleDependencies: entry.dependencies ?? {},
     refDef,
   };
@@ -298,4 +267,4 @@ async function resolveFullManifest({ entryId, context }) {
   }
 }
 
-export { resolveLocalManifest, resolveFullManifest };
+export { resolveLocalManifest, resolveFullManifest, validateRequiredVars };

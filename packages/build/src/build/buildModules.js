@@ -65,7 +65,7 @@ function buildModules({ components, context }) {
       if (!moduleConnIds.has(remapKey)) {
         throw new ConfigError(
           `Module "${entry.id}" connection remapping references "${remapKey}", ` +
-            `but the module does not export a connection with that id.`
+            `but the module has no connection with that id.`
         );
       }
     }

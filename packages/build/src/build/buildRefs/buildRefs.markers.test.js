@@ -14,6 +14,9 @@
   limitations under the License.
 */
 
+import path from 'path';
+import { fileURLToPath } from 'url';
+
 import { jest } from '@jest/globals';
 
 import testContext from '../../test-utils/testContext.js';
@@ -32,7 +35,12 @@ const readConfigFileMockImplementation = (files) => {
   return mockImp;
 };
 
+// Resolve to packages/build/ so relative resolver/transformer paths like
+// "src/test-utils/buildRefs/..." load regardless of process.cwd().
+const packageRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
+
 const context = testContext({
+  configDirectory: packageRoot,
   readConfigFile: mockReadConfigFile,
 });
 

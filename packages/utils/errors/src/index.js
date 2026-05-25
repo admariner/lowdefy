@@ -44,9 +44,9 @@
  *    - Extends ConfigError with name override
  *    - Format: source:line\n[ConfigWarning] message
  *
- * 6. UserError - Expected user interaction (validation, throws), client-only
- *    - Thrown: Action plugins for expected user errors
- *    - Caught: Browser console only, never sent to server
+ * 6. UserError - User-authored deliberate failure
+ *    - Thrown: Client-side Throw action; server-side controlThrow (routine :throw) and controlReject (routine :reject)
+ *    - Caught: Caller of the action/resolver; signals "the called routine deliberately failed" as distinct from a system fault
  *    - Format: [User Error] message
  *
  * Location Resolution Utilities:

@@ -4,12 +4,6 @@ dependencies:
   - id: companies
     description: Company management
 
-exports:
-  pages:
-    - id: contact-detail
-  components:
-    - id: contact-selector
-
 components:
   - id: contact-selector
     type: Component

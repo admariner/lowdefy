@@ -360,6 +360,7 @@ test('deserialize inputs', async () => {
   expect(mockTestRequest.mock.calls).toEqual([
     [
       {
+        callApi: expect.any(Function),
         connection: {
           connectionProperty: 'connectionProperty',
         },

@@ -184,3 +184,33 @@ test('set_state returns continue status', async () => {
   const { res } = await runTest({ routine });
   expect(res.status).toEqual('continue');
 });
+
+test('set_state writes to routineContext.state, not context.state', async () => {
+  const routine = {
+    ':set_state': {
+      key: 'value',
+    },
+  };
+  const { context, routineContext } = await runTest({ routine });
+  expect(routineContext.state).toEqual({ key: 'value' });
+  expect(context.state).toBeUndefined();
+});
+
+test('set_state writes do not leak across separate routineContexts', async () => {
+  const routine = {
+    ':set_state': {
+      key: 'first',
+    },
+  };
+  const { context, routineContext } = await runTest({ routine });
+  expect(routineContext.state).toEqual({ key: 'first' });
+
+  // Simulate a sibling routine frame — separate routineContext, same context.
+  const { res, routineContext: siblingRoutineContext } = await runTest({
+    routine: [{ ':return': { _state: 'key' } }],
+  });
+  // The sibling routine starts with empty state; `_state.key` is null/undefined.
+  expect(res.response == null).toBe(true);
+  expect(siblingRoutineContext.state).toEqual({});
+  expect(context.state).toBeUndefined();
+});

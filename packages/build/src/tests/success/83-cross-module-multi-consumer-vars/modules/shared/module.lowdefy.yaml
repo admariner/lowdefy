@@ -1,9 +1,5 @@
 name: Shared
 
-exports:
-  components:
-    - id: card
-
 components:
   - id: card
     type: Component

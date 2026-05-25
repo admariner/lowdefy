@@ -3,9 +3,5 @@ name: Companies
 dependencies:
   - id: shared
 
-exports:
-  pages:
-    - id: company-list
-
 pages:
   - _ref: pages/company-list.yaml

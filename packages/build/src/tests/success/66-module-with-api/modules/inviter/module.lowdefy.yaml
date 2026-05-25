@@ -1,14 +1,6 @@
 name: Inviter
 description: Invitation module with API endpoints
 
-exports:
-  pages:
-    - id: invite
-  connections:
-    - id: email-conn
-  api:
-    - id: send-invite
-
 vars:
   invite_message:
     type: string

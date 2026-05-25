@@ -16,12 +16,13 @@
 
 function evaluateOperators(
   { evaluateOperators },
-  { connectionConfig, items, payload, requestConfig, steps }
+  { connectionConfig, items, payload, requestConfig, state, steps }
 ) {
   const connectionProperties = evaluateOperators({
     input: connectionConfig.properties || {},
     location: connectionConfig.connectionId,
     payload,
+    state,
     steps,
   });
 
@@ -30,6 +31,7 @@ function evaluateOperators(
     items,
     location: requestConfig.stepId ?? requestConfig.requestId,
     payload,
+    state,
     steps,
   });
 
