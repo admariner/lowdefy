@@ -124,8 +124,12 @@ const CardListBlock = ({
   const searchDebounce = searchEnabled ? search.debounce ?? 150 : 150;
   const searchSticky = searchEnabled ? search.sticky !== false : false;
   const searchAllowClear = searchEnabled ? search.allowClear !== false : true;
-  const searchPlaceholder = searchEnabled ? search.placeholder ?? 'Search…' : '';
-  const noResultsText = searchEnabled ? search.noResultsText ?? 'No results' : '';
+  const searchPlaceholder = searchEnabled
+    ? search.placeholder ?? methods.translate('blocks.cardList.search.placeholder')
+    : '';
+  const noResultsText = searchEnabled
+    ? search.noResultsText ?? methods.translate('blocks.cardList.search.noResults')
+    : '';
 
   const [rawQuery, setRawQuery] = useState('');
   const [appliedQuery, setAppliedQuery] = useState('');
