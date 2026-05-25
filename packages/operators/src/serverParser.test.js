@@ -104,6 +104,27 @@ test('operator returns value with ~k present', () => {
   expect(res.errors).toEqual([]);
 });
 
+test('forwards lowdefyApp into operator context', () => {
+  const input = { a: { _test: { params: true } } };
+  const parser = new ServerParser({
+    operators,
+    secrets,
+    user,
+    lowdefyApp: { slug: 'my-app' },
+  });
+  parser.parse({ args, input, location });
+  const operatorContext = operators._test.mock.calls[operators._test.mock.calls.length - 1][0];
+  expect(operatorContext.lowdefyApp).toEqual({ slug: 'my-app' });
+});
+
+test('lowdefyApp absent defaults to undefined in operator context', () => {
+  const input = { a: { _test: { params: true } } };
+  const parser = new ServerParser({ operators, secrets, user });
+  parser.parse({ args, input, location });
+  const operatorContext = operators._test.mock.calls[operators._test.mock.calls.length - 1][0];
+  expect(operatorContext.lowdefyApp).toBeUndefined();
+});
+
 test('operator should be object with 1 key', () => {
   const input = { a: { _test: { params: true }, x: 1 } };
   const parser = new ServerParser({ operators, secrets, user });
