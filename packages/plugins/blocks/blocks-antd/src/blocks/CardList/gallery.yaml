@@ -63,14 +63,11 @@
           <p>Click to see which row was selected.</p>
       events:
         onClick:
-          - id: clicked_message
-            type: Message
+          - id: capture_clicked
+            type: SetState
             params:
-              content:
-                _nunjucks:
-                  template: 'Clicked row {{ index }} (id={{ item.id }})'
-                  on:
-                    _event: true
+              clicked_card:
+                _event: true
 
 - title: Small Cards with Custom Gap
   blocks:
@@ -95,11 +92,14 @@
         hoverable: true
         height: 480
         data:
-          _array.range:
-            - 1
-            - 1001
+          _string.split:
+            on:
+              _string.repeat:
+                on: 'x,'
+                count: 999
+            separator: ','
         html: |
-          <h4>Row {{ item }}</h4>
+          <h4>Row {{ index + 1 }}</h4>
           <p>This list renders one thousand cards. Only rows in (and near) the viewport are mounted in the DOM.</p>
 
 - title: With Search (all fields)
