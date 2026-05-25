@@ -35,7 +35,7 @@ _ref:
       ###### Client JavaScript function prototype:
       _Function parameters passed to the operator method._
       ```js
-      function ({ actions, args, event, input, location, lowdefyGlobal, request, state, urlQuery, user }) {
+      function ({ actions, args, event, input, location, lowdefyApp, lowdefyGlobal, request, state, urlQuery, user }) {
         // Your JavaScript code here
       };
       ```
@@ -46,6 +46,7 @@ _ref:
         - `event: function`: Implements the [_event](/_event) operator.
         - `input: function`: Implements the [_input](/_input) operator.
         - `location: function`: Implements the [_location](/_location) operator.
+        - `lowdefyApp: function`: Implements the [_app](/_app) operator.
         - `lowdefyGlobal: function`: Implements the [_global](/_global) operator.
         - `request: function`: Implements the [_request](/_request) operator.
         - `state: function`: Implements the [_state](/_state) operator.
@@ -55,7 +56,7 @@ _ref:
       ###### Server JavaScript function prototype:
       _Function parameters passed to the operator method._
       ```js
-      function ({ args, item, payload, secrets, state, step, user }) {
+      function ({ args, item, lowdefyApp, payload, secret, state, step, user }) {
         // Your JavaScript code here
       };
       ```
@@ -63,8 +64,9 @@ _ref:
       The function arguments available to the JavaScript function are
         - `args: object`: Pre-resolved values passed via the object form of `_js` (see below). `undefined` when the string form is used.
         - `item: function`: Implements the [_item](/_item) operator.
+        - `lowdefyApp: function`: Implements the [_app](/_app) operator.
         - `payload: function`: Implements the [_payload](/_payload) operator.
-        - `secrets: function`: Implements the [_secret](/_secret) operator.
+        - `secret: function`: Implements the [_secret](/_secret) operator.
         - `state: function`: Implements the [_state](/_state) operator.
         - `step: function`: Implements the [_step](/_step) operator.
         - `user: function`: Implements the [_user](/_user) operator.
