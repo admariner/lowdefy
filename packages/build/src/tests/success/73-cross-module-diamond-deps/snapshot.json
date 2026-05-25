@@ -332,25 +332,25 @@
       "key": "root.pages[1:contacts/contact-list:Box].blocks[0:layout-box:Box]",
       "~k_parent": "d",
       "~r": "pages.0.blocks.0",
-      "~l": 15
+      "~l": 11
     },
     "f": {
       "key": "root.pages[1:contacts/contact-list:Box].blocks[0:layout-box:Box].blocks",
       "~k_parent": "e",
       "~r": "pages.0.blocks.0",
-      "~l": 18
+      "~l": 14
     },
     "g": {
       "key": "root.pages[1:contacts/contact-list:Box].blocks[0:layout-box:Box].blocks[0:site-header:Title]",
       "~k_parent": "f",
       "~r": "pages.0.blocks.0",
-      "~l": 19
+      "~l": 15
     },
     "h": {
       "key": "root.pages[1:contacts/contact-list:Box].blocks[0:layout-box:Box].blocks[0:site-header:Title].properties",
       "~k_parent": "g",
       "~r": "pages.0.blocks.0",
-      "~l": 21
+      "~l": 17
     },
     "i": {
       "key": "root.pages[1:contacts/contact-list:Box].blocks[0:layout-box:Box].blocks[1:contact-table:Title]",
@@ -380,25 +380,25 @@
       "key": "root.pages[2:companies/company-list:Box].blocks[0:layout-box:Box]",
       "~k_parent": "l",
       "~r": "6",
-      "~l": 15
+      "~l": 11
     },
     "n": {
       "key": "root.pages[2:companies/company-list:Box].blocks[0:layout-box:Box].blocks",
       "~k_parent": "m",
       "~r": "6",
-      "~l": 18
+      "~l": 14
     },
     "o": {
       "key": "root.pages[2:companies/company-list:Box].blocks[0:layout-box:Box].blocks[0:site-header:Title]",
       "~k_parent": "n",
       "~r": "6",
-      "~l": 19
+      "~l": 15
     },
     "p": {
       "key": "root.pages[2:companies/company-list:Box].blocks[0:layout-box:Box].blocks[0:site-header:Title].properties",
       "~k_parent": "o",
       "~r": "6",
-      "~l": 21
+      "~l": 17
     },
     "q": {
       "key": "root.pages[2:companies/company-list:Box].blocks[0:layout-box:Box].blocks[1:company-table:Title]",
@@ -5767,7 +5767,7 @@
     },
     "5": {
       "parent": "4",
-      "lineNumber": 11,
+      "lineNumber": 7,
       "path": "<CONFIG_DIR>/modules/companies/pages/company-list.yaml"
     },
     "6": {
@@ -5797,7 +5797,7 @@
     },
     "pages.0": {
       "parent": "3",
-      "lineNumber": 11,
+      "lineNumber": 7,
       "path": "<CONFIG_DIR>/modules/contacts/pages/contact-list.yaml"
     },
     "pages.0.blocks.0": {

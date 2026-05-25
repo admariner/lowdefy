@@ -70,8 +70,6 @@ function createModuleEntry(consumerVars = {}, varDefs = {}, overrides = {}) {
         id: 'test:module.lowdefy.yaml:0',
         path: '/modules/test/module.lowdefy.yaml',
       },
-    exports:
-      overrides.exports ?? { pages: [], components: [], menus: [], connections: [], api: [] },
     connections: overrides.connections ?? {},
   };
 }
@@ -250,11 +248,6 @@ describe('_module.var propagation through WalkContext', () => {
 
 const testModuleEntry = {
   id: 'entry-id',
-  exports: {
-    pages: [{ id: 'settings' }, { id: 'dashboard' }],
-    connections: [{ id: 'users-db' }, { id: 'cache-db' }],
-    api: [{ id: 'invite-user' }, { id: 'remove-user' }],
-  },
   connections: {},
   moduleDependencies: {
     events: 'events-entry',
@@ -263,11 +256,6 @@ const testModuleEntry = {
 
 const eventsEntry = {
   id: 'events-entry',
-  exports: {
-    pages: [{ id: 'event-log' }],
-    connections: [{ id: 'events-db' }],
-    api: [{ id: 'send-event' }],
-  },
   connections: {},
 };
 
@@ -296,14 +284,13 @@ describe('_module.pageId resolution', () => {
     expect(result).toBe('entry-id/settings');
   });
 
-  test('string form throws for page not in exports', async () => {
+  test('string form returns scoped id without consulting any catalog', async () => {
     const ctx = createWalkContext({
       moduleEntry: testModuleEntry,
       buildContext: createModuleBuildContext(),
     });
-    await expect(resolve({ '_module.pageId': 'nonexistent' }, ctx)).rejects.toThrow(
-      'Module "entry-id" does not export page "nonexistent".'
-    );
+    const result = await resolve({ '_module.pageId': 'any-id-at-all' }, ctx);
+    expect(result).toBe('entry-id/any-id-at-all');
   });
 
   test('object form resolves cross-module page', async () => {
@@ -318,16 +305,16 @@ describe('_module.pageId resolution', () => {
     expect(result).toBe('events-entry/event-log');
   });
 
-  test('object form throws for page not in target exports', async () => {
+  test('object form returns scoped id without consulting target catalog', async () => {
     const ctx = createWalkContext({
       moduleEntry: testModuleEntry,
       buildContext: createModuleBuildContext(),
     });
-    await expect(
-      resolve({ '_module.pageId': { id: 'missing', module: 'events' } }, ctx)
-    ).rejects.toThrow(
-      'Module "entry-id" references page "missing" from "events" (entry "events-entry"), but that module does not export page "missing".'
+    const result = await resolve(
+      { '_module.pageId': { id: 'any-id', module: 'events' } },
+      ctx
     );
+    expect(result).toBe('events-entry/any-id');
   });
 
   test('throws for unknown dependency', async () => {
@@ -372,14 +359,13 @@ describe('_module.connectionId resolution', () => {
     expect(result).toBe('shared-mongodb');
   });
 
-  test('string form throws for connection not in exports', async () => {
+  test('string form returns scoped id without consulting any catalog', async () => {
     const ctx = createWalkContext({
       moduleEntry: testModuleEntry,
       buildContext: createModuleBuildContext(),
     });
-    await expect(resolve({ '_module.connectionId': 'missing' }, ctx)).rejects.toThrow(
-      'Module "entry-id" does not export connection "missing".'
-    );
+    const result = await resolve({ '_module.connectionId': 'any-id-at-all' }, ctx);
+    expect(result).toBe('entry-id/any-id-at-all');
   });
 
   test('object form resolves cross-module with target remapping', async () => {
@@ -419,14 +405,13 @@ describe('_module.endpointId resolution', () => {
     expect(result).toBe('entry-id/invite-user');
   });
 
-  test('string form throws for endpoint not in exports', async () => {
+  test('string form returns scoped id without consulting any catalog', async () => {
     const ctx = createWalkContext({
       moduleEntry: testModuleEntry,
       buildContext: createModuleBuildContext(),
     });
-    await expect(resolve({ '_module.endpointId': 'missing' }, ctx)).rejects.toThrow(
-      'Module "entry-id" does not export endpoint "missing".'
-    );
+    const result = await resolve({ '_module.endpointId': 'any-id-at-all' }, ctx);
+    expect(result).toBe('entry-id/any-id-at-all');
   });
 
   test('object form resolves cross-module endpoint', async () => {
@@ -609,17 +594,16 @@ describe('_module.*Id at app level (null moduleEntry)', () => {
     );
   });
 
-  test('_module.connectionId object form throws for nonexistent export at app level', async () => {
+  test('_module.connectionId object form at app level resolves without consulting target catalog', async () => {
     const ctx = createWalkContext({
       moduleEntry: null,
       buildContext: createModuleBuildContext(),
     });
-    await expect(
-      resolve(
-        { '_module.connectionId': { id: 'nonexistent-connection', module: 'events-entry' } },
-        ctx
-      )
-    ).rejects.toThrow('does not export connection "nonexistent-connection"');
+    const result = await resolve(
+      { '_module.connectionId': { id: 'any-connection', module: 'events-entry' } },
+      ctx
+    );
+    expect(result).toBe('events-entry/any-connection');
   });
 });
 

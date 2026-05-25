@@ -384,11 +384,6 @@ function resolveModulePageId(arg, moduleEntry, context, configKey) {
         { configKey }
       );
     }
-    if (!(moduleEntry.exports?.pages ?? []).some((p) => p.id === arg)) {
-      throw new ConfigError(`Module "${moduleEntry.id}" does not export page "${arg}".`, {
-        configKey,
-      });
-    }
     return `${moduleEntry.id}/${arg}`;
   }
 
@@ -400,15 +395,6 @@ function resolveModulePageId(arg, moduleEntry, context, configKey) {
       configKey,
       usage: `_module.pageId { id: "${arg.id}", module: "${arg.module}" }`,
     });
-    if (!(targetEntry.exports?.pages ?? []).some((p) => p.id === arg.id)) {
-      const caller = moduleEntry ? `Module "${moduleEntry.id}"` : 'App config';
-      throw new ConfigError(
-        `${caller} references page "${arg.id}" ` +
-          `from "${arg.module}" (entry "${targetEntry.id}"), ` +
-          `but that module does not export page "${arg.id}".`,
-        { configKey }
-      );
-    }
     return `${targetEntry.id}/${arg.id}`;
   }
 
@@ -426,11 +412,6 @@ function resolveModuleConnectionId(arg, moduleEntry, context, configKey) {
         { configKey }
       );
     }
-    if (!(moduleEntry.exports?.connections ?? []).some((c) => c.id === arg)) {
-      throw new ConfigError(`Module "${moduleEntry.id}" does not export connection "${arg}".`, {
-        configKey,
-      });
-    }
     const remapping = moduleEntry.connections ?? {};
     if (remapping[arg]) {
       return remapping[arg];
@@ -446,15 +427,6 @@ function resolveModuleConnectionId(arg, moduleEntry, context, configKey) {
       configKey,
       usage: `_module.connectionId { id: "${arg.id}", module: "${arg.module}" }`,
     });
-    if (!(targetEntry.exports?.connections ?? []).some((c) => c.id === arg.id)) {
-      const caller = moduleEntry ? `Module "${moduleEntry.id}"` : 'App config';
-      throw new ConfigError(
-        `${caller} references connection "${arg.id}" ` +
-          `from "${arg.module}" (entry "${targetEntry.id}"), ` +
-          `but that module does not export connection "${arg.id}".`,
-        { configKey }
-      );
-    }
     const targetRemapping = targetEntry.connections ?? {};
     if (targetRemapping[arg.id]) {
       return targetRemapping[arg.id];
@@ -476,11 +448,6 @@ function resolveModuleEndpointId(arg, moduleEntry, context, configKey) {
         { configKey }
       );
     }
-    if (!(moduleEntry.exports?.api ?? []).some((e) => e.id === arg)) {
-      throw new ConfigError(`Module "${moduleEntry.id}" does not export endpoint "${arg}".`, {
-        configKey,
-      });
-    }
     return `${moduleEntry.id}/${arg}`;
   }
 
@@ -492,15 +459,6 @@ function resolveModuleEndpointId(arg, moduleEntry, context, configKey) {
       configKey,
       usage: `_module.endpointId { id: "${arg.id}", module: "${arg.module}" }`,
     });
-    if (!(targetEntry.exports?.api ?? []).some((e) => e.id === arg.id)) {
-      const caller = moduleEntry ? `Module "${moduleEntry.id}"` : 'App config';
-      throw new ConfigError(
-        `${caller} references endpoint "${arg.id}" ` +
-          `from "${arg.module}" (entry "${targetEntry.id}"), ` +
-          `but that module does not export endpoint "${arg.id}".`,
-        { configKey }
-      );
-    }
     return `${targetEntry.id}/${arg.id}`;
   }
 

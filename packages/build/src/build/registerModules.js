@@ -155,38 +155,6 @@ async function resolveLocalManifest({ entry, resolvedPaths, context }) {
     }
   }
 
-  // Parse exports object from manifest
-  const rawExports = manifest.exports ?? {};
-  const exportSections = ['pages', 'components', 'menus', 'connections', 'api'];
-  const exports = {};
-
-  for (const section of exportSections) {
-    const items = rawExports[section] ?? [];
-    if (!type.isArray(items)) {
-      throw new ConfigError(
-        `Module "${entry.id}": exports.${section} must be an array.`
-      );
-    }
-    for (const item of items) {
-      if (!type.isString(item.id)) {
-        throw new ConfigError(
-          `Module "${entry.id}": each item in exports.${section} must have a string "id".`
-        );
-      }
-    }
-    exports[section] = items;
-  }
-
-  // Reject unknown keys in exports
-  for (const key of Object.keys(rawExports)) {
-    if (!exportSections.includes(key)) {
-      throw new ConfigError(
-        `Module "${entry.id}": unknown exports section "${key}". ` +
-          `Valid sections: ${exportSections.join(', ')}.`
-      );
-    }
-  }
-
   // Capture var definitions for the registered module entry.
   // Required-var validation is deferred to Phase 2.5 (buildModuleDefs.js)
   // because entry.vars may contain unresolved _refs at this point.
@@ -246,7 +214,6 @@ async function resolveLocalManifest({ entry, resolvedPaths, context }) {
     connections: entry.connections ?? {},
     manifest,
     dependencies,
-    exports,
     moduleDependencies: entry.dependencies ?? {},
     refDef,
   };

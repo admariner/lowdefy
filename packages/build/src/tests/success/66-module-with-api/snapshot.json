@@ -5925,17 +5925,17 @@
     },
     "connections.0": {
       "parent": "2",
-      "lineNumber": 22,
+      "lineNumber": 14,
       "path": "<CONFIG_DIR>/modules/inviter/connections/email.yaml"
     },
     "pages.0": {
       "parent": "2",
-      "lineNumber": 25,
+      "lineNumber": 17,
       "path": "<CONFIG_DIR>/modules/inviter/pages/invite.yaml"
     },
     "api.0": {
       "parent": "2",
-      "lineNumber": 28,
+      "lineNumber": 20,
       "path": "<CONFIG_DIR>/modules/inviter/api/send-invite.yaml"
     }
   },

@@ -288,13 +288,13 @@
       "key": "root.pages[1:contacts/contact-list:Box].blocks[0:card-title:Title]",
       "~k_parent": "d",
       "~r": "pages.0.blocks.0",
-      "~l": 10
+      "~l": 6
     },
     "f": {
       "key": "root.pages[1:contacts/contact-list:Box].blocks[0:card-title:Title].properties",
       "~k_parent": "e",
       "~r": "pages.0.blocks.0",
-      "~l": 13
+      "~l": 9
     },
     "g": {
       "key": "root.pages[2:companies/company-list:Box]",
@@ -312,13 +312,13 @@
       "key": "root.pages[2:companies/company-list:Box].blocks[0:card-title:Title]",
       "~k_parent": "h",
       "~r": "6",
-      "~l": 10
+      "~l": 6
     },
     "j": {
       "key": "root.pages[2:companies/company-list:Box].blocks[0:card-title:Title].properties",
       "~k_parent": "i",
       "~r": "6",
-      "~l": 13
+      "~l": 9
     },
     "l": {
       "key": "root.pages",
@@ -5649,7 +5649,7 @@
     },
     "5": {
       "parent": "4",
-      "lineNumber": 11,
+      "lineNumber": 7,
       "path": "<CONFIG_DIR>/modules/companies/pages/company-list.yaml"
     },
     "6": {
@@ -5671,7 +5671,7 @@
     },
     "pages.0": {
       "parent": "3",
-      "lineNumber": 11,
+      "lineNumber": 7,
       "path": "<CONFIG_DIR>/modules/contacts/pages/contact-list.yaml"
     },
     "pages.0.blocks.0": {

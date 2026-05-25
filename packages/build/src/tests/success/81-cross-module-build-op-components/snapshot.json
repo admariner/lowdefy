@@ -288,25 +288,25 @@
       "key": "root.pages[1:contacts/contact-list:Box].blocks[0:layout-box:Box]",
       "~k_parent": "a",
       "~r": "2",
-      "~l": 12
+      "~l": 7
     },
     "c": {
       "key": "root.pages[1:contacts/contact-list:Box].blocks[0:layout-box:Box].blocks",
       "~k_parent": "b",
       "~r": "2",
-      "~l": 15
+      "~l": 10
     },
     "d": {
       "key": "root.pages[1:contacts/contact-list:Box].blocks[0:layout-box:Box].blocks[0:layout-title:Title]",
       "~k_parent": "c",
       "~r": "2",
-      "~l": 16
+      "~l": 11
     },
     "e": {
       "key": "root.pages[1:contacts/contact-list:Box].blocks[0:layout-box:Box].blocks[0:layout-title:Title].properties",
       "~k_parent": "d",
       "~r": "2",
-      "~l": 18
+      "~l": 13
     },
     "f": {
       "key": "root.pages[1:contacts/contact-list:Box].blocks[1:contact-table:Title]",
@@ -5609,12 +5609,12 @@
     },
     "components._build.array.concat.1": {
       "parent": "2",
-      "lineNumber": 20,
+      "lineNumber": 15,
       "path": "<CONFIG_DIR>/shared/extra-components.yaml"
     },
     "pages.0": {
       "parent": "3",
-      "lineNumber": 11,
+      "lineNumber": 7,
       "path": "<CONFIG_DIR>/modules/contacts/pages/contact-list.yaml"
     },
     "pages.0.blocks.0": {

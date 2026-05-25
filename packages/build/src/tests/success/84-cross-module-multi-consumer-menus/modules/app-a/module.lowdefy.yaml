@@ -3,13 +3,6 @@ name: App A
 dependencies:
   - id: nav
 
-exports:
-  menus:
-    - id: default
-  pages:
-    - id: dashboard
-    - id: settings
-
 menus:
   - id: default
     links:

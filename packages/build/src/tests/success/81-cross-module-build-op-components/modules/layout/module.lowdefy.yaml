@@ -1,10 +1,5 @@
 name: Layout
 
-exports:
-  components:
-    - id: page-wrapper
-    - id: extra-comp
-
 components:
   _build.array.concat:
     - - id: page-wrapper

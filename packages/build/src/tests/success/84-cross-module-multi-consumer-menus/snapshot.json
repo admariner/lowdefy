@@ -334,49 +334,49 @@
       "key": "root.menus[0:main].links[1:app-a/nav/dashboard:MenuLink]",
       "~k_parent": "c",
       "~r": "menus.0.links._build.array.concat.0",
-      "~l": 12
+      "~l": 6
     },
     "g": {
       "key": "root.menus[0:main].links[1:app-a/nav/dashboard:MenuLink].properties",
       "~k_parent": "f",
       "~r": "menus.0.links._build.array.concat.0",
-      "~l": 16
+      "~l": 10
     },
     "h": {
       "key": "root.menus[0:main].links[2:app-a/settings:MenuLink]",
       "~k_parent": "c",
       "~r": "3",
-      "~l": 20
+      "~l": 13
     },
     "i": {
       "key": "root.menus[0:main].links[2:app-a/settings:MenuLink].properties",
       "~k_parent": "h",
       "~r": "3",
-      "~l": 24
+      "~l": 17
     },
     "j": {
       "key": "root.menus[0:main].links[3:app-b/nav/dashboard:MenuLink]",
       "~k_parent": "c",
       "~r": "5",
-      "~l": 12
+      "~l": 6
     },
     "k": {
       "key": "root.menus[0:main].links[3:app-b/nav/dashboard:MenuLink].properties",
       "~k_parent": "j",
       "~r": "5",
-      "~l": 16
+      "~l": 10
     },
     "l": {
       "key": "root.menus[0:main].links[4:app-b/reports:MenuLink]",
       "~k_parent": "c",
       "~r": "4",
-      "~l": 20
+      "~l": 13
     },
     "m": {
       "key": "root.menus[0:main].links[4:app-b/reports:MenuLink].properties",
       "~k_parent": "l",
       "~r": "4",
-      "~l": 24
+      "~l": 17
     },
     "n": {
       "key": "root.pages",
@@ -391,7 +391,7 @@
     "p": {
       "key": "root.pages[1:nav/dashboard:Box]",
       "~k_parent": "n",
-      "~l": 20
+      "~l": 14
     },
     "q": {
       "key": "root.pages[2:app-a/dashboard:Box]",
@@ -420,7 +420,7 @@
     "u": {
       "key": "root.pages[3:app-a/settings:Box]",
       "~k_parent": "n",
-      "~l": 29
+      "~l": 22
     },
     "v": {
       "key": "root.pages[4:app-b/dashboard:Box]",
@@ -449,7 +449,7 @@
     "z": {
       "key": "root.pages[5:app-b/reports:Box]",
       "~k_parent": "n",
-      "~l": 29
+      "~l": 22
     },
     "1a": {
       "key": "root.pages[6:404:Result].slots.extra.blocks[0:home:Button].properties",
@@ -5847,17 +5847,17 @@
     },
     "5": {
       "parent": "4",
-      "lineNumber": 17,
+      "lineNumber": 10,
       "path": null,
       "original": {
         "module": "nav",
         "menu": "shared-nav",
-        "~l": 17
+        "~l": 10
       }
     },
     "6": {
       "parent": "4",
-      "lineNumber": 28,
+      "lineNumber": 21,
       "path": "<CONFIG_DIR>/modules/app-b/pages/dashboard.yaml"
     },
     "7": {
@@ -5865,17 +5865,17 @@
     },
     "menus.0.links._build.array.concat.0": {
       "parent": "3",
-      "lineNumber": 17,
+      "lineNumber": 10,
       "path": null,
       "original": {
         "module": "nav",
         "menu": "shared-nav",
-        "~l": 17
+        "~l": 10
       }
     },
     "pages.0": {
       "parent": "3",
-      "lineNumber": 28,
+      "lineNumber": 21,
       "path": "<CONFIG_DIR>/modules/app-a/pages/dashboard.yaml"
     },
     "menus.0.links._build.array.concat.1": {

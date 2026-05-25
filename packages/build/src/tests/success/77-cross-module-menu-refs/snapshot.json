@@ -5745,12 +5745,12 @@
     },
     "4": {
       "parent": "3",
-      "lineNumber": 13,
+      "lineNumber": 7,
       "path": "<CONFIG_DIR>/modules/companies/menus.yaml"
     },
     "5": {
       "parent": "3",
-      "lineNumber": 16,
+      "lineNumber": 10,
       "path": "<CONFIG_DIR>/modules/companies/pages/company-list.yaml"
     },
     "6": {
@@ -5758,17 +5758,17 @@
     },
     "menus.0": {
       "parent": "2",
-      "lineNumber": 11,
+      "lineNumber": 4,
       "path": "<CONFIG_DIR>/modules/contacts/menus.yaml"
     },
     "pages.0": {
       "parent": "2",
-      "lineNumber": 14,
+      "lineNumber": 7,
       "path": "<CONFIG_DIR>/modules/contacts/pages/contact-list.yaml"
     },
     "pages.1": {
       "parent": "2",
-      "lineNumber": 15,
+      "lineNumber": 8,
       "path": "<CONFIG_DIR>/modules/contacts/pages/contact-detail.yaml"
     },
     "menus.0.links.1": {

@@ -5765,12 +5765,12 @@
     },
     "4": {
       "parent": "pages.0.blocks.0.properties.stamp",
-      "lineNumber": 29,
+      "lineNumber": 23,
       "path": "<CONFIG_DIR>/modules/events/defaults/change_stamp.yaml"
     },
     "5": {
       "parent": "pages.0.blocks.1.properties.user_stamp",
-      "lineNumber": 29,
+      "lineNumber": 23,
       "path": "<CONFIG_DIR>/modules/events/defaults/change_stamp.yaml"
     },
     "pages.0.blocks.0.properties.stamp": {
@@ -5839,17 +5839,17 @@
     },
     "pages.0.blocks.2.properties.all_types._build.object.assign.0": {
       "parent": "pages.0.blocks.2.properties.all_types",
-      "lineNumber": 34,
+      "lineNumber": 28,
       "path": "<CONFIG_DIR>/modules/events/enums/event_types.yaml"
     },
     "pages.0.blocks.3.properties.login_icon._build.object.assign.0": {
       "parent": "pages.0.blocks.3.properties.login_icon",
-      "lineNumber": 34,
+      "lineNumber": 28,
       "path": "<CONFIG_DIR>/modules/events/enums/event_types.yaml"
     },
     "pages.0.blocks.4.properties.missing._build.object.assign.0": {
       "parent": "pages.0.blocks.4.properties.missing",
-      "lineNumber": 34,
+      "lineNumber": 28,
       "path": "<CONFIG_DIR>/modules/events/enums/event_types.yaml"
     }
   },

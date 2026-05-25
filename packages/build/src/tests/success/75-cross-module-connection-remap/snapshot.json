@@ -5681,7 +5681,7 @@
     },
     "4": {
       "parent": "3",
-      "lineNumber": 11,
+      "lineNumber": 7,
       "path": "<CONFIG_DIR>/modules/companies/pages/company-detail.yaml"
     },
     "5": {
@@ -5689,12 +5689,12 @@
     },
     "connections.0": {
       "parent": "2",
-      "lineNumber": 10,
+      "lineNumber": 4,
       "path": "<CONFIG_DIR>/modules/contacts/connections/contacts-db.yaml"
     },
     "pages.0": {
       "parent": "2",
-      "lineNumber": 13,
+      "lineNumber": 7,
       "path": "<CONFIG_DIR>/modules/contacts/pages/contact-list.yaml"
     }
   },

@@ -1,12 +1,6 @@
 name: Orders
 description: Order management
 
-exports:
-  pages:
-    - id: order-list
-  components:
-    - id: order-summary
-
 dependencies:
   - id: core
     description: Core shared components

@@ -319,9 +319,6 @@ components:
       type: Box
       properties:
         title: Activities
-exports:
-  components:
-    - id: tile_activities
 `,
     },
     {
@@ -373,9 +370,6 @@ modules:
 pages:
   - id: view
     type: Box
-exports:
-  pages:
-    - id: view
 `,
     },
     {
@@ -461,9 +455,6 @@ components:
   - id: my-config-block
     component:
       foo: bar
-exports:
-  components:
-    - id: my-config-block
 `,
     },
     {
@@ -621,9 +612,6 @@ modules:
     {
       path: '/data/module.lowdefy.yaml',
       content: `
-exports:
-  connections:
-    - id: mongo_main
 pages: []
 `,
     },
