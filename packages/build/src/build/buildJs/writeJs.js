@@ -21,14 +21,14 @@ async function writeJs({ context }) {
     'plugins/operators/clientJsMap.js',
     generateJsFile({
       map: context.jsMap.client,
-      functionPrototype: `{ actions, args, event, input, location, lowdefyGlobal, request, state, urlQuery, user }`,
+      functionPrototype: `{ actions, args, event, input, location, lowdefyApp, lowdefyGlobal, request, state, urlQuery, user }`,
     })
   );
   await context.writeBuildArtifact(
     'plugins/operators/serverJsMap.js',
     generateJsFile({
       map: context.jsMap.server,
-      functionPrototype: `{ args, item, payload, secrets, state, step, user }`,
+      functionPrototype: `{ args, item, lowdefyApp, payload, secret, state, step, user }`,
     })
   );
 }

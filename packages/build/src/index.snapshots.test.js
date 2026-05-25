@@ -26,7 +26,7 @@ const fixturesDir = path.join(__dirname, 'tests/success');
 // Set NEXTAUTH_SECRET for auth-related tests
 process.env.NEXTAUTH_SECRET = 'test-secret-for-snapshot-tests';
 
-// Mock buildApp to return constant git_sha
+// Mock buildApp to return constant gitSha
 jest.unstable_mockModule('./build/buildApp.js', () => ({
   default: ({ components }) => {
     if (!components.app) {
@@ -41,7 +41,15 @@ jest.unstable_mockModule('./build/buildApp.js', () => ({
     if (!components.app.html.appendHead) {
       components.app.html.appendHead = '';
     }
-    components.app.git_sha = 'test-git-sha-for-snapshots';
+    components.appMeta = {
+      slug: components.slug ?? null,
+      name: components.name ?? null,
+      version: components.version ?? null,
+      description: components.description ?? null,
+      license: components.license ?? null,
+      lowdefyVersion: components.lowdefy ?? null,
+      gitSha: 'test-git-sha-for-snapshots',
+    };
     return components;
   },
 }));

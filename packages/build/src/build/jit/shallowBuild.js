@@ -44,6 +44,7 @@ import copyPublicFolder from '../copyPublicFolder.js';
 import testSchema from '../testSchema.js';
 import validateConfig from '../validateConfig.js';
 import writeApp from '../writeApp.js';
+import writeAppMeta from '../writeAppMeta.js';
 import writeAuth from '../writeAuth.js';
 import writeConfig from '../writeConfig.js';
 import writeConnections from '../writeConnections.js';
@@ -153,6 +154,7 @@ async function shallowBuild(options) {
     await cleanBuildDirectory({ context });
     await writeSourcelessPages({ sourcelessPageArtifacts, context });
     await writeApp({ components, context });
+    await writeAppMeta({ components, context });
     await writeAuth({ components, context });
     await writeConnections({ components, context });
     await writeApi({ components, context });

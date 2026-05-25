@@ -49,6 +49,7 @@ import updateServerPackageJson from './build/full/updateServerPackageJson.js';
 import validateConfig from './build/validateConfig.js';
 import writeAgents from './build/writeAgents.js';
 import writeApp from './build/writeApp.js';
+import writeAppMeta from './build/writeAppMeta.js';
 import writeAuth from './build/writeAuth.js';
 import writeConfig from './build/writeConfig.js';
 import writeConnections from './build/writeConnections.js';
@@ -138,6 +139,7 @@ async function build(options) {
     // Write steps - only if no errors
     await cleanBuildDirectory({ context });
     await writeApp({ components, context });
+    await writeAppMeta({ components, context });
     await writeAuth({ components, context });
     await writeConnections({ components, context });
     await writeAgents({ components, context });

@@ -32,6 +32,7 @@ function js(operatorContext) {
       event: (p) => operators._event({ ...operatorContext, params: p }),
       input: (p) => operators._input({ ...operatorContext, params: p }),
       location: (p) => operators._location({ ...operatorContext, params: p }),
+      lowdefyApp: (p) => operators._app({ ...operatorContext, params: p }),
       lowdefyGlobal: (p) => operators._global({ ...operatorContext, params: p }),
       request: (p) => operators._request({ ...operatorContext, params: p }),
       state: (p) => operators._state({ ...operatorContext, params: p }),

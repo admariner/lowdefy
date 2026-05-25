@@ -14,7 +14,6 @@
   limitations under the License.
 */
 
-import appJson from '../../lib/build/app.js';
 import packageJson from '../../package.json';
 import apiWrapper from '../../lib/server/apiWrapper.js';
 
@@ -31,7 +30,7 @@ async function handler({ context, req, res }) {
   return res.status(200).json({
     offline: false,
     data: {
-      git_sha: appJson.git_sha,
+      gitSha: context.appMeta.gitSha,
       host,
       machine,
       timestamp,

@@ -43,12 +43,20 @@ const map = {
   c8: ({ user }) => {
     return user('u');
   },
+  c9: ({ lowdefyGlobal }) => {
+    return lowdefyGlobal('g');
+  },
+  c10: ({ lowdefyApp }) => {
+    return lowdefyApp('slug');
+  },
 };
 
 test('js default', async () => {
   const lowdefyOperators = {
     _actions: jest.fn(),
+    _app: jest.fn(),
     _event: jest.fn(),
+    _global: jest.fn(),
     _input: jest.fn(),
     _location: jest.fn(),
     _state: jest.fn(),
@@ -69,6 +77,8 @@ test('js default', async () => {
   expect(lowdefyOperators._request.mock.calls[0][0]['params']).toEqual('r');
   expect(lowdefyOperators._url_query.mock.calls[0][0]['params']).toEqual('uq');
   expect(lowdefyOperators._user.mock.calls[0][0]['params']).toEqual('u');
+  expect(lowdefyOperators._global.mock.calls[0][0]['params']).toEqual('g');
+  expect(lowdefyOperators._app.mock.calls[0][0]['params']).toEqual('slug');
 });
 
 test('js throw when invalid javascript function', async () => {
