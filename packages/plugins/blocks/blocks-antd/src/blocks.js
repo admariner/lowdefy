@@ -24,6 +24,7 @@ export { default as Button } from './blocks/Button/Button.js';
 export { default as ButtonSelector } from './blocks/ButtonSelector/ButtonSelector.js';
 export { default as Calendar } from './blocks/Calendar/Calendar.js';
 export { default as Card } from './blocks/Card/Card.js';
+export { default as CardList } from './blocks/CardList/CardList.js';
 export { default as Carousel } from './blocks/Carousel/Carousel.js';
 export { default as CheckboxSelector } from './blocks/CheckboxSelector/CheckboxSelector.js';
 export { default as CheckboxSwitch } from './blocks/CheckboxSwitch/CheckboxSwitch.js';

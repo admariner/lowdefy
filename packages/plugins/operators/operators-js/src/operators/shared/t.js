@@ -14,19 +14,26 @@
   limitations under the License.
 */
 
-import { callRequest } from '@lowdefy/api';
+import { translate, type } from '@lowdefy/helpers';
 
-import apiWrapper from '../../../../lib/server/apiWrapper.js';
-
-async function handler({ context, req, res }) {
-  if (req.method !== 'POST') {
-    throw new Error('Only POST requests are supported.');
+function _t({ params, i18n }) {
+  if (type.isString(params)) {
+    return translate({ key: params, i18n });
   }
-  const { pageId, requestId } = req.query;
-  const { actionId, blockId, payload } = req.body;
-  context.logger.info({ event: 'call_request', pageId, requestId, blockId, actionId });
-  const response = await callRequest(context, { blockId, pageId, payload, requestId });
-  res.status(200).json(response);
+  if (type.isObject(params)) {
+    return translate({
+      key: params.key,
+      values: params.values,
+      locale: params.locale,
+      i18n,
+    });
+  }
+  throw new Error(
+    '_t takes a string key or an object { key, values, locale } — received ' +
+      JSON.stringify(params)
+  );
 }
 
-export default apiWrapper(handler);
+_t.dynamic = true;
+
+export default _t;
