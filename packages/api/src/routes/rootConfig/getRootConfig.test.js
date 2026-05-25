@@ -24,7 +24,10 @@ jest.unstable_mockModule('./menus/getMenus.js', () => ({
 
 const mockReadConfigFile = jest.fn();
 
-const context = testContext({ readConfigFile: mockReadConfigFile });
+const context = testContext({
+  appMeta: { slug: 'my-app', name: 'My App' },
+  readConfigFile: mockReadConfigFile,
+});
 
 beforeEach(() => {
   mockReadConfigFile.mockReset();
@@ -67,6 +70,7 @@ test('getRootConfig', async () => {
       pageId: 'page',
     },
     i18n: {},
+    lowdefyApp: { slug: 'my-app', name: 'My App' },
     lowdefyGlobal: {
       global: true,
     },
