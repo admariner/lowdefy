@@ -37,7 +37,7 @@ async function controlReject(context, routineContext, { control }) {
     state: routineContext.state,
     steps: routineContext.steps,
   });
-  const error = new UserError(message, { cause });
+  const error = new UserError(message, { cause, isReject: true });
 
   context.logger.warn({
     event: 'warn_control_reject',

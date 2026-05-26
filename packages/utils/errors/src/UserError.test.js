@@ -33,6 +33,16 @@ test('UserError without options sets fields to undefined', () => {
   expect(error.cause).toBeUndefined();
 });
 
+test('UserError isReject defaults to false', () => {
+  const error = new UserError('msg');
+  expect(error.isReject).toBe(false);
+});
+
+test('UserError sets isReject from options', () => {
+  const error = new UserError('msg', { isReject: true });
+  expect(error.isReject).toBe(true);
+});
+
 test('UserError sets blockId, metaData, pageId from options', () => {
   const error = new UserError('msg', {
     blockId: 'block_a',
@@ -59,6 +69,7 @@ test('UserError with all options', () => {
   const inner = new Error('inner');
   const error = new UserError('outer', {
     blockId: 'block_a',
+    isReject: true,
     metaData: { x: 1 },
     pageId: 'page_a',
     cause: inner,
@@ -67,6 +78,7 @@ test('UserError with all options', () => {
   expect(error.isLowdefyError).toBe(true);
   expect(error.message).toBe('outer');
   expect(error.blockId).toBe('block_a');
+  expect(error.isReject).toBe(true);
   expect(error.metaData).toEqual({ x: 1 });
   expect(error.pageId).toBe('page_a');
   expect(error.cause).toBe(inner);
