@@ -50,12 +50,12 @@ _ref:
             - `endpointId: string`: __Required__ - The id of the target endpoint. Module endpoints use a `<module>/<endpoint>` id — `callApi` treats this as an opaque string and does not parse it.
             - `payload: object`: Optional payload passed to the target endpoint's routine as `_payload`. Already-evaluated by the caller.
 
-            `callApi` returns the value returned by the target's `:return` step, or `null` if the target routine terminates without an explicit `:return`. The semantics match the routine [`:call_api`](/lowdefy-api) step:
+            `callApi` returns the value returned by the target's `:return` step, or `null` if the target routine terminates without an explicit `:return`. The semantics match the routine [`CallApi`](/lowdefy-api#calling-other-endpoints) step:
 
             - The caller's user identity is used to authorize the target endpoint — no auth bypass.
             - The target runs in an isolated routine context: fresh `_payload`, fresh `_state`, fresh `_step` namespace.
             - The target inherits the caller's parser closure — `_user`, `_secret`, `_env` resolve to the same values as the caller.
-            - [Internal API endpoints](/lowdefy-api) are reachable.
+            - [Internal API endpoints](/lowdefy-api#internal-api-endpoints) are reachable.
             - Endpoint calls share a per-chain depth cap of 10 with routine `:call_api` steps. Exceeding the cap throws an error.
 
             ###### Errors
