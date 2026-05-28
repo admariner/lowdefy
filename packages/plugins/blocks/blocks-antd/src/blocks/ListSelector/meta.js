@@ -25,6 +25,7 @@ export default {
     selected: 'The selected card.',
     search: 'The search bar wrapper above the list.',
     noResults: 'The "no results" placeholder shown when the search filter matches zero items.',
+    noData: 'The "no data" placeholder shown when the data array is empty.',
   },
   events: {
     onChange: {
@@ -110,6 +111,11 @@ export default {
         default: 400,
         description:
           'Pixels of off-screen rows to render above and below the viewport. Increase for smoother fast-scroll, decrease to reduce DOM cost.',
+      },
+      noData: {
+        type: 'string',
+        description:
+          'Text shown in place of the list when the `data` array is empty. Defaults to the `blocks.listSelector.noData` message ("No data").',
       },
       search: {
         type: 'object',

@@ -66,6 +66,16 @@
         html: |
           <span>{{ item }}</span>
 
+- title: Empty (no data)
+  blocks:
+    - id: empty_list
+      type: ListSelector
+      properties:
+        data: []
+        noData: No people to show yet.
+        html: |
+          <span>{{ item.name }}</span>
+
 - title: Object Data
   blocks:
     - id: people_card_list

@@ -72,6 +72,7 @@ const builtinMessages = {
   // Block built-ins — surfaced directly by block components, overridable per-locale.
   'blocks.listSelector.search.placeholder': 'Search…',
   'blocks.listSelector.search.noResults': 'No results',
+  'blocks.listSelector.noData': 'No data',
 
   // antd X built-ins — apps can override per-locale via config.i18n.messages.
   // For en_US and zh_CN, XProvider's pack already covers these natively.

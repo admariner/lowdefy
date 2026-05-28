@@ -186,6 +186,7 @@ const ListSelector = ({
   const noResultsText = searchEnabled
     ? search.noResultsText ?? methods.translate('blocks.listSelector.search.noResults')
     : '';
+  const noDataText = properties.noData ?? methods.translate('blocks.listSelector.noData');
 
   const [rawQuery, setRawQuery] = useState('');
   const [appliedQuery, setAppliedQuery] = useState('');
@@ -310,6 +311,12 @@ const ListSelector = ({
     paddingBottom: gap,
   };
 
+  const placeholderStyle = {
+    padding: token.paddingLG,
+    textAlign: 'center',
+    color: token.colorTextSecondary,
+  };
+
   const renderSearch = () =>
     searchEnabled ? (
       <div style={headerStyle} className={classNames.search}>
@@ -343,6 +350,16 @@ const ListSelector = ({
     );
   }
 
+  if (data.length === 0) {
+    return (
+      <div id={blockId} className={classNames.element} style={containerStyle}>
+        <div className={classNames.noData} style={placeholderStyle}>
+          {noDataText}
+        </div>
+      </div>
+    );
+  }
+
   const virtuosoData = filterActive ? filteredEntries : data;
   const virtuosoStyle = useWindowScroll ? undefined : { flex: '1 1 auto', minHeight: 0 };
 
@@ -350,14 +367,7 @@ const ListSelector = ({
     <div id={blockId} className={classNames.element} style={containerStyle}>
       {renderSearch()}
       {filterActive && filteredEntries.length === 0 ? (
-        <div
-          className={classNames.noResults}
-          style={{
-            padding: token.paddingLG,
-            textAlign: 'center',
-            color: token.colorTextSecondary,
-          }}
-        >
+        <div className={classNames.noResults} style={placeholderStyle}>
           {noResultsText}
         </div>
       ) : (
