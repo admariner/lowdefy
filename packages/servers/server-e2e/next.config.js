@@ -1,5 +1,6 @@
 const lowdefyConfig = require('./build/config.json');
 const blockPackages = require('./build/blockPackages.json');
+const serverExternalPackages = require('./build/serverExternalPackages.json');
 
 const nextConfig = {
   basePath: lowdefyConfig.basePath,
@@ -10,6 +11,7 @@ const nextConfig = {
     '@ant-design/x-markdown',
     ...blockPackages,
   ],
+  serverExternalPackages,
   turbopack: {},
   poweredByHeader: false,
   output: process.env.LOWDEFY_BUILD_OUTPUT_STANDALONE === '1' ? 'standalone' : undefined,

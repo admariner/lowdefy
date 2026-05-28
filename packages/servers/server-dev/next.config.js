@@ -1,5 +1,6 @@
 const lowdefyConfig = require('./build/config.json');
 const blockPackages = require('./build/blockPackages.json');
+const serverExternalPackages = require('./build/serverExternalPackages.json');
 
 // Transpile @lowdefy/client plus all block plugin packages that may
 // contain CSS imports (e.g., AG Grid themes, loaders, markdown).
@@ -16,6 +17,7 @@ const nextConfig = {
   // reactStrictMode: true,
   turbopack: {},
   transpilePackages,
+  serverExternalPackages,
   compress: false,
   poweredByHeader: false,
 };
