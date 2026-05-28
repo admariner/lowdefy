@@ -19,14 +19,14 @@ import { Card, Input, Skeleton, theme } from 'antd';
 import { Virtuoso } from 'react-virtuoso';
 import { renderHtml, withBlockDefaults } from '@lowdefy/block-utils';
 import { nunjucksFunction } from '@lowdefy/nunjucks';
-import { get, type } from '@lowdefy/helpers';
+import { get, serializer, type } from '@lowdefy/helpers';
 
 import withTheme from '../withTheme.js';
 
 const FIELD_SEPARATOR = '';
 const SKELETON_COUNT = 4;
 
-const CardListRow = React.memo(function CardListRow({
+const ListSelectorRow = React.memo(function ListSelectorRow({
   blockId,
   index,
   item,
@@ -40,6 +40,10 @@ const CardListRow = React.memo(function CardListRow({
   cardStyle,
   bodyStyle,
   clickable,
+  selectable,
+  selectedKey,
+  selectedClassName,
+  selectedStyle,
   onRowClick,
   methodsRef,
 }) {
@@ -47,7 +51,14 @@ const CardListRow = React.memo(function CardListRow({
     () => (template ? template({ item, index }) : null),
     [template, item, index]
   );
+  const selected = useMemo(
+    () =>
+      selectedKey != null && serializer.serializeToString(item, { stable: true }) === selectedKey,
+    [item, selectedKey]
+  );
   const handleClick = useCallback(() => onRowClick(index, item), [onRowClick, index, item]);
+  const className =
+    [cardClassName, selected ? selectedClassName : null].filter(Boolean).join(' ') || undefined;
   return (
     <div style={{ paddingBottom: gap }}>
       <Card
@@ -56,9 +67,15 @@ const CardListRow = React.memo(function CardListRow({
         hoverable={hoverable}
         size={size}
         onClick={clickable ? handleClick : undefined}
-        className={cardClassName}
+        aria-selected={selectable ? selected : undefined}
+        className={className}
         classNames={{ body: bodyClassName }}
-        style={{ outline: 'none', cursor: clickable ? 'pointer' : undefined, ...cardStyle }}
+        style={{
+          outline: 'none',
+          cursor: clickable ? 'pointer' : undefined,
+          ...cardStyle,
+          ...(selected ? selectedStyle : null),
+        }}
         styles={{ body: bodyStyle }}
       >
         {html != null && renderHtml({ html, methods: methodsRef.current })}
@@ -87,7 +104,7 @@ function useSearchBlobs(data, fields, caseSensitive) {
   }, [data, fields, caseSensitive]);
 }
 
-const CardListBlock = ({
+const ListSelector = ({
   blockId,
   classNames = {},
   events,
@@ -95,6 +112,7 @@ const CardListBlock = ({
   methods,
   properties,
   styles = {},
+  value,
 }) => {
   const data = properties.data ?? [];
   const template = useMemo(
@@ -102,15 +120,53 @@ const CardListBlock = ({
     [properties.html]
   );
 
+  const selectable = properties.selectable !== false;
+  const allowDeselect = properties.allowDeselect !== false;
+
+  // Selection lives in the block value (app state), so a single serialized key identifies the
+  // selected row. When selection is off the block stores no value and renders like a plain list.
+  const selectedKey = useMemo(
+    () =>
+      !selectable || type.isNone(value)
+        ? null
+        : serializer.serializeToString(value, { stable: true }),
+    [selectable, value]
+  );
+
   const methodsRef = useRef(methods);
   methodsRef.current = methods;
+  const selectableRef = useRef(selectable);
+  selectableRef.current = selectable;
+  const allowDeselectRef = useRef(allowDeselect);
+  allowDeselectRef.current = allowDeselect;
+  const selectedKeyRef = useRef(selectedKey);
+  selectedKeyRef.current = selectedKey;
 
-  const clickable = Boolean(events.onClick);
+  const clickable = selectable || Boolean(events.onClick);
   const onRowClick = useCallback((index, item) => {
+    if (selectableRef.current) {
+      const itemKey = serializer.serializeToString(item, { stable: true });
+      const deselect = allowDeselectRef.current && itemKey === selectedKeyRef.current;
+      const newValue = deselect ? null : item;
+      methodsRef.current.setValue(newValue);
+      methodsRef.current.triggerEvent({
+        name: 'onChange',
+        event: { value: newValue, index, item },
+      });
+    }
     methodsRef.current.triggerEvent({ name: 'onClick', event: { index, item } });
   }, []);
 
   const { token } = theme.useToken();
+
+  const selectedStyle = useMemo(
+    () => ({
+      borderColor: token.colorPrimary,
+      boxShadow: `0 0 0 1px ${token.colorPrimary}`,
+      ...styles.selected,
+    }),
+    [token.colorPrimary, styles.selected]
+  );
 
   const gap = properties.gap ?? 8;
   const useWindowScroll = type.isNone(properties.height);
@@ -125,10 +181,10 @@ const CardListBlock = ({
   const searchSticky = searchEnabled ? search.sticky !== false : false;
   const searchAllowClear = searchEnabled ? search.allowClear !== false : true;
   const searchPlaceholder = searchEnabled
-    ? search.placeholder ?? methods.translate('blocks.cardList.search.placeholder')
+    ? search.placeholder ?? methods.translate('blocks.listSelector.search.placeholder')
     : '';
   const noResultsText = searchEnabled
-    ? search.noResultsText ?? methods.translate('blocks.cardList.search.noResults')
+    ? search.noResultsText ?? methods.translate('blocks.listSelector.search.noResults')
     : '';
 
   const [rawQuery, setRawQuery] = useState('');
@@ -189,7 +245,7 @@ const CardListBlock = ({
       const index = isEntry ? payload.originalIndex : _virtualIndex;
       const item = isEntry ? payload.item : payload;
       return (
-        <CardListRow
+        <ListSelectorRow
           blockId={blockId}
           index={index}
           item={item}
@@ -203,6 +259,10 @@ const CardListBlock = ({
           cardStyle={styles.card}
           bodyStyle={styles.body}
           clickable={clickable}
+          selectable={selectable}
+          selectedKey={selectedKey}
+          selectedClassName={classNames.selected}
+          selectedStyle={selectedStyle}
           onRowClick={onRowClick}
           methodsRef={methodsRef}
         />
@@ -218,9 +278,13 @@ const CardListBlock = ({
       gap,
       classNames.card,
       classNames.body,
+      classNames.selected,
       styles.card,
       styles.body,
       clickable,
+      selectable,
+      selectedKey,
+      selectedStyle,
       onRowClick,
     ]
   );
@@ -311,4 +375,4 @@ const CardListBlock = ({
   );
 };
 
-export default withTheme('Card', withBlockDefaults(CardListBlock));
+export default withTheme('Card', withBlockDefaults(ListSelector));

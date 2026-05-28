@@ -15,24 +15,26 @@
 _ref:
   path: templates/blocks/gallery.yaml.njk
   vars:
-    pageId: CardList
-    pageTitle: CardList
+    pageId: ListSelector
+    pageTitle: ListSelector
     section: List Blocks
-    filePath: blocks/list/CardList.yaml
-    block_type: CardList
+    filePath: blocks/list/ListSelector.yaml
+    block_type: ListSelector
     antd_component: Card
     antd_url: card
-    github_path: packages/plugins/blocks/blocks-antd/src/blocks/CardList
-    schema: ../plugins/blocks/blocks-antd/src/blocks/CardList/meta.js
-    gallery: ../plugins/blocks/blocks-antd/src/blocks/CardList/gallery.yaml
+    github_path: packages/plugins/blocks/blocks-antd/src/blocks/ListSelector
+    schema: ../plugins/blocks/blocks-antd/src/blocks/ListSelector/meta.js
+    gallery: ../plugins/blocks/blocks-antd/src/blocks/ListSelector/gallery.yaml
     description: >
-      Data-driven vertical list of headerless cards. Each card body is rendered
-      from a Nunjucks template against its row item. Virtualized via
-      `react-virtuoso` so thousands of variable-height cards render smoothly,
-      with a memoized row component to skip unnecessary re-renders. Optional
-      client-side search bar filters rows by text across any field paths, a
-      built-in loading skeleton stands in while data loads, and an `onClick`
-      event reports `{ index, item }` for the row that was clicked.
+      Data-driven vertical list of headerless cards that doubles as a single-select
+      input. Each card body is rendered from a Nunjucks template against its row
+      item. Clicking a card sets the block value to that data item and highlights
+      it; set `selectable: false` to turn selection off and render a read-only card
+      list. Virtualized via `react-virtuoso` so thousands of variable-height cards
+      render smoothly, with a memoized row component to skip unnecessary re-renders.
+      Optional client-side search bar filters rows by text across any field paths,
+      a built-in loading skeleton stands in while data loads, and `onChange` /
+      `onClick` events report `{ value, index, item }` for the row that was clicked.
     onInit:
       - id: init_cl_data
         type: SetState
