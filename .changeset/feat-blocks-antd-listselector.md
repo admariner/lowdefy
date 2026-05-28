@@ -1,5 +1,6 @@
 ---
 '@lowdefy/blocks-antd': minor
+'@lowdefy/helpers': patch
 ---
 
 feat(blocks-antd): Add `ListSelector` input block.
@@ -11,3 +12,5 @@ Backed by `react-virtuoso` so thousands of variable-height cards render smoothly
 Properties: `data`, `html` (Nunjucks), `selectable`, `allowDeselect`, `bordered`, `hoverable`, `size`, `gap`, `height`, `overscan`, `theme`, and an optional `search` object (`placeholder`, `fields`, `caseSensitive`, `debounce`, `sticky`, `allowClear`, `minLength`, `noResultsText`). Search defaults to matching every field path via `JSON.stringify`; supply `fields: ['user.name', 'email']` to restrict. Filtering preserves the original `index` in the template context and event payloads. Built-in loading skeleton renders when `loading` is truthy. A text-only no-results placeholder appears when the filter matches zero items.
 
 Events: `onChange` (`{ value, index, item }`, fires on selection change when `selectable` is true), `onClick` (`{ index, item }`), and `onSearch` (`{ value, resultCount }`, fires on debounced query change when `search` is set).
+
+`@lowdefy/helpers`: renames the built-in i18n message keys `blocks.cardList.search.placeholder` / `blocks.cardList.search.noResults` to `blocks.listSelector.search.*` to match the block.
