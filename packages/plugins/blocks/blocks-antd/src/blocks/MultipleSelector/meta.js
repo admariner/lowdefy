@@ -159,6 +159,14 @@ export default {
                     displayType: 'yaml',
                   },
                 },
+                color: {
+                  type: 'string',
+                  description:
+                    'Color applied when this option is selected: drives the tag/pill color in the input and tints the option in the dropdown. An explicit `tag.color` takes precedence.',
+                  docs: {
+                    displayType: 'color',
+                  },
+                },
                 tag: {
                   type: 'object',
                   properties: {
@@ -230,7 +238,12 @@ export default {
         type: 'string',
         description: 'Multiple selector label title - supports html.',
       },
-      variant,
+      variant: {
+        type: 'string',
+        enum: ['solid', 'outlined', 'filled', 'borderless'],
+        description:
+          'Tag/input variant. `solid` renders filled colored tags; `outlined` renders outlined colored tags. `filled`/`borderless` are the antd input styles.',
+      },
       renderTags: {
         type: 'boolean',
         description:

@@ -38,6 +38,9 @@ const CheckboxSelector = ({
   methods,
 }) => {
   const uniqueValueOptions = getUniqueValues(properties.options || []);
+  const selectedIndexes = new Set(
+    type.isNone(value) ? [] : getValueIndex(value, uniqueValueOptions, true)
+  );
   const checkboxGroup = (
     <Checkbox.Group
       id={`${blockId}_input`}
@@ -63,25 +66,36 @@ const CheckboxSelector = ({
         wrap={type.isNone(properties.wrap) ? true : properties.wrap}
         align={type.isNone(properties.align) ? 'start' : properties.align}
       >
-        {uniqueValueOptions.map((opt, i) =>
-          type.isPrimitive(opt) ? (
-            <Checkbox id={`${blockId}_${i}`} key={i} value={`${i}`}>
-              {renderHtml({ html: `${opt}`, methods })}
-            </Checkbox>
-          ) : (
+        {uniqueValueOptions.map((opt, i) => {
+          if (type.isPrimitive(opt)) {
+            return (
+              <Checkbox id={`${blockId}_${i}`} key={i} value={`${i}`}>
+                {renderHtml({ html: `${opt}`, methods })}
+              </Checkbox>
+            );
+          }
+          const isSelected = selectedIndexes.has(`${i}`);
+          const checkbox = (
             <Checkbox
               id={`${blockId}_${i}`}
               key={i}
               value={`${i}`}
               disabled={opt.disabled}
-              style={opt.style}
+              style={{ ...opt.style, ...(isSelected && opt.color ? { color: opt.color } : {}) }}
             >
               {type.isNone(opt.label)
                 ? renderHtml({ html: `${opt.value}`, methods })
                 : renderHtml({ html: opt.label, methods })}
             </Checkbox>
-          )
-        )}
+          );
+          if (type.isNone(opt.color)) return checkbox;
+          // Per-option color: token override colors this checkbox's checked tick.
+          return (
+            <ConfigProvider key={i} theme={{ token: { colorPrimary: opt.color } }}>
+              {checkbox}
+            </ConfigProvider>
+          );
+        })}
       </Space>
     </Checkbox.Group>
   );

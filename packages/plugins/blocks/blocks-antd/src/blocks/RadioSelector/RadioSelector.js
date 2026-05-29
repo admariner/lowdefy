@@ -40,6 +40,7 @@ const RadioSelector = ({
   methods,
 }) => {
   const uniqueValueOptions = getUniqueValues(properties.options || []);
+  const selectedIndex = getValueIndex(value, uniqueValueOptions);
   const radioGroup = (
     <RadioGroup
       id={`${blockId}_input`}
@@ -60,25 +61,36 @@ const RadioSelector = ({
         wrap={type.isNone(properties.wrap) ? true : properties.wrap}
         align={type.isNone(properties.align) ? 'start' : properties.align}
       >
-        {uniqueValueOptions.map((opt, i) =>
-          type.isPrimitive(opt) ? (
-            <Radio id={`${blockId}_${opt}`} key={i} value={`${i}`}>
-              {renderHtml({ html: `${opt}`, methods })}
-            </Radio>
-          ) : (
+        {uniqueValueOptions.map((opt, i) => {
+          if (type.isPrimitive(opt)) {
+            return (
+              <Radio id={`${blockId}_${opt}`} key={i} value={`${i}`}>
+                {renderHtml({ html: `${opt}`, methods })}
+              </Radio>
+            );
+          }
+          const isSelected = `${i}` === selectedIndex;
+          const radio = (
             <Radio
               id={`${blockId}_${i}`}
               key={i}
               value={`${i}`}
               disabled={opt.disabled}
-              style={opt.style}
+              style={{ ...opt.style, ...(isSelected && opt.color ? { color: opt.color } : {}) }}
             >
               {type.isNone(opt.label)
                 ? renderHtml({ html: `${opt.value}`, methods })
                 : renderHtml({ html: opt.label, methods })}
             </Radio>
-          )
-        )}
+          );
+          if (type.isNone(opt.color)) return radio;
+          // Per-option color: token override colors this radio's selected dot.
+          return (
+            <ConfigProvider key={i} theme={{ token: { colorPrimary: opt.color } }}>
+              {radio}
+            </ConfigProvider>
+          );
+        })}
       </Space>
     </RadioGroup>
   );
