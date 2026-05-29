@@ -4121,6 +4121,10 @@
                     "type": "string",
                     "description": "Area key of the tab."
                   },
+                  "eventName": {
+                    "type": "string",
+                    "description": "Block-level event name to trigger when this tab becomes active, in addition to onChange. Declare an event with this name under `events:`. The event receives `{ key }` of the now-active tab."
+                  },
                   "disabled": {
                     "type": "boolean",
                     "default": false,
@@ -4521,13 +4525,13 @@
                     }
                   ],
                   "description": {
-                    "description": "Trigger action on tab change.",
+                    "description": "Trigger action on any tab change.",
                     "event": {
                       "activeKey": "The key of the active tab."
                     }
                   }
                 },
-                "onTabScroll": {
+                "onTabSelect": {
                   "oneOf": [
                     {
                       "type": "array"
@@ -4543,31 +4547,9 @@
                     }
                   ],
                   "description": {
-                    "description": "Trigger action on tab scroll.",
+                    "description": "Documentation reference — not a fixed event name. When a tab becomes active, the `eventName` string declared on that `tabs[]` entry is triggered (in addition to onChange). Declare your named events under `events:` (e.g. `onProfileTab`, `onBillingTab`).",
                     "event": {
-                      "direction": "The scroll direction."
-                    }
-                  }
-                },
-                "onTabClick": {
-                  "oneOf": [
-                    {
-                      "type": "array"
-                    },
-                    {
-                      "type": "object",
-                      "patternProperties": {
-                        "^_": {}
-                      },
-                      "additionalProperties": false,
-                      "minProperties": 1,
-                      "maxProperties": 1
-                    }
-                  ],
-                  "description": {
-                    "description": "Trigger action on tab click.",
-                    "event": {
-                      "key": "The key of the clicked tab."
+                      "key": "The key of the now-active tab."
                     }
                   }
                 }
@@ -8225,6 +8207,13 @@
                         "docs": {
                           "displayType": "yaml"
                         }
+                      },
+                      "color": {
+                        "type": "string",
+                        "description": "Color applied to the selected value shown in the input, and used to tint this option in the dropdown.",
+                        "docs": {
+                          "displayType": "color"
+                        }
                       }
                     }
                   }
@@ -8284,11 +8273,12 @@
             "variant": {
               "type": "string",
               "enum": [
+                "solid",
                 "outlined",
                 "filled",
                 "borderless"
               ],
-              "description": "Input visual variant. When set, takes precedence over bordered."
+              "description": "Input variant. `solid` fills the whole input with the selected option color; `outlined` colors its border/text. `filled`/`borderless` are the antd input styles."
             },
             "theme": {
               "type": "object",
