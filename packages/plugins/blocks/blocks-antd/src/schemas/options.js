@@ -81,6 +81,14 @@ export default {
               displayType: 'yaml',
             },
           },
+          color: {
+            type: 'string',
+            description:
+              'Color applied to this option when it is selected. Falls back to the block-level color when not set.',
+            docs: {
+              displayType: 'color',
+            },
+          },
         },
       },
     },

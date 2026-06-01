@@ -156,6 +156,14 @@ export default {
                     displayType: 'yaml',
                   },
                 },
+                color: {
+                  type: 'string',
+                  description:
+                    'Color applied to the selected value shown in the input, and used to tint this option in the dropdown.',
+                  docs: {
+                    displayType: 'color',
+                  },
+                },
               },
             },
           },
@@ -194,7 +202,12 @@ export default {
           "Name of an React-Icon (See <a href='https://react-icons.github.io/react-icons/'>all icons</a>) or properties of an Icon block to customize icon at the drop-down position of the selector.",
       },
       title: inputTitle,
-      variant,
+      variant: {
+        type: 'string',
+        enum: ['solid', 'outlined', 'filled', 'borderless'],
+        description:
+          'Input variant. `solid` fills the whole input with the selected option color; `outlined` colors its border/text. `filled`/`borderless` are the antd input styles.',
+      },
       theme: {
         type: 'object',
         description:

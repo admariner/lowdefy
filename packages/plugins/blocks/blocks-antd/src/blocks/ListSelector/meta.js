@@ -15,17 +15,27 @@
 */
 
 export default {
-  category: 'display',
+  category: 'input',
   icons: [],
-  valueType: null,
+  valueType: 'any',
   cssKeys: {
     element: 'The list container.',
     card: 'Each Card element.',
     body: 'Each Card body.',
+    selected: 'The selected card.',
     search: 'The search bar wrapper above the list.',
     noResults: 'The "no results" placeholder shown when the search filter matches zero items.',
+    noData: 'The "no data" placeholder shown when the data array is empty.',
   },
   events: {
+    onChange: {
+      description: 'Triggered when the selection changes (only fires when `selectable` is true).',
+      event: {
+        value: 'The newly selected data item, or null when the selection is cleared.',
+        index: 'Zero-based index of the clicked card.',
+        item: 'The data item bound to the clicked card.',
+      },
+    },
     onClick: {
       description: 'Triggered when a card is clicked.',
       event: {
@@ -58,6 +68,18 @@ export default {
         description:
           'Nunjucks template used to render the body of each card. The context exposes `item` (the current data row) and `index` (the zero-based row index).',
       },
+      selectable: {
+        type: 'boolean',
+        default: true,
+        description:
+          'Enable selecting a card. When true, clicking a card sets the block value to that data item and highlights it. When false, the block is a read-only card list that stores no value.',
+      },
+      allowDeselect: {
+        type: 'boolean',
+        default: true,
+        description:
+          'Allow clicking the selected card again to clear the selection (sets the value to null). Ignored when `selectable` is false.',
+      },
       bordered: {
         type: 'boolean',
         default: true,
@@ -89,6 +111,11 @@ export default {
         default: 400,
         description:
           'Pixels of off-screen rows to render above and below the viewport. Increase for smoother fast-scroll, decrease to reduce DOM cost.',
+      },
+      noData: {
+        type: 'string',
+        description:
+          'Text shown in place of the list when the `data` array is empty. Defaults to the `blocks.listSelector.noData` message ("No data").',
       },
       search: {
         type: 'object',

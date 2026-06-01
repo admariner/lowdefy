@@ -8996,6 +8996,13 @@
                         "docs": {
                           "displayType": "yaml"
                         }
+                      },
+                      "color": {
+                        "type": "string",
+                        "description": "Color applied to the selected value shown in the input, and used to tint this option in the dropdown.",
+                        "docs": {
+                          "displayType": "color"
+                        }
                       }
                     }
                   }
@@ -9055,11 +9062,12 @@
             "variant": {
               "type": "string",
               "enum": [
+                "solid",
                 "outlined",
                 "filled",
                 "borderless"
               ],
-              "description": "Input visual variant. When set, takes precedence over bordered."
+              "description": "Input variant. `solid` fills the whole input with the selected option color; `outlined` colors its border/text. `filled`/`borderless` are the antd input styles."
             },
             "theme": {
               "type": "object",

@@ -123,7 +123,17 @@ const PageHeaderMenu = ({
                             properties.menuLg,
                           ])}
                           styles={{
-                            element: mergeObjects([{ borderBottom: 'none' }, styles.menu]),
+                            // Fill the header height so the active item's underline lands on the
+                            // header's bottom border (instead of floating above it), matching the
+                            // single-border look of Sider / PageSiderMenu. borderBottom is left to
+                            // the Header so the divider spans the full width, including the logo.
+                            element: mergeObjects([
+                              {
+                                borderBottom: 'none',
+                                lineHeight: 'var(--ant-layout-header-height, 64px)',
+                              },
+                              styles.menu,
+                            ]),
                           }}
                           rename={{
                             events: {

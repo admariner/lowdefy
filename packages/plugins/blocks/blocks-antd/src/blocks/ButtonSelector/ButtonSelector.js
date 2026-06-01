@@ -22,6 +22,8 @@ import { type } from '@lowdefy/helpers';
 import Label from '../Label/Label.js';
 import getValueIndex from '../../getValueIndex.js';
 import getUniqueValues from '../../getUniqueValues.js';
+import getContrastTextColor from '../../getContrastTextColor.js';
+import getOptionColorStyle from '../../getOptionColorStyle.js';
 import withTheme from '../withTheme.js';
 
 const ButtonSelector = ({
@@ -38,13 +40,26 @@ const ButtonSelector = ({
   methods,
 }) => {
   const uniqueValueOptions = getUniqueValues(properties.options || []);
+  // `variant` (solid | outlined) matches the Button block. `buttonStyle` is a
+  // deprecated alias kept for backward compatibility.
+  const variant =
+    properties.variant ?? (properties.buttonStyle === 'outline' ? 'outlined' : 'solid');
+  const isOutline = variant === 'outlined';
+  const selectedIndex = type.isNone(value)
+    ? undefined
+    : getValueIndex(value, properties.options || []);
+  const contrastColor = getContrastTextColor(properties.color);
+  const themeConfig = { token: { colorPrimary: properties.color } };
+  if (contrastColor) {
+    themeConfig.components = { Radio: { buttonSolidCheckedColor: contrastColor } };
+  }
   const radioGroup = (
     <Radio.Group
       id={`${blockId}_input`}
       className={classNames.element}
       disabled={properties.disabled || loading}
       size={properties.size}
-      buttonStyle={properties.buttonStyle ? properties.buttonStyle : 'solid'}
+      buttonStyle={isOutline ? 'outline' : 'solid'}
       style={styles.element}
       onChange={(event) => {
         const value = type.isPrimitive(uniqueValueOptions[event.target.value])
@@ -55,13 +70,24 @@ const ButtonSelector = ({
       }}
       value={type.isNone(value) ? undefined : getValueIndex(value, properties.options || [])}
     >
-      {uniqueValueOptions.map((opt, i) =>
-        type.isPrimitive(opt) ? (
+      {uniqueValueOptions.map((opt, i) => {
+        const isSelected = `${i}` === selectedIndex;
+        const optColor = type.isPrimitive(opt) ? undefined : opt.color;
+        let selectedStyle;
+        if (isSelected && optColor) {
+          // A selected option with its own color overrides the block-level color.
+          selectedStyle = getOptionColorStyle({ color: optColor, isOutline });
+        } else if (isSelected && isOutline) {
+          // Block-level outline tint follows currentColor (the active colorPrimary).
+          selectedStyle = { backgroundColor: 'color-mix(in srgb, currentColor 12%, transparent)' };
+        }
+        return type.isPrimitive(opt) ? (
           <Radio.Button
             id={`${blockId}_${i}`}
             key={i}
             value={`${i}`}
             disabled={properties.disabled || loading}
+            style={selectedStyle}
           >
             {renderHtml({ html: `${opt}`, methods })}
           </Radio.Button>
@@ -71,14 +97,14 @@ const ButtonSelector = ({
             key={i}
             value={`${i}`}
             disabled={opt.disabled || properties.disabled || loading}
-            style={opt.style}
+            style={{ ...opt.style, ...selectedStyle }}
           >
             {type.isNone(opt.label)
               ? renderHtml({ html: `${opt.value}`, methods })
               : renderHtml({ html: opt.label, methods })}
           </Radio.Button>
-        )
-      )}
+        );
+      })}
     </Radio.Group>
   );
   return (
@@ -94,9 +120,7 @@ const ButtonSelector = ({
       content={{
         content: () =>
           properties.color ? (
-            <ConfigProvider theme={{ components: { Radio: { colorPrimary: properties.color } } }}>
-              {radioGroup}
-            </ConfigProvider>
+            <ConfigProvider theme={themeConfig}>{radioGroup}</ConfigProvider>
           ) : (
             radioGroup
           ),
