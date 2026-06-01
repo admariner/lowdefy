@@ -734,15 +734,15 @@
         title: List Blocks
         icon: AiOutlineOrderedList
       links:
-        - id: CardList
-          type: MenuLink
-          pageId: CardList
         - id: ControlledList
           type: MenuLink
           pageId: ControlledList
         - id: List
           type: MenuLink
           pageId: List
+        - id: ListSelector
+          type: MenuLink
+          pageId: ListSelector
         - id: MasonryList
           type: MenuLink
           pageId: MasonryList

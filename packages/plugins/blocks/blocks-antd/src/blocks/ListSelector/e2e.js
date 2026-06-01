@@ -27,6 +27,11 @@ export default createBlockHelper({
       await card.scrollIntoViewIfNeeded();
       await card.click();
     },
+    select: async (page, blockId, index) => {
+      const card = page.locator(`#${escapeId(`${blockId}_${index}`)}`);
+      await card.scrollIntoViewIfNeeded();
+      await card.click();
+    },
     scrollToIndex: (page, blockId, index) =>
       page.locator(`#${escapeId(`${blockId}_${index}`)}`).scrollIntoViewIfNeeded(),
     search: (page, blockId, text) =>
@@ -39,5 +44,10 @@ export default createBlockHelper({
       expect(locator(page, blockId).locator('.ant-card')).toHaveCount(count),
     noResults: (page, blockId, text = 'No results') =>
       expect(locator(page, blockId)).toContainText(text),
+    selected: (page, blockId, index) =>
+      expect(page.locator(`#${escapeId(`${blockId}_${index}`)}`)).toHaveAttribute(
+        'aria-selected',
+        'true'
+      ),
   },
 });
