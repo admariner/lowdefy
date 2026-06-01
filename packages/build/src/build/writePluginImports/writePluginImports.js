@@ -25,6 +25,7 @@ import writeIconImports from './writeIconImports.js';
 import writeOperatorImports from './writeOperatorImports.js';
 import writeOperatorSchemaMap from './writeOperatorSchemaMap.js';
 import writeGlobalsCss from './writeGlobalsCss.js';
+import writeServerExternalPackages from './writeServerExternalPackages.js';
 
 async function writePluginImports({ components, context }) {
   await writeActionImports({ components, context });
@@ -38,6 +39,7 @@ async function writePluginImports({ components, context }) {
   await writeOperatorImports({ components, context });
   await writeOperatorSchemaMap({ components, context });
   await writeGlobalsCss({ components, context });
+  await writeServerExternalPackages({ components, context });
 
   // Write block package names for Next.js transpilePackages (CSS imports).
   const blockPackages = [

@@ -2,6 +2,7 @@ const { withSentryConfig } = require('@sentry/nextjs');
 const lowdefyConfig = require('./build/config.json');
 const blockPackages = require('./build/blockPackages.json');
 const agentFileSystems = require('./build/agentFileSystems.json');
+const serverExternalPackages = require('./build/serverExternalPackages.json');
 
 const nextConfig = {
   basePath: lowdefyConfig.basePath,
@@ -12,6 +13,7 @@ const nextConfig = {
     '@ant-design/x-markdown',
     ...blockPackages,
   ],
+  serverExternalPackages,
   turbopack: {},
   poweredByHeader: false,
   // productionBrowserSourceMaps: true
