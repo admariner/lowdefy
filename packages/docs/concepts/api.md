@@ -264,6 +264,8 @@ api:
 
 Endpoint calls can be nested up to 10 levels deep. Exceeding this limit throws an error — this prevents accidental infinite recursion.
 
+Connection plugin resolvers can also invoke endpoints from inside their JS code using the `callApi` function on the resolver argument bag. The semantics — depth cap, isolated routine context, caller's user identity, `InternalApi` reachable — match the `CallApi` step. See [Connection and Request Plugins](/plugins-connections) for the resolver-side API.
+
 ## Validating Data As A Routine Step
 
 API routines can validate any value against a JSON Schema using `ValidateSchema` steps. This is useful for guarding endpoint inputs that need stricter checks than the endpoint's request schema enforces, or for asserting the shape of data returned by a prior step before it flows downstream.

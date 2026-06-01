@@ -15,11 +15,12 @@
 */
 
 class UserError extends Error {
-  constructor(message, { blockId, cause, metaData, pageId } = {}) {
+  constructor(message, { blockId, cause, isReject = false, metaData, pageId } = {}) {
     super(message, { cause });
     this.name = 'UserError';
     this.isLowdefyError = true;
     this.blockId = blockId;
+    this.isReject = isReject;
     this.metaData = metaData;
     this.pageId = pageId;
   }

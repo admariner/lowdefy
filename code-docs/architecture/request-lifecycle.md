@@ -226,21 +226,37 @@ async function callRequest(context, { blockId, pageId, payload, requestId }) {
 ```javascript
 async function callRequestResolver(
   context,
-  { connectionProperties, requestConfig, requestProperties, requestResolver }
+  { connectionProperties, endpointDepth, requestConfig, requestProperties, requestResolver }
 ) {
-  const response = await requestResolver({
-    blockId,
-    endpointId,
-    connection: connectionProperties,
-    connectionId: requestConfig.connectionId,
-    pageId,
-    payload,
-    request: requestProperties,
-    requestId: requestConfig.requestId,
-  });
-  return response;
+  // callApi closes over context + endpointDepth; throws on target failure.
+  const callApi = async ({ endpointId, payload }) => {
+    const result = await invokeEndpoint(context, { endpointId, payload, endpointDepth });
+    if (result.status === 'error' || result.status === 'reject') throw result.error;
+    return result.status === 'return' ? result.response : null;
+  };
+
+  try {
+    return await requestResolver({
+      blockId,
+      callApi,
+      connection: connectionProperties,
+      connectionId: requestConfig.connectionId,
+      endpointId,
+      pageId,
+      payload,
+      request: requestProperties,
+      requestId: requestConfig.stepId ?? requestConfig.requestId,
+    });
+  } catch (error) {
+    if (!error.configKey) error.configKey = requestConfig['~k'];
+    if (error.isLowdefyError) throw error; // pass-through — no redundant wrapping
+    if (ServiceError.isServiceError(error)) throw new ServiceError(...);
+    throw new RequestError(error.message, { cause: error, ... });
+  }
 }
 ```
+
+`callApi` is constructed at this chokepoint so it picks up the caller's `endpointDepth` (`0` for page-level requests via `callRequest.js`, the routine frame's depth for routine `request:` steps via `handleRequest.js`). All Lowdefy errors (`isLowdefyError === true`) pass through the catch block unchanged — only raw errors wrap into `RequestError` / `ServiceError`.
 
 ### 3. Connection Lookup
 
@@ -463,52 +479,39 @@ Steps are dispatched by ID prefix: `request:` → database/API call via `handleR
 
 ### Endpoint-to-Endpoint Calls
 
-**File:** `packages/api/src/routes/endpoints/handleEndpointCall.js`
+**Files:** `packages/api/src/routes/endpoints/invokeEndpoint.js`, `handleEndpointCall.js`
 
-When a routine contains a `CallApi` step (built with `endpoint:` prefix), `handleEndpointCall` loads the target endpoint, authorizes the current user, and runs the target's routine in a fresh `routineContext`:
+The depth check → load config → authorize → child `routineContext` → `runRoutine` sequence is factored into a shared helper, `invokeEndpoint`. It is the single point where endpoint-to-endpoint calls actually happen, regardless of whether the trigger is a routine `CallApi` step or a connection plugin resolver calling `callApi` from JS:
 
 ```javascript
-async function handleEndpointCall(context, routineContext, { step }) {
-  const evaluatedProperties = context.evaluateOperators({
-    input: step.properties,               // Resolve operators in endpointId, payload
-    steps: routineContext.steps,
-    payload: routineContext.payload,
-  });
-
-  // Recursion guard (max depth 10)
-  if ((routineContext.endpointDepth ?? 0) >= 10) {
-    throw new ConfigError('Endpoint call depth exceeded maximum of 10.');
+async function invokeEndpoint(context, { endpointId, payload, endpointDepth }) {
+  if (endpointDepth >= 10) {
+    throw new ConfigError('Endpoint call depth exceeded maximum of 10. ...');
   }
-
-  const endpointConfig = await getEndpointConfig(context, {
-    endpointId: evaluatedProperties.endpointId,
-  });
+  const endpointConfig = await getEndpointConfig(context, { endpointId });
   authorizeApiEndpoint(context, { endpointConfig });
 
-  // Isolated context — target gets its own steps and payload
   const childRoutineContext = {
     steps: {},
-    payload: evaluatedProperties.payload ?? {},
+    payload: payload ?? {},
     arrayIndices: [],
     items: {},
-    endpointDepth: (routineContext.endpointDepth ?? 0) + 1,
+    state: {},
+    endpointDepth: endpointDepth + 1,
   };
 
-  const result = await runRoutine(context, childRoutineContext, {
-    routine: endpointConfig.routine,
-  });
-
-  // Store target's :return value in caller's steps
-  addStepResult(context, routineContext, {
-    result: result.status === 'return' ? result.response : null,
-    stepId: step.stepId,
-  });
+  return runRoutine(context, childRoutineContext, { routine: endpointConfig.routine });
 }
 ```
 
-**Isolation:** The called endpoint's internal step results never appear in the caller's `routineContext.steps` — only the `:return` value does. This prevents namespace collisions between routines.
+Two surfaces wrap it:
 
-**Endpoint types:** `Api` endpoints are callable from both HTTP and other endpoints. `InternalApi` endpoints are server-only — `callEndpoint` blocks HTTP access, but `handleEndpointCall` can reach them.
+- **`handleEndpointCall`** (routine `CallApi` step) — evaluates the step's operator-form `endpointId` and `payload`, calls `invokeEndpoint`, then maps the returned envelope: `:return` → `addStepResult` + `{ status: 'continue' }`; `error`/`reject` propagate to the routine engine.
+- **`callApi`** (constructed in `callRequestResolver`) — calls `invokeEndpoint` directly, throws if `status` is `error` or `reject`, returns the `:return` response (or `null`) otherwise. Skips `addStepResult` — there is no calling step at the JS boundary.
+
+**Isolation:** The called endpoint's internal step results, payload, and state never appear in the caller's `routineContext` — only the `:return` value flows back (and only for the routine-step wrapper). This prevents namespace collisions between routines.
+
+**Endpoint types:** `Api` endpoints are callable from both HTTP and other endpoints. `InternalApi` endpoints are server-only — `callEndpoint` blocks HTTP access, but both `invokeEndpoint` wrappers can reach them.
 
 ## End-to-End Example
 
@@ -561,7 +564,8 @@ async function handleEndpointCall(context, routineContext, { step }) {
 | Authorization       | `packages/api/src/routes/request/authorizeRequest.js`   |
 | Validation          | `packages/api/src/routes/request/validateSchemas.js`    |
 | Endpoint Handler    | `packages/api/src/routes/endpoints/callEndpoint.js`     |
-| Endpoint Call       | `packages/api/src/routes/endpoints/handleEndpointCall.js`|
+| Endpoint Call (step)| `packages/api/src/routes/endpoints/handleEndpointCall.js`|
+| Endpoint Invoke     | `packages/api/src/routes/endpoints/invokeEndpoint.js`   |
 | Routine Dispatch    | `packages/api/src/routes/endpoints/runRoutine.js`       |
 | Step Result Storage | `packages/api/src/routes/endpoints/addStepResult.js`    |
 | State Manager       | `packages/engine/src/State.js`                          |
@@ -575,3 +579,4 @@ async function handleEndpointCall(context, routineContext, { step }) {
 5. **Reactive State**: Updates trigger re-renders
 6. **Error Handling**: Try/catch with catch actions
 7. **Serialization**: Complex objects serialized for transport
+8. **Routine-frame isolation**: `steps`, `payload`, and `state` live on `routineContext`, not the request `context`. Each routine invocation (page request, top-level endpoint, `CallApi` step, resolver `callApi`) gets its own frame. Two frames in the same request never share these values — `:set_state` in one frame is invisible to a sibling.

@@ -26,6 +26,7 @@ test('single throw', async () => {
   expect(res.error).toEqual(new UserError('true'));
   expect(res.error).toBeInstanceOf(UserError);
   expect(res.error.isLowdefyError).toBe(true);
+  expect(res.error.isReject).toBe(false);
 });
 
 test('throw at end of routine', async () => {
