@@ -66,6 +66,31 @@ _ref:
 
             With `valueKey: id`, selecting "Pro" sets `state.plan` to `2`.
 
+            ## Tree selectors
+
+            `TreeSelector` (single) and `TreeMultipleSelector` (multiple) are searchable dropdowns that
+            present the options as a tree. They use the same model plus a **`parentKey`**: build a flat
+            `data`/`options` array where each row has a `primaryKey` (its own id) and a `parentKey`
+            whose value equals the parent row's `primaryKey`. Rows whose `parentKey` is empty or points
+            at no row become tree roots. `valueKey` is still the stored value; `primaryKey`/`parentKey`
+            only build the hierarchy.
+
+            ```yaml
+            id: category
+            type: TreeSelector
+            properties:
+              primaryKey: id
+              parentKey: parentId
+              valueKey: id
+              html: '{{ item.label }}'
+              data:
+                - { id: 1, label: Electronics }
+                - { id: 2, label: Phones, parentId: 1 }
+                - { id: 3, label: Laptops, parentId: 1 }
+            ```
+
+            (The `TreeInput` block is a different, inline antd `Tree` — not a dropdown.)
+
             ## Controlling the selection from state
 
             Because the value lives in state under the block's id, you can drive the selection with

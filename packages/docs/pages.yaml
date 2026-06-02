@@ -101,6 +101,8 @@
 - _ref: blocks/input/TiptapInput.yaml
 - _ref: blocks/input/TiptapMentionInput.yaml
 - _ref: blocks/input/TitleInput.yaml
+- _ref: blocks/input/TreeInput.yaml
+- _ref: blocks/input/TreeMultipleSelector.yaml
 - _ref: blocks/input/TreeSelector.yaml
 - _ref: blocks/input/WeekSelector.yaml
 

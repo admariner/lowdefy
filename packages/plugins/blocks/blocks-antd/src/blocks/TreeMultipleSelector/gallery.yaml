@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- title: Basic (flat data)
+- title: Basic (flat data, tags)
   blocks:
-    - id: basic_tree_selector
-      type: TreeSelector
+    - id: basic_tree_multiple
+      type: TreeMultipleSelector
       properties:
-        title: Category
+        title: Categories
         primaryKey: id
         parentKey: parentId
         valueKey: id
@@ -31,51 +31,37 @@
           - { id: 5, label: Shirts, parentId: 4 }
           - { id: 6, label: Shoes, parentId: 4 }
 
-- title: Store a value field
+- title: Checkable
   blocks:
-    - id: value_tree_selector
-      type: TreeSelector
+    - id: checkable_tree_multiple
+      type: TreeMultipleSelector
       properties:
-        title: Region
-        placeholder: Pick a region...
+        title: Permissions
+        checkable: true
+        showCheckedStrategy: SHOW_CHILD
         primaryKey: id
         parentKey: parentId
-        valueKey: code
+        valueKey: id
         html: '{{ item.label }}'
         treeDefaultExpandAll: true
         data:
-          - { id: 1, label: Europe, code: eu }
-          - { id: 2, label: Germany, code: de, parentId: 1 }
-          - { id: 3, label: France, code: fr, parentId: 1 }
-          - { id: 4, label: Americas, code: am }
-          - { id: 5, label: United States, code: us, parentId: 4 }
+          - { id: 1, label: Read }
+          - { id: 2, label: Write }
+          - { id: 3, label: Create, parentId: 2 }
+          - { id: 4, label: Update, parentId: 2 }
+          - { id: 5, label: Admin }
       events:
         onChange:
           - id: capture
             type: SetState
             params:
-              region:
+              perms:
                 _event: value
-    - id: value_tree_display
+    - id: checkable_tree_display
       type: Paragraph
       properties:
         content:
           _nunjucks:
-            template: 'Selected code: {{ region if region != null else "—" }}'
+            template: 'Selected: {{ perms }}'
             on:
               _state: true
-
-- title: Options (label/value)
-  blocks:
-    - id: options_tree_selector
-      type: TreeSelector
-      properties:
-        title: Department
-        primaryKey: value
-        parentKey: parent
-        treeDefaultExpandAll: true
-        options:
-          - { value: eng, label: Engineering }
-          - { value: fe, label: Frontend, parent: eng }
-          - { value: be, label: Backend, parent: eng }
-          - { value: ops, label: Operations }

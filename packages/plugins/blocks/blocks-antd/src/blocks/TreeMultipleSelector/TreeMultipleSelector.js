@@ -25,7 +25,13 @@ import useSelectorOptions from '../../useSelectorOptions.js';
 import getSelectedIndex from '../../getSelectedIndex.js';
 import getTreeData, { ROOT_PID } from '../../getTreeData.js';
 
-const TreeSelector = ({
+const SHOW_STRATEGY = {
+  SHOW_ALL: TreeSelect.SHOW_ALL,
+  SHOW_PARENT: TreeSelect.SHOW_PARENT,
+  SHOW_CHILD: TreeSelect.SHOW_CHILD,
+};
+
+const TreeMultipleSelector = ({
   blockId,
   classNames = {},
   components: { Icon },
@@ -41,9 +47,13 @@ const TreeSelector = ({
   const [elementId] = useState((0 | (Math.random() * 9e2)) + 1e2);
   const entries = useSelectorOptions({ properties, methods });
   const treeData = getTreeData({ entries, properties });
-  // primaryKey / parentKey are structural (node id + parent ref); the stored value is the valueKey
-  // value, so selection is matched on valueKey — hide primaryKey from getSelectedIndex.
+  // primaryKey / parentKey are structural; selection is matched on valueKey (the stored value).
   const matchProps = { ...properties, primaryKey: undefined };
+  const selectedIndices = loading
+    ? []
+    : getSelectedIndex(value, entries, { properties: matchProps, multiple: true }).filter(
+        (i) => i !== undefined
+      );
 
   let antdVariant = properties.variant;
   if (properties.bordered === false) antdVariant = 'borderless';
@@ -70,11 +80,13 @@ const TreeSelector = ({
               disabled={properties.disabled || loading}
               allowClear={properties.allowClear !== false}
               placeholder={
-                properties.placeholder ?? methods.translate('blocks.treeSelector.placeholder')
+                properties.placeholder ??
+                methods.translate('blocks.treeMultipleSelector.placeholder')
               }
               status={validation.status}
               size={properties.size}
               autoFocus={properties.autoFocus}
+              maxTagCount={properties.maxTagCount}
               getPopupContainer={() => document.getElementById(`${blockId}_${elementId}_popup`)}
               treeDataSimpleMode={{ id: 'id', pId: 'pId', rootPId: ROOT_PID }}
               treeData={treeData}
@@ -83,8 +95,11 @@ const TreeSelector = ({
               treeNodeFilterProp="title"
               treeTitleRender={(node) => renderHtml({ html: `${node.title}`, methods })}
               notFoundContent={
-                properties.notFoundContent ?? methods.translate('blocks.treeSelector.notFound')
+                properties.notFoundContent ??
+                methods.translate('blocks.treeMultipleSelector.notFound')
               }
+              showCheckedStrategy={SHOW_STRATEGY[properties.showCheckedStrategy] ?? TreeSelect.SHOW_CHILD}
+              {...(properties.checkable ? { treeCheckable: true } : { multiple: true })}
               suffixIcon={
                 properties.suffixIcon && (
                   <Icon
@@ -107,9 +122,9 @@ const TreeSelector = ({
                   />
                 )
               }
-              value={getSelectedIndex(value, entries, { properties: matchProps })}
-              onChange={(idx) => {
-                const val = type.isNone(idx) ? null : entries[idx].value;
+              value={selectedIndices}
+              onChange={(idxArr) => {
+                const val = (idxArr ?? []).map((i) => entries[i].value);
                 methods.setValue(val);
                 methods.triggerEvent({ name: 'onChange', event: { value: val } });
               }}
@@ -125,4 +140,4 @@ const TreeSelector = ({
   );
 };
 
-export default withTheme('TreeSelect', withBlockDefaults(TreeSelector));
+export default withTheme('TreeSelect', withBlockDefaults(TreeMultipleSelector));

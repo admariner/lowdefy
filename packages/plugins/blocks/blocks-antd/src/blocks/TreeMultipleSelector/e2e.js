@@ -46,9 +46,11 @@ export default createBlockHelper({
     disabled: (page, blockId) => expect(locator(page, blockId)).toHaveClass(/ant-select-disabled/),
     enabled: (page, blockId) =>
       expect(locator(page, blockId)).not.toHaveClass(/ant-select-disabled/),
-    value: (page, blockId, val) =>
-      expect(locator(page, blockId).locator('.ant-select-selection-item')).toHaveText(val),
-    placeholder: (page, blockId, text) =>
-      expect(locator(page, blockId).locator('.ant-select-selection-placeholder')).toHaveText(text),
+    tags: (page, blockId, count) =>
+      expect(locator(page, blockId).locator('.ant-select-selection-item')).toHaveCount(count),
+    hasTag: (page, blockId, label) =>
+      expect(
+        locator(page, blockId).locator('.ant-select-selection-item').filter({ hasText: label })
+      ).toBeVisible(),
   },
 });

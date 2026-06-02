@@ -488,6 +488,12 @@
         - id: TitleInput
           type: MenuLink
           pageId: TitleInput
+        - id: TreeInput
+          type: MenuLink
+          pageId: TreeInput
+        - id: TreeMultipleSelector
+          type: MenuLink
+          pageId: TreeMultipleSelector
         - id: TreeSelector
           type: MenuLink
           pageId: TreeSelector

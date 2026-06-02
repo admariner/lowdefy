@@ -15,16 +15,15 @@
 _ref:
   path: templates/blocks/gallery.yaml.njk
   vars:
-    pageId: TreeSelector
-    pageTitle: TreeSelector
+    pageId: TreeInput
+    pageTitle: TreeInput
     section: Input Blocks
-    filePath: blocks/input/TreeSelector.yaml
-    block_type: TreeSelector
-    antd_component: TreeSelect
-    antd_url: tree-select
-    github_path: packages/plugins/blocks/blocks-antd/src/blocks/TreeSelector
-    schema: ../plugins/blocks/blocks-antd/src/blocks/TreeSelector/meta.js
-    gallery: ../plugins/blocks/blocks-antd/src/blocks/TreeSelector/gallery.yaml
+    filePath: blocks/input/TreeInput.yaml
+    block_type: TreeInput
+    antd_component: Tree
+    antd_url: tree
+    github_path: packages/plugins/blocks/blocks-antd/src/blocks/TreeInput
+    schema: ../plugins/blocks/blocks-antd/src/blocks/TreeInput/meta.js
+    gallery: ../plugins/blocks/blocks-antd/src/blocks/TreeInput/gallery.yaml
     description: >
-      Searchable single-select tree dropdown. Driven by flat `data`/`options` with
-      `primaryKey`/`parentKey` for hierarchy.
+      Inline tree with nested options and checkboxes. (Renamed from `TreeSelector`.)

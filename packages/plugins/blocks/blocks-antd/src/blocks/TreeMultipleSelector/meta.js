@@ -34,20 +34,20 @@ import {
 export default {
   category: 'input',
   icons: [...LabelMeta.icons, 'AiOutlineCloseCircle', 'AiOutlineDown'],
-  valueType: 'any',
+  valueType: 'array',
   cssKeys: {
-    element: 'The TreeSelector element.',
-    label: 'The TreeSelector label.',
-    extra: 'The TreeSelector extra content.',
-    feedback: 'The TreeSelector validation feedback.',
-    suffixIcon: 'The suffix icon in the TreeSelector.',
-    clearIcon: 'The clear icon in the TreeSelector.',
+    element: 'The TreeMultipleSelector element.',
+    label: 'The TreeMultipleSelector label.',
+    extra: 'The TreeMultipleSelector extra content.',
+    feedback: 'The TreeMultipleSelector validation feedback.',
+    suffixIcon: 'The suffix icon in the TreeMultipleSelector.',
+    clearIcon: 'The clear icon in the TreeMultipleSelector.',
   },
   events: {
     onBlur: 'Trigger action when the selector loses focus.',
     onChange: {
       description: 'Trigger action when selection is changed.',
-      event: { value: 'The selected value.' },
+      event: { value: 'The selected values (array).' },
     },
     onFocus: 'Trigger action when the selector gains focus.',
     onClear: 'Trigger action when the selector is cleared.',
@@ -74,7 +74,7 @@ export default {
       variant,
       size: sizeSmallDefaultLarge,
       title: inputTitle,
-      placeholder: { ...placeholder, default: 'Select item' },
+      placeholder: { ...placeholder, default: 'Select items' },
       showSearch: {
         type: 'boolean',
         default: true,
@@ -84,6 +84,22 @@ export default {
         type: 'boolean',
         default: false,
         description: 'Expand all tree nodes by default.',
+      },
+      checkable: {
+        type: 'boolean',
+        default: false,
+        description: 'Show checkboxes on the tree nodes instead of selectable tags.',
+      },
+      showCheckedStrategy: {
+        type: 'string',
+        enum: ['SHOW_ALL', 'SHOW_PARENT', 'SHOW_CHILD'],
+        default: 'SHOW_CHILD',
+        description:
+          'How checked nodes are shown when `checkable` is true: SHOW_ALL (all checked), SHOW_PARENT (parent only), SHOW_CHILD (leaf children only).',
+      },
+      maxTagCount: {
+        type: 'number',
+        description: 'Maximum number of selected tags shown before collapsing into a count.',
       },
       notFoundContent: {
         type: 'string',

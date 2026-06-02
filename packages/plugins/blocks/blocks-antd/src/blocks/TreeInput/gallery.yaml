@@ -14,66 +14,63 @@
 
 - title: Basic (flat data)
   blocks:
-    - id: basic_tree_selector
-      type: TreeSelector
+    - id: tree_basic
+      type: TreeInput
       properties:
-        title: Category
         primaryKey: id
         parentKey: parentId
         valueKey: id
         html: '{{ item.label }}'
-        treeDefaultExpandAll: true
+        defaultExpandAll: true
         data:
-          - { id: 1, label: Electronics }
-          - { id: 2, label: Phones, parentId: 1 }
-          - { id: 3, label: Laptops, parentId: 1 }
-          - { id: 4, label: Clothing }
-          - { id: 5, label: Shirts, parentId: 4 }
-          - { id: 6, label: Shoes, parentId: 4 }
-
-- title: Store a value field
-  blocks:
-    - id: value_tree_selector
-      type: TreeSelector
-      properties:
-        title: Region
-        placeholder: Pick a region...
-        primaryKey: id
-        parentKey: parentId
-        valueKey: code
-        html: '{{ item.label }}'
-        treeDefaultExpandAll: true
-        data:
-          - { id: 1, label: Europe, code: eu }
-          - { id: 2, label: Germany, code: de, parentId: 1 }
-          - { id: 3, label: France, code: fr, parentId: 1 }
-          - { id: 4, label: Americas, code: am }
-          - { id: 5, label: United States, code: us, parentId: 4 }
+          - { id: 1, label: Engineering }
+          - { id: 2, label: Frontend, parentId: 1 }
+          - { id: 3, label: Backend, parentId: 1 }
+          - { id: 4, label: Operations }
+          - { id: 5, label: SRE, parentId: 4 }
       events:
         onChange:
           - id: capture
             type: SetState
             params:
-              region:
+              dept:
                 _event: value
-    - id: value_tree_display
+    - id: tree_basic_display
       type: Paragraph
       properties:
         content:
           _nunjucks:
-            template: 'Selected code: {{ region if region != null else "—" }}'
+            template: 'Selected: {{ dept if dept != null else "—" }}'
             on:
               _state: true
 
+- title: Show line + checkboxes
+  blocks:
+    - id: tree_line
+      type: TreeInput
+      properties:
+        showLine: true
+        checkable: true
+        primaryKey: id
+        parentKey: parentId
+        valueKey: id
+        html: '{{ item.label }}'
+        defaultExpandAll: true
+        data:
+          - { id: 1, label: Fruits }
+          - { id: 2, label: Apple, parentId: 1 }
+          - { id: 3, label: Banana, parentId: 1 }
+          - { id: 4, label: Vegetables }
+          - { id: 5, label: Carrot, parentId: 4 }
+
 - title: Options (label/value)
   blocks:
-    - id: options_tree_selector
-      type: TreeSelector
+    - id: tree_options
+      type: TreeInput
       properties:
-        title: Department
         primaryKey: value
         parentKey: parent
-        treeDefaultExpandAll: true
+        defaultExpandAll: true
         options:
           - { value: eng, label: Engineering }
           - { value: fe, label: Frontend, parent: eng }
