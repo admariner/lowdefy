@@ -20,8 +20,8 @@ import { renderHtml, withBlockDefaults } from '@lowdefy/block-utils';
 import { type } from '@lowdefy/helpers';
 
 import Label from '../Label/Label.js';
-import getValueIndex from '../../getValueIndex.js';
-import getUniqueValues from '../../getUniqueValues.js';
+import getSelectedIndex from '../../getSelectedIndex.js';
+import useSelectorOptions from '../../useSelectorOptions.js';
 import getContrastTextColor from '../../getContrastTextColor.js';
 import getOptionColorStyle from '../../getOptionColorStyle.js';
 import withTheme from '../withTheme.js';
@@ -39,7 +39,7 @@ const ButtonSelector = ({
   value,
   methods,
 }) => {
-  const uniqueValueOptions = getUniqueValues(properties.options || []);
+  const uniqueValueOptions = useSelectorOptions({ properties, methods });
   // `variant` (solid | outlined) matches the Button block. `buttonStyle` is a
   // deprecated alias kept for backward compatibility.
   const variant =
@@ -47,7 +47,7 @@ const ButtonSelector = ({
   const isOutline = variant === 'outlined';
   const selectedIndex = type.isNone(value)
     ? undefined
-    : getValueIndex(value, properties.options || []);
+    : getSelectedIndex(value, uniqueValueOptions, { properties });
   const contrastColor = getContrastTextColor(properties.color);
   const themeConfig = { token: { colorPrimary: properties.color } };
   if (contrastColor) {
@@ -68,7 +68,7 @@ const ButtonSelector = ({
         methods.setValue(value);
         methods.triggerEvent({ name: 'onChange', event: { value } });
       }}
-      value={type.isNone(value) ? undefined : getValueIndex(value, properties.options || [])}
+      value={type.isNone(value) ? undefined : getSelectedIndex(value, uniqueValueOptions, { properties })}
     >
       {uniqueValueOptions.map((opt, i) => {
         const isSelected = `${i}` === selectedIndex;
