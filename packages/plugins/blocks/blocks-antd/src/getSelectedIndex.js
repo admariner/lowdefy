@@ -14,27 +14,25 @@
   limitations under the License.
 */
 
-import { get, serializer, type } from '@lowdefy/helpers';
+import { get, type } from '@lowdefy/helpers';
+
+import serializeSelectorValue from './serializeSelectorValue.js';
 
 // Maps the current block value to the index (or indices) of the matching entry built by
-// getSelectorOptions. Matching is by identity: `primaryKey` (falling back to `valueKey`) names the
-// field compared on both sides, so a stored key OR a whole row both resolve to the right option.
-// With neither key set the whole value is compared (the original `value` behaviour). Key resolution
-// mirrors getSelectorOptions: `options` mode defaults `valueKey` to "value"; `data` mode keeps it raw
-// (omitted => the whole row is the value/identity).
-const serialize = (x) => serializer.serializeToString(x, { stable: true });
+// getSelectorOptions. Matching is by identity: when `primaryKey` names a field, that field is
+// projected from both the stored value and each entry's value before comparison; with no
+// `primaryKey` the whole value is compared (the original `value` behaviour, which also matches
+// object-valued options). `valueKey` is only a build-time extraction key in getSelectorOptions —
+// by match time the stored value is already the unwrapped entry value, so it must not drive
+// identity here (reusing it projected a missing `.value` off the bare value and broke matching).
+const serialize = serializeSelectorValue;
 
 const getSelectedIndex = (value, entries, { properties = {}, multiple } = {}) => {
-  const usingData = type.isArray(properties.data);
-  const valueKey = usingData ? properties.valueKey : properties.valueKey ?? 'value';
-  const effKey = type.isString(properties.primaryKey) ? properties.primaryKey : valueKey;
-
-  const idOfValue = (v) => (type.isString(effKey) && type.isObject(v) ? get(v, effKey) : v);
-  const idOfEntry = (entry) => {
-    if (type.isPrimitive(entry)) return entry;
-    if (type.isString(effKey)) return get(entry, effKey);
-    return entry.value;
-  };
+  const { primaryKey } = properties;
+  const project = (val) =>
+    type.isString(primaryKey) && type.isObject(val) ? get(val, primaryKey) : val;
+  const idOfValue = (v) => project(v);
+  const idOfEntry = (entry) => project(type.isPrimitive(entry) ? entry : entry.value);
 
   const findIndex = (v) => {
     const target = serialize(idOfValue(v));
