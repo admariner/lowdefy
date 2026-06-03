@@ -14,8 +14,10 @@
   limitations under the License.
 */
 
-import { get, serializer, type } from '@lowdefy/helpers';
+import { get, type } from '@lowdefy/helpers';
 import { nunjucksFunction } from '@lowdefy/nunjucks';
+
+import serializeSelectorValue from './serializeSelectorValue.js';
 
 // Selectors can be driven two ways:
 //  - `options`: an array of primitives or { label, value } pairs (the original model).
@@ -25,22 +27,19 @@ import { nunjucksFunction } from '@lowdefy/nunjucks';
 // primitives or objects carrying `label` (an html string) and `value`, plus any per-option extras
 // (color, disabled, style, filterString, icon, tag) the blocks read.
 
-// The field used to identify an option for de-duplication and selection matching. `primaryKey`
-// overrides `valueKey`; when neither is set the whole value is the identity.
-function identityKey({ primaryKey, valueKey }) {
-  return type.isString(primaryKey) ? primaryKey : valueKey;
+// The identity used to de-duplicate options, kept symmetric with getSelectedIndex: project
+// `primaryKey` from each entry's value, or compare the whole value when no `primaryKey` is set.
+// `valueKey` has already been applied to produce `entry.value`, so it must not drive identity
+// (projecting it off the wrapper entry yielded `undefined` for every option and collapsed them).
+function identityOf(entry, primaryKey) {
+  const value = type.isPrimitive(entry) ? entry : entry.value;
+  return type.isString(primaryKey) && type.isObject(value) ? get(value, primaryKey) : value;
 }
 
-function identityOf(entry, effKey) {
-  if (type.isPrimitive(entry)) return entry;
-  if (type.isString(effKey)) return get(entry, effKey);
-  return entry.value;
-}
-
-function dedupe(entries, effKey) {
+function dedupe(entries, primaryKey) {
   const seen = new Set();
   return entries.filter((entry) => {
-    const id = serializer.serializeToString(identityOf(entry, effKey), { stable: true });
+    const id = serializeSelectorValue(identityOf(entry, primaryKey));
     if (seen.has(id)) return false;
     seen.add(id);
     return true;
@@ -57,14 +56,14 @@ const getSelectorOptions = ({ properties }) => {
       const label = template ? template({ item, index }) : `${value}`;
       return { ...(type.isObject(item) ? item : {}), label, value };
     });
-    return dedupe(entries, identityKey({ primaryKey, valueKey }));
+    return dedupe(entries, primaryKey);
   }
 
   const vk = type.isString(valueKey) ? valueKey : 'value';
   const entries = (options ?? []).map((opt) =>
     type.isPrimitive(opt) ? opt : { ...opt, value: get(opt, vk) }
   );
-  return dedupe(entries, identityKey({ primaryKey, valueKey: vk }));
+  return dedupe(entries, primaryKey);
 };
 
 export default getSelectorOptions;

@@ -23,7 +23,6 @@ import Label from '../Label/Label.js';
 import getSelectedIndex from '../../getSelectedIndex.js';
 import useSelectorOptions from '../../useSelectorOptions.js';
 import getContrastTextColor from '../../getContrastTextColor.js';
-import getOptionColorStyle from '../../getOptionColorStyle.js';
 import withTheme from '../withTheme.js';
 
 const ButtonSelector = ({
@@ -71,38 +70,42 @@ const ButtonSelector = ({
       value={type.isNone(value) ? undefined : getSelectedIndex(value, uniqueValueOptions, { properties })}
     >
       {uniqueValueOptions.map((opt, i) => {
+        const isPrimitive = type.isPrimitive(opt);
+        const optColor = isPrimitive ? undefined : opt.color;
         const isSelected = `${i}` === selectedIndex;
-        const optColor = type.isPrimitive(opt) ? undefined : opt.color;
-        let selectedStyle;
-        if (isSelected && optColor) {
-          // A selected option with its own color overrides the block-level color.
-          selectedStyle = getOptionColorStyle({ color: optColor, isOutline });
-        } else if (isSelected && isOutline) {
-          // Block-level outline tint follows currentColor (the active colorPrimary).
-          selectedStyle = { backgroundColor: 'color-mix(in srgb, currentColor 12%, transparent)' };
+        // The outline tint follows currentColor (the active colorPrimary), which is
+        // the option's own color when set, else the block-level color.
+        const selectedStyle =
+          isSelected && isOutline
+            ? { backgroundColor: 'color-mix(in srgb, currentColor 12%, transparent)' }
+            : undefined;
+        let html;
+        if (isPrimitive) {
+          html = `${opt}`;
+        } else {
+          html = type.isNone(opt.label) ? `${opt.value}` : opt.label;
         }
-        return type.isPrimitive(opt) ? (
+        const button = (
           <Radio.Button
             id={`${blockId}_${i}`}
             key={i}
             value={`${i}`}
-            disabled={properties.disabled || loading}
-            style={selectedStyle}
+            disabled={(isPrimitive ? undefined : opt.disabled) || properties.disabled || loading}
+            style={{ ...(isPrimitive ? {} : opt.style), ...selectedStyle }}
           >
-            {renderHtml({ html: `${opt}`, methods })}
+            {renderHtml({ html, methods })}
           </Radio.Button>
-        ) : (
-          <Radio.Button
-            id={`${blockId}_${i}`}
-            key={i}
-            value={`${i}`}
-            disabled={opt.disabled || properties.disabled || loading}
-            style={{ ...opt.style, ...selectedStyle }}
-          >
-            {type.isNone(opt.label)
-              ? renderHtml({ html: `${opt.value}`, methods })
-              : renderHtml({ html: opt.label, methods })}
-          </Radio.Button>
+        );
+        if (type.isNone(optColor)) return button;
+        // Per-option color drives both the hover state and the checked fill/outline,
+        // independent of the selected value or block-level color.
+        const optContrast = getContrastTextColor(optColor);
+        const optTheme = { token: { colorPrimary: optColor } };
+        if (optContrast) optTheme.components = { Radio: { buttonSolidCheckedColor: optContrast } };
+        return (
+          <ConfigProvider key={i} theme={optTheme}>
+            {button}
+          </ConfigProvider>
         );
       })}
     </Radio.Group>
