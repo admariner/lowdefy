@@ -18,26 +18,36 @@ import fs from 'fs';
 import path from 'path';
 import { serializer } from '@lowdefy/helpers';
 
+// Recursively collect every endpoint artifact under the api directory. Module
+// endpoints are written to build/api/<moduleId>/<endpointId>.json because their
+// scoped endpointId contains a "/" (buildModules prefixes ids with the module entry
+// id), so a flat read would miss them and flag every module CallAPI as non-existent.
+function readApiConfigs(directory) {
+  const configs = [];
+  for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+    const entryPath = path.join(directory, entry.name);
+    if (entry.isDirectory()) {
+      configs.push(...readApiConfigs(entryPath));
+    } else if (entry.name.endsWith('.json')) {
+      configs.push(serializer.deserialize(JSON.parse(fs.readFileSync(entryPath, 'utf8'))));
+    }
+  }
+  return configs;
+}
+
 // Read the endpoint artifacts persisted by writeApi (build/api/<endpointId>.json).
 // The full build keeps endpoints in memory on components.api, but the dev context is
 // rebuilt from disk, so getBuildContext hydrates them here. validateCallApiRefs needs
 // each config's endpointId and type, both of which are present in the artifact.
 function readBuildApiArtifacts(buildDirectory) {
   const apiDirectory = path.join(buildDirectory, 'api');
-  let fileNames;
   try {
-    fileNames = fs.readdirSync(apiDirectory);
+    return readApiConfigs(apiDirectory);
   } catch (error) {
     // writeApi only creates the directory when endpoints are defined — absent means none.
     if (error.code === 'ENOENT') return [];
     throw error;
   }
-  return fileNames
-    .filter((fileName) => fileName.endsWith('.json'))
-    .map((fileName) => {
-      const content = fs.readFileSync(path.join(apiDirectory, fileName), 'utf8');
-      return serializer.deserialize(JSON.parse(content));
-    });
 }
 
 export default readBuildApiArtifacts;

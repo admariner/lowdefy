@@ -26,13 +26,11 @@ function makeBuildDir() {
 }
 
 // Mirror writeApi: each endpoint is serialized to build/api/<endpointId>.json.
+// Scoped module endpointIds contain a "/", so the file lands in a nested directory.
 function writeEndpoint(buildDir, endpoint) {
-  const apiDir = path.join(buildDir, 'api');
-  fs.mkdirSync(apiDir, { recursive: true });
-  fs.writeFileSync(
-    path.join(apiDir, `${endpoint.endpointId}.json`),
-    serializer.serializeToString(endpoint)
-  );
+  const filePath = path.join(buildDir, 'api', `${endpoint.endpointId}.json`);
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  fs.writeFileSync(filePath, serializer.serializeToString(endpoint));
 }
 
 test('readBuildApiArtifacts returns [] when the api directory does not exist', () => {
@@ -71,6 +69,24 @@ test('readBuildApiArtifacts reads and deserializes endpoint artifacts with endpo
         expect.objectContaining({ endpointId: 'internal_api', type: 'InternalApi' }),
       ])
     );
+  } finally {
+    fs.rmSync(buildDir, { recursive: true, force: true });
+  }
+});
+
+test('readBuildApiArtifacts reads scoped module endpoints from nested subdirectories', () => {
+  const buildDir = makeBuildDir();
+  // Top-level endpoint at build/api/top_api.json
+  writeEndpoint(buildDir, { id: 'endpoint:top_api', endpointId: 'top_api', type: 'Api' });
+  // Module endpoint at build/api/inviter/send-invite.json (scoped id contains "/")
+  writeEndpoint(buildDir, {
+    id: 'endpoint:inviter/send-invite',
+    endpointId: 'inviter/send-invite',
+    type: 'Api',
+  });
+  try {
+    const result = readBuildApiArtifacts(buildDir);
+    expect(result.map((c) => c.endpointId).sort()).toEqual(['inviter/send-invite', 'top_api']);
   } finally {
     fs.rmSync(buildDir, { recursive: true, force: true });
   }
