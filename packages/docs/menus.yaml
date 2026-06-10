@@ -931,6 +931,9 @@
         - id: _base64
           type: MenuLink
           pageId: _base64
+        - id: _boolean
+          type: MenuLink
+          pageId: _boolean
         - id: _build
           type: MenuLink
           pageId: _build
