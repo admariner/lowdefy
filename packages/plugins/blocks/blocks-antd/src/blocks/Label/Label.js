@@ -19,7 +19,7 @@
 
 import React from 'react';
 import { renderHtml, withBlockDefaults } from '@lowdefy/block-utils';
-import { Col, Row } from 'antd';
+import { Col, Row, Tooltip } from 'antd';
 import classNames from 'classnames';
 import CSSMotion from '@rc-component/motion';
 
@@ -81,13 +81,18 @@ const Label = ({
     <Row id={blockId} className={rowClassName} style={rowStyle}>
       {label && (
         <Col {...labelCol} className={labelColClassName} style={labelColStyle}>
-          <label
-            htmlFor={`${blockId}_input`}
-            className={labelClassName}
-            style={labelStyle}
-            title={label}
-          >
+          <label htmlFor={`${blockId}_input`} className={labelClassName} style={labelStyle}>
             {renderHtml({ html: label })}
+            {properties.tooltip && (
+              <Tooltip title={renderHtml({ html: properties.tooltip })}>
+                <span
+                  className="ldf-label-tooltip"
+                  style={{ marginInlineStart: 4, cursor: 'help' }}
+                >
+                  <Icon properties="AiOutlineQuestionCircle" />
+                </span>
+              </Tooltip>
+            )}
           </label>
         </Col>
       )}

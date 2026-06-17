@@ -16,7 +16,13 @@
 
 export default {
   category: 'container',
-  icons: ['AiFillCloseCircle', 'AiFillCheckCircle', 'AiOutlineLoading', 'AiFillExclamationCircle'],
+  icons: [
+    'AiFillCloseCircle',
+    'AiFillCheckCircle',
+    'AiOutlineLoading',
+    'AiFillExclamationCircle',
+    'AiOutlineQuestionCircle',
+  ],
   valueType: null,
   slots: {
     content: 'The labeled input or content blocks.',
@@ -60,6 +66,10 @@ export default {
       title: {
         type: 'string',
         description: 'Label title - supports html.',
+      },
+      tooltip: {
+        type: 'string',
+        description: 'Help tooltip shown via a question icon beside the label - supports html.',
       },
       span: {
         type: 'number',
