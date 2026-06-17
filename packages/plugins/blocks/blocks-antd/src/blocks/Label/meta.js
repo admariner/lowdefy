@@ -14,8 +14,13 @@
   limitations under the License.
 */
 
+import tooltip from '../../schemas/labelTooltip.js';
+
 export default {
   category: 'container',
+  events: {
+    onTooltipClick: 'Trigger actions when the tooltip icon is clicked.',
+  },
   icons: [
     'AiFillCloseCircle',
     'AiFillCheckCircle',
@@ -67,10 +72,7 @@ export default {
         type: 'string',
         description: 'Label title - supports html.',
       },
-      tooltip: {
-        type: 'string',
-        description: 'Help tooltip shown via a question icon beside the label - supports html.',
-      },
+      tooltip,
       span: {
         type: 'number',
         description: 'Label inline span.',

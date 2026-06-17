@@ -19,6 +19,7 @@
 
 import React from 'react';
 import { renderHtml, withBlockDefaults } from '@lowdefy/block-utils';
+import { type } from '@lowdefy/helpers';
 import { Col, Row, Tooltip } from 'antd';
 import classNames from 'classnames';
 import CSSMotion from '@rc-component/motion';
@@ -38,6 +39,7 @@ const Label = ({
   classNames: blockClassNames = {},
   components: { Icon },
   content,
+  methods,
   properties,
   required,
   styles = {},
@@ -77,19 +79,30 @@ const Label = ({
       </span>
     ) : null;
 
+  // tooltip is either a string (the tooltip text) or an object that also
+  // customizes the icon and color. The onClick is exposed as the block's
+  // onTooltipClick event, not a property.
+  const tooltip = type.isString(properties.tooltip)
+    ? { title: properties.tooltip }
+    : properties.tooltip;
+
   return (
     <Row id={blockId} className={rowClassName} style={rowStyle}>
       {label && (
         <Col {...labelCol} className={labelColClassName} style={labelColStyle}>
           <label htmlFor={`${blockId}_input`} className={labelClassName} style={labelStyle}>
             {renderHtml({ html: label })}
-            {properties.tooltip && (
-              <Tooltip title={renderHtml({ html: properties.tooltip })}>
+            {tooltip && (
+              <Tooltip title={tooltip.title ? renderHtml({ html: tooltip.title }) : undefined}>
                 <span
                   className="ldf-label-tooltip"
-                  style={{ marginInlineStart: 4, cursor: 'help' }}
+                  style={{ marginInlineStart: 4, cursor: 'pointer', color: tooltip.color }}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    methods?.triggerEvent({ name: 'onTooltipClick' });
+                  }}
                 >
-                  <Icon properties="AiOutlineQuestionCircle" />
+                  <Icon properties={tooltip.icon ?? 'AiOutlineQuestionCircle'} />
                 </span>
               </Tooltip>
             )}
