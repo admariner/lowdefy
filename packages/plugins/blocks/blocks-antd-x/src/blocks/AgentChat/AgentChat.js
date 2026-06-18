@@ -73,8 +73,7 @@ function AgentChat({ blockId, components: { Icon }, methods, pageId, properties 
   // consistent id. App-supplied ids remain authoritative.
   const mintedIdRef = useRef(null);
   if (!conversationId && !mintedIdRef.current) {
-    mintedIdRef.current =
-      crypto.randomUUID?.() ?? `c_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+    mintedIdRef.current = crypto.randomUUID();
   }
   const effectiveConversationId = conversationId ?? mintedIdRef.current;
 
