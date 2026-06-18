@@ -192,19 +192,11 @@ export default {
       },
     },
     generateTitle: {
-      oneOf: [
-        { type: 'boolean' },
-        {
-          type: 'object',
-          properties: { model: { type: 'string' } },
-          additionalProperties: false,
-        },
-      ],
+      type: 'boolean',
       description:
-        'Generate a short conversation title on the first turn from the first user message. Emits a "data-chat-title" data part that fires the block\'s onTitleGenerated event. Pass true to use the agent model, or an object with a "model" string to use a cheaper model. Off by default.',
+        'When true, generate a short conversation title on the first turn from the first user message. Emits a "data-chat-title" data part that fires the block\'s onTitleGenerated event. Off by default.',
       errorMessage: {
-        oneOf:
-          'AISDKAgent agent property "generateTitle" should be a boolean or an object with an optional "model" string.',
+        type: 'AISDKAgent agent property "generateTitle" should be a boolean.',
       },
     },
     prepareStep: {

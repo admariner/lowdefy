@@ -27,7 +27,7 @@ import {
   validateUIMessages,
 } from 'ai';
 
-import { serializer, type } from '@lowdefy/helpers';
+import { serializer } from '@lowdefy/helpers';
 
 import buildAgentTools from './buildAgentTools.js';
 import buildPrepareStep from './buildPrepareStep.js';
@@ -221,8 +221,7 @@ async function handleAgentChat({ connection, properties, context }) {
   const timeoutConfig =
     agent.properties.timeout != null ? { timeout: agent.properties.timeout } : {};
 
-  const generateTitle = agent.properties.generateTitle;
-  const titleEnabled = generateTitle === true || type.isObject(generateTitle);
+  const titleEnabled = agent.properties.generateTitle === true;
 
   const stream = createUIMessageStream({
     execute: async ({ writer }) => {
@@ -256,14 +255,10 @@ async function handleAgentChat({ connection, properties, context }) {
       let titlePromise;
       const isFirstTurn = !messages.some((msg) => msg.role === 'assistant');
       if (titleEnabled && isFirstTurn) {
-        const titleModel =
-          type.isObject(generateTitle) && generateTitle.model
-            ? connection.provider(generateTitle.model)
-            : model;
         const firstUserText = getFirstUserText(messages);
         if (firstUserText) {
           titlePromise = generateText({
-            model: titleModel,
+            model,
             maxOutputTokens: 20,
             prompt: `Generate a concise 3-6 word title for a conversation that begins with this message. Reply with only the title, no quotes:\n\n${firstUserText}`,
           })

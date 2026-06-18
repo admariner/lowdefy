@@ -2321,33 +2321,3 @@ test('generateTitle failure is non-fatal and does not break the stream', async (
   consoleSpy.mockRestore();
   mockGenerateText.mockResolvedValue({ text: 'Generated Title' });
 });
-
-test('generateTitle object uses the configured model override', async () => {
-  mockTool.mockImplementation((def) => def);
-  mockJsonSchema.mockReturnValue(MOCK_SCHEMA);
-  mockGenerateText.mockClear();
-  mockGenerateText.mockResolvedValue({ text: 'Title' });
-  const titleModel = { __sentinel: 'cheap-model' };
-  const provider = jest.fn((m) => (m === 'gpt-4o-mini' ? titleModel : {}));
-
-  const { default: handleAgentChat } = await import('./handleAgentChat.js');
-
-  await handleAgentChat({
-    connection: { provider },
-    properties: {
-      agent: {
-        tools: [],
-        properties: { model: 'gpt-4o', generateTitle: { model: 'gpt-4o-mini' } },
-      },
-      messages: [{ role: 'user', parts: [{ type: 'text', text: 'Hello' }] }],
-    },
-    context: { callEndpoint: jest.fn(), getEndpointConfig: jest.fn() },
-  });
-
-  await mockCreateUIMessageStream._lastExecute({ writer: { write: jest.fn() } });
-
-  expect(provider).toHaveBeenCalledWith('gpt-4o-mini');
-  expect(mockGenerateText.mock.calls[0][0].model).toBe(titleModel);
-
-  mockGenerateText.mockResolvedValue({ text: 'Generated Title' });
-});
