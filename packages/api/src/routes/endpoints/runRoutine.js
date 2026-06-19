@@ -19,6 +19,7 @@ import { type } from '@lowdefy/helpers';
 import handleControl from './control/handleControl.js';
 import handleEndpointCall from './handleEndpointCall.js';
 import handleRequest from './handleRequest.js';
+import handleValidateSchema from './handleValidateSchema.js';
 
 async function runRoutine(context, routineContext, { routine }) {
   try {
@@ -30,6 +31,11 @@ async function runRoutine(context, routineContext, { routine }) {
       }
       if (routine.id?.startsWith?.('endpoint:')) {
         return await handleEndpointCall(context, routineContext, {
+          step: routine,
+        });
+      }
+      if (routine.id?.startsWith?.('validate:')) {
+        return await handleValidateSchema(context, routineContext, {
           step: routine,
         });
       }
@@ -48,7 +54,13 @@ async function runRoutine(context, routineContext, { routine }) {
     }
     throw new Error('Invalid routine.', { cause: { routine } });
   } catch (error) {
-    await context.handleError(error);
+    if (error.isReject) {
+      return { status: 'reject', error };
+    }
+    if (!error.handled) {
+      await context.handleError(error);
+      error.handled = true;
+    }
     return { status: 'error', error };
   }
 }

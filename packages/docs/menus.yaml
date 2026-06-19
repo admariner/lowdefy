@@ -103,6 +103,11 @@
           pageId: page-and-app-state
           properties:
             title: Page and App State
+        - id: selectors
+          type: MenuLink
+          pageId: selectors
+          properties:
+            title: Driving Selectors
         - id: lowdefy-api
           type: MenuLink
           pageId: lowdefy-api
@@ -163,6 +168,11 @@
           pageId: theming
           properties:
             title: Theming
+        - id: i18n
+          type: MenuLink
+          pageId: i18n
+          properties:
+            title: Internationalization
         - id: custom-html
           type: MenuLink
           pageId: custom-html
@@ -478,6 +488,12 @@
         - id: TitleInput
           type: MenuLink
           pageId: TitleInput
+        - id: TreeInput
+          type: MenuLink
+          pageId: TreeInput
+        - id: TreeMultipleSelector
+          type: MenuLink
+          pageId: TreeMultipleSelector
         - id: TreeSelector
           type: MenuLink
           pageId: TreeSelector
@@ -735,6 +751,9 @@
         - id: List
           type: MenuLink
           pageId: List
+        - id: ListSelector
+          type: MenuLink
+          pageId: ListSelector
         - id: MasonryList
           type: MenuLink
           pageId: MasonryList
@@ -884,6 +903,9 @@
         - id: SetGlobal
           type: MenuLink
           pageId: SetGlobal
+        - id: SetLocale
+          type: MenuLink
+          pageId: SetLocale
         - id: SetState
           type: MenuLink
           pageId: SetState
@@ -920,6 +942,9 @@
         - id: _base64
           type: MenuLink
           pageId: _base64
+        - id: _boolean
+          type: MenuLink
+          pageId: _boolean
         - id: _build
           type: MenuLink
           pageId: _build
@@ -986,6 +1011,9 @@
         - id: _jsonata
           type: MenuLink
           pageId: _jsonata
+        - id: _locale
+          type: MenuLink
+          pageId: _locale
         - id: _location
           type: MenuLink
           pageId: _location
@@ -1076,6 +1104,9 @@
         - id: _switch
           type: MenuLink
           pageId: _switch
+        - id: _t
+          type: MenuLink
+          pageId: _t
         - id: _theme
           type: MenuLink
           pageId: _theme

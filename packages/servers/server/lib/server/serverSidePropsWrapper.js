@@ -18,6 +18,7 @@ import path from 'path';
 import { createApiContext } from '@lowdefy/api';
 import { v4 as uuid } from 'uuid';
 
+import appMeta from '../build/appMeta.js';
 import config from '../build/config.js';
 import createLogger from './log/createLogger.js';
 import fileCache from './fileCache.js';
@@ -32,6 +33,7 @@ function serverSidePropsWrapper(handler) {
     const context = {
       // Important to give absolute path so Next can trace build files
       rid: uuid(),
+      appMeta,
       buildDirectory: path.join(process.cwd(), 'build'),
       config,
       fileCache,

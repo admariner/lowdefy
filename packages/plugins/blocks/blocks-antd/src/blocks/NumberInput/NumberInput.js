@@ -16,6 +16,7 @@
 
 import React from 'react';
 import { InputNumber } from 'antd';
+import { getLocaleDecimalSeparator } from '@lowdefy/helpers';
 
 import { withBlockDefaults } from '@lowdefy/block-utils';
 import Label from '../Label/Label.js';
@@ -37,6 +38,7 @@ const NumberInput = ({
   return (
     <Label
       blockId={blockId}
+      methods={methods}
       classNames={classNames}
       components={components}
       events={events}
@@ -54,7 +56,9 @@ const NumberInput = ({
             className={classNames.element}
             style={{ width: '100%', ...styles.element }}
             controls={properties.controls}
-            decimalSeparator={properties.decimalSeparator}
+            decimalSeparator={
+              properties.decimalSeparator ?? getLocaleDecimalSeparator(methods.getLocale?.()) ?? '.'
+            }
             disabled={properties.disabled || loading}
             formatter={properties.formatter}
             keyboard={properties.keyboard}

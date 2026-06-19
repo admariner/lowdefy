@@ -13,6 +13,8 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 */
+import { UserError } from '@lowdefy/errors';
+
 import runTest from '../test/runTest.js';
 
 test('single throw', async () => {
@@ -21,7 +23,10 @@ test('single throw', async () => {
   };
   const { res } = await runTest({ routine });
   expect(res.status).toEqual('error');
-  expect(res.error).toEqual(new Error('true'));
+  expect(res.error).toEqual(new UserError('true'));
+  expect(res.error).toBeInstanceOf(UserError);
+  expect(res.error.isLowdefyError).toBe(true);
+  expect(res.error.isReject).toBe(false);
 });
 
 test('throw at end of routine', async () => {
@@ -49,7 +54,7 @@ test('throw at end of routine', async () => {
     },
   ];
   const { res, context } = await runTest({ routine });
-  const error = new Error('Error has occurred');
+  const error = new UserError('Error has occurred');
   expect(res.status).toEqual('error');
   expect(res.error).toEqual(error);
   expect(context.logger.debug.mock.calls).toEqual([
@@ -122,7 +127,7 @@ test('throw in the middle of routine', async () => {
     },
   ];
   const { res, context } = await runTest({ routine });
-  const error = new Error('Error occurred between requests');
+  const error = new UserError('Error occurred between requests');
   expect(res.status).toEqual('error');
   expect(context.logger.debug.mock.calls).toEqual([
     [
@@ -176,7 +181,7 @@ test('multiple throws in routine', async () => {
     },
   ];
   const { res, context } = await runTest({ routine });
-  const error = new Error('Multiple throws in a routine');
+  const error = new UserError('Multiple throws in a routine');
   expect(res.status).toEqual('error');
   expect(context.logger.debug.mock.calls).toEqual([
     [
@@ -233,7 +238,7 @@ test('truthy guard statement throw', async () => {
     { ':return': { message: 'made it to the end' } },
   ];
   const { res, context } = await runTest({ routine });
-  const error = new Error('Error in guard statement');
+  const error = new UserError('Error in guard statement');
   expect(res.status).toEqual('error');
   expect(res.error).toEqual(error);
   expect(context.logger.debug.mock.calls).toEqual([
@@ -331,7 +336,7 @@ test('throw in a try block with missing catch', async () => {
     },
   ];
   const { res, context } = await runTest({ routine });
-  const error = new Error('Error occurred at the end');
+  const error = new UserError('Error occurred at the end');
   expect(res.status).toEqual('error');
   expect(res.error).toEqual(error);
   expect(context.logger.debug.mock.calls).toEqual([
@@ -381,7 +386,7 @@ test('throw in a try block with error in finally', async () => {
     },
   ];
   const { res, context } = await runTest({ routine });
-  const error = new Error('Error in finally');
+  const error = new UserError('Error in finally');
   expect(res.status).toEqual('error');
   expect(res.error).toEqual(error);
   expect(context.logger.debug.mock.calls).toEqual([
@@ -411,8 +416,8 @@ test('throw in a try block with error in finally', async () => {
     [{ event: 'debug_control_finally' }],
   ]);
   expect(context.logger.error.mock.calls).toEqual([
-    [{ event: 'error_control_throw', error: new Error('Error occurred at the end') }],
-    [{ event: 'error_control_throw', error: new Error('Error in catch') }],
+    [{ event: 'error_control_throw', error: new UserError('Error occurred at the end') }],
+    [{ event: 'error_control_throw', error: new UserError('Error in catch') }],
     [{ event: 'error_control_throw', error }],
   ]);
 });
@@ -435,7 +440,7 @@ test('throw in try block with cause', async () => {
     },
   ];
   const { res, context } = await runTest({ routine });
-  const error = new Error('Error occurred at the end of try', { cause: { by: 'Error cause' } });
+  const error = new UserError('Error occurred at the end of try', { cause: { by: 'Error cause' } });
   expect(res.status).toEqual('error');
   expect(res.error).toEqual(error);
   expect(context.logger.debug.mock.calls).toEqual([
@@ -484,7 +489,7 @@ test('throw in try block with empty catch', async () => {
     },
   ];
   const { res, context } = await runTest({ routine });
-  const error = new Error('Error occurred at the end of try');
+  const error = new UserError('Error occurred at the end of try');
   expect(res.status).toEqual('continue');
   expect(res.response).toEqual(undefined);
   expect(context.logger.debug.mock.calls).toEqual([
@@ -534,7 +539,7 @@ test('throw in try block with return in finally block', async () => {
     },
   ];
   const { res, context } = await runTest({ routine });
-  const error = new Error('Error occurred at the end of try');
+  const error = new UserError('Error occurred at the end of try');
   expect(res.status).toEqual('return');
   expect(res.response).toEqual({ message: 'Error ignored' });
   expect(context.logger.debug.mock.calls).toEqual([
@@ -595,7 +600,7 @@ test('throw in try block with request in finally block', async () => {
     },
   ];
   const { res, context } = await runTest({ routine });
-  const error = new Error('Error occurred at the end of try');
+  const error = new UserError('Error occurred at the end of try');
   expect(res.status).toEqual('error');
   expect(res.error).toEqual(error);
   expect(context.logger.debug.mock.calls).toEqual([

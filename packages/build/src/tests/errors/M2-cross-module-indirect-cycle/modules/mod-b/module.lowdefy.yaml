@@ -3,10 +3,6 @@ name: Module B
 dependencies:
   - id: mod-c
 
-exports:
-  components:
-    - id: comp-b
-
 components:
   - id: comp-b
     type: Component

@@ -15,7 +15,7 @@
 */
 
 import { ServerParser } from '@lowdefy/operators';
-import { _secret } from '@lowdefy/operators-js/operators/server';
+import { _app, _secret } from '@lowdefy/operators-js/operators/server';
 
 import createAdapter from './createAdapter.js';
 import createCallbacks from './callbacks/createCallbacks.js';
@@ -26,11 +26,12 @@ import createProviders from './createProviders.js';
 const nextAuthConfig = {};
 let initialized = false;
 
-function getNextAuthConfig({ authJson, logger, plugins, secrets }) {
+function getNextAuthConfig({ appMeta, authJson, logger, plugins, secrets }) {
   if (initialized) return nextAuthConfig;
 
   const operatorsParser = new ServerParser({
-    operators: { _secret },
+    lowdefyApp: appMeta,
+    operators: { _app, _secret },
     secrets,
     user: {},
   });

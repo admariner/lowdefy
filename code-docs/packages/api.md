@@ -106,11 +106,18 @@ Client Action (Endpoint)
 └───────────────────┘
      │          │
      ▼          ▼
- handleRequest  handleEndpointCall ──▶ runRoutine (child)
-     │
+ handleRequest  handleEndpointCall
+     │              │
+     │              ▼
+     │          invokeEndpoint ──▶ runRoutine (child)
+     │              ▲
+     │              │
+     │       callApi (resolver-side, constructed in callRequestResolver)
      ▼
    Response/Error
 ```
+
+`invokeEndpoint` is the shared chokepoint for endpoint-to-endpoint calls. Both the routine `CallApi` step (via `handleEndpointCall`) and the resolver-side `callApi` function (constructed in `callRequestResolver` and passed into the request resolver argument bag) flow through it. The routine-step path wraps the returned envelope with `addStepResult` and status mapping; the resolver path throws on `error`/`reject` and returns the response otherwise.
 
 ### Agent Flow
 
@@ -186,20 +193,21 @@ See [Agent System Architecture](../architecture/agent-system.md) for the complet
 | `checkConnectionRead.js`  | Verify read permissions on connection                  |
 | `checkConnectionWrite.js` | Verify write permissions on connection                 |
 | `validateSchemas.js`      | Validate properties against connection/request schemas |
-| `callRequestResolver.js`  | Execute the actual resolver function                   |
+| `callRequestResolver.js`  | Execute the resolver function. Constructs `callApi` (closing over `context` + `endpointDepth`) and threads it into the resolver argument bag. Lowdefy errors pass through unchanged; raw errors wrap into `RequestError` / `ServiceError`. |
 
 ### `/routes/endpoints/`
 
 | Module                    | Purpose                                                       |
 | ------------------------- | ------------------------------------------------------------- |
 | `callEndpoint.js`         | HTTP entry point for endpoint execution; blocks `InternalApi` |
-| `runRoutine.js`           | Dispatch steps by ID prefix: `request:`, `endpoint:`, control |
+| `runRoutine.js`           | Dispatch steps by ID prefix: `request:`, `endpoint:`, control. Catch sets `error.handled = true` so a single error crossing multiple `runRoutine` boundaries (e.g. a deep `callApi` chain) triggers `context.handleError` exactly once. |
 | `handleRequest.js`        | Execute a database/API request step                           |
-| `handleEndpointCall.js`   | Execute a `CallApi` step (server-side endpoint-to-endpoint)   |
+| `handleEndpointCall.js`   | Execute a `CallApi` step. Evaluates operator-form `endpointId` / `payload`, calls `invokeEndpoint`, then maps the returned envelope (`addStepResult` + status mapping). |
+| `invokeEndpoint.js`       | Shared helper: depth check → load config → authorize → build child `routineContext` → `runRoutine`. Used by `handleEndpointCall` (routine `CallApi` step) and `callApi` (resolver-side, constructed in `callRequestResolver`). |
 | `addStepResult.js`        | Store step results in `routineContext.steps`                  |
 | `getEndpointConfig.js`    | Load endpoint config from build artifacts                     |
 | `authorizeApiEndpoint.js` | Check user access to endpoint                                 |
-| `control/`                | Control flow handlers (if, for, try, switch, return, etc.)    |
+| `control/`                | Control flow handlers (if, for, try, switch, return, etc.). `controlThrow` and `controlReject` build `UserError` so routine-step and JS-boundary surfaces carry the same class for user-authored failures. `controlSetState` writes to `routineContext.state` — state is scoped to the routine frame, not the request. |
 
 ### `/routes/agent/`
 

@@ -1,13 +1,6 @@
 name: Admin Module
 description: Admin pages with menu
 
-exports:
-  pages:
-    - id: settings
-    - id: users
-  menus:
-    - id: default
-
 vars:
   section_title:
     type: string

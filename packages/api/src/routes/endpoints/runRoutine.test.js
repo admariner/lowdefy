@@ -14,6 +14,8 @@
   limitations under the License.
 */
 
+import { jest } from '@jest/globals';
+
 import runTest from './test/runTest.js';
 
 test('single stage', async () => {
@@ -326,6 +328,35 @@ test('_sum operator computes sum of payload values', async () => {
   const { res, context, routineContext } = await runTest({ routine, payload: { a: 10, b: 5 } });
   expect(res.status).toEqual('continue');
   expect(routineContext.steps).toEqual({ test_request: 15 });
+});
+
+test('catch sets error.handled and calls handleError once for a single thrown error', async () => {
+  // ':unknown' triggers handleControl to throw synchronously, exercising the
+  // catch in runRoutine. The catch should set error.handled and call
+  // context.handleError exactly once.
+  const routine = { ':unknown': {} };
+  const { res, context } = await runTest({ routine });
+  expect(res.status).toEqual('error');
+  expect(res.error.handled).toBe(true);
+  // handleError in testContext calls logger.error(error). Filter by direct
+  // error arg so we count handleError invocations, not other logger.error calls.
+  const handleErrorCalls = context.logger.error.mock.calls.filter(
+    (call) => call[0] === res.error
+  );
+  expect(handleErrorCalls.length).toBe(1);
+});
+
+test('handleError skipped when error.handled is already true', async () => {
+  const { default: runRoutine } = await import('./runRoutine.js');
+  const handleError = jest.fn();
+  const context = { handleError };
+  // First pass: null routine triggers `throw new Error('Invalid routine.')`
+  // inside runRoutine's try block. The catch sets handled=true and calls
+  // handleError once.
+  const res1 = await runRoutine(context, {}, { routine: null });
+  expect(res1.status).toBe('error');
+  expect(res1.error.handled).toBe(true);
+  expect(handleError).toHaveBeenCalledTimes(1);
 });
 
 test('combined operators in request properties', async () => {

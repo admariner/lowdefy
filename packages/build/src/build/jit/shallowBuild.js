@@ -44,6 +44,7 @@ import copyPublicFolder from '../copyPublicFolder.js';
 import testSchema from '../testSchema.js';
 import validateConfig from '../validateConfig.js';
 import writeApp from '../writeApp.js';
+import writeAppMeta from '../writeAppMeta.js';
 import writeAuth from '../writeAuth.js';
 import writeConfig from '../writeConfig.js';
 import writeConnections from '../writeConnections.js';
@@ -52,6 +53,8 @@ import writeApi from '../writeApi.js';
 import writeGlobal from '../writeGlobal.js';
 import writeJs from '../buildJs/writeJs.js';
 import writeLogger from '../writeLogger.js';
+import codegenI18nLocales from '../codegenI18nLocales.js';
+import writeI18n from '../writeI18n.js';
 import writeTheme from '../writeTheme.js';
 import writeMaps from '../writeMaps.js';
 import updateServerPackageJson from '../full/updateServerPackageJson.js';
@@ -151,6 +154,7 @@ async function shallowBuild(options) {
     await cleanBuildDirectory({ context });
     await writeSourcelessPages({ sourcelessPageArtifacts, context });
     await writeApp({ components, context });
+    await writeAppMeta({ components, context });
     await writeAuth({ components, context });
     await writeConnections({ components, context });
     await writeApi({ components, context });
@@ -158,6 +162,8 @@ async function shallowBuild(options) {
     await writeConfig({ components, context });
     await writeGlobal({ components, context });
     await writeTheme({ components, context });
+    await writeI18n({ components, context });
+    await codegenI18nLocales({ components, context });
     await writeLogger({ components, context });
     await writeMaps({ context });
     await context.writeBuildArtifact(
@@ -175,6 +181,10 @@ async function shallowBuild(options) {
     await context.writeBuildArtifact(
       'customTypesMap.json',
       JSON.stringify(options.customTypesMap ?? {})
+    );
+    await context.writeBuildArtifact(
+      'customMessagesMap.json',
+      JSON.stringify(options.customMessagesMap ?? {})
     );
     // Persist snapshot of installed packages for JIT missing-package detection.
     // Written as a build artifact so JIT builds compare against the skeleton

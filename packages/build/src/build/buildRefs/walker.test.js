@@ -14,6 +14,8 @@
   limitations under the License.
 */
 
+import path from 'path';
+
 import { jest } from '@jest/globals';
 
 import operators from '@lowdefy/operators-js/operators/build';
@@ -70,8 +72,6 @@ function createModuleEntry(consumerVars = {}, varDefs = {}, overrides = {}) {
         id: 'test:module.lowdefy.yaml:0',
         path: '/modules/test/module.lowdefy.yaml',
       },
-    exports:
-      overrides.exports ?? { pages: [], components: [], menus: [], connections: [], api: [] },
     connections: overrides.connections ?? {},
   };
 }
@@ -250,11 +250,6 @@ describe('_module.var propagation through WalkContext', () => {
 
 const testModuleEntry = {
   id: 'entry-id',
-  exports: {
-    pages: [{ id: 'settings' }, { id: 'dashboard' }],
-    connections: [{ id: 'users-db' }, { id: 'cache-db' }],
-    api: [{ id: 'invite-user' }, { id: 'remove-user' }],
-  },
   connections: {},
   moduleDependencies: {
     events: 'events-entry',
@@ -263,11 +258,6 @@ const testModuleEntry = {
 
 const eventsEntry = {
   id: 'events-entry',
-  exports: {
-    pages: [{ id: 'event-log' }],
-    connections: [{ id: 'events-db' }],
-    api: [{ id: 'send-event' }],
-  },
   connections: {},
 };
 
@@ -296,14 +286,13 @@ describe('_module.pageId resolution', () => {
     expect(result).toBe('entry-id/settings');
   });
 
-  test('string form throws for page not in exports', async () => {
+  test('string form returns scoped id without consulting any catalog', async () => {
     const ctx = createWalkContext({
       moduleEntry: testModuleEntry,
       buildContext: createModuleBuildContext(),
     });
-    await expect(resolve({ '_module.pageId': 'nonexistent' }, ctx)).rejects.toThrow(
-      'Module "entry-id" does not export page "nonexistent".'
-    );
+    const result = await resolve({ '_module.pageId': 'any-id-at-all' }, ctx);
+    expect(result).toBe('entry-id/any-id-at-all');
   });
 
   test('object form resolves cross-module page', async () => {
@@ -318,16 +307,16 @@ describe('_module.pageId resolution', () => {
     expect(result).toBe('events-entry/event-log');
   });
 
-  test('object form throws for page not in target exports', async () => {
+  test('object form returns scoped id without consulting target catalog', async () => {
     const ctx = createWalkContext({
       moduleEntry: testModuleEntry,
       buildContext: createModuleBuildContext(),
     });
-    await expect(
-      resolve({ '_module.pageId': { id: 'missing', module: 'events' } }, ctx)
-    ).rejects.toThrow(
-      'Module "entry-id" references page "missing" from "events" (entry "events-entry"), but that module does not export page "missing".'
+    const result = await resolve(
+      { '_module.pageId': { id: 'any-id', module: 'events' } },
+      ctx
     );
+    expect(result).toBe('events-entry/any-id');
   });
 
   test('throws for unknown dependency', async () => {
@@ -372,14 +361,13 @@ describe('_module.connectionId resolution', () => {
     expect(result).toBe('shared-mongodb');
   });
 
-  test('string form throws for connection not in exports', async () => {
+  test('string form returns scoped id without consulting any catalog', async () => {
     const ctx = createWalkContext({
       moduleEntry: testModuleEntry,
       buildContext: createModuleBuildContext(),
     });
-    await expect(resolve({ '_module.connectionId': 'missing' }, ctx)).rejects.toThrow(
-      'Module "entry-id" does not export connection "missing".'
-    );
+    const result = await resolve({ '_module.connectionId': 'any-id-at-all' }, ctx);
+    expect(result).toBe('entry-id/any-id-at-all');
   });
 
   test('object form resolves cross-module with target remapping', async () => {
@@ -419,14 +407,13 @@ describe('_module.endpointId resolution', () => {
     expect(result).toBe('entry-id/invite-user');
   });
 
-  test('string form throws for endpoint not in exports', async () => {
+  test('string form returns scoped id without consulting any catalog', async () => {
     const ctx = createWalkContext({
       moduleEntry: testModuleEntry,
       buildContext: createModuleBuildContext(),
     });
-    await expect(resolve({ '_module.endpointId': 'missing' }, ctx)).rejects.toThrow(
-      'Module "entry-id" does not export endpoint "missing".'
-    );
+    const result = await resolve({ '_module.endpointId': 'any-id-at-all' }, ctx);
+    expect(result).toBe('entry-id/any-id-at-all');
   });
 
   test('object form resolves cross-module endpoint', async () => {
@@ -609,17 +596,16 @@ describe('_module.*Id at app level (null moduleEntry)', () => {
     );
   });
 
-  test('_module.connectionId object form throws for nonexistent export at app level', async () => {
+  test('_module.connectionId object form at app level resolves without consulting target catalog', async () => {
     const ctx = createWalkContext({
       moduleEntry: null,
       buildContext: createModuleBuildContext(),
     });
-    await expect(
-      resolve(
-        { '_module.connectionId': { id: 'nonexistent-connection', module: 'events-entry' } },
-        ctx
-      )
-    ).rejects.toThrow('does not export connection "nonexistent-connection"');
+    const result = await resolve(
+      { '_module.connectionId': { id: 'any-connection', module: 'events-entry' } },
+      ctx
+    );
+    expect(result).toBe('events-entry/any-connection');
   });
 });
 
@@ -1140,5 +1126,398 @@ describe('module path resolution stores absolute path in refMap', () => {
       (entry) => entry.path === 'components/header.yaml'
     );
     expect(refEntry).toBeDefined();
+  });
+});
+
+describe('module ref JS path resolution (resolver / transformer / .js content)', () => {
+  // Absolute path to the shipped test-util resolver/transformer files. Using
+  // this as moduleRoot lets the walker rewrite produce a path the loader can
+  // actually import, exercising the end-to-end behavior.
+  const jsModuleRoot = path.resolve('src/test-utils/buildRefs');
+
+  test('module ref rewrites relative resolver against moduleRoot', async () => {
+    const buildContext = createBuildContext();
+    buildContext.modules = {};
+
+    const ctx = new WalkContext({
+      buildContext,
+      refId: 'test:module.lowdefy.yaml:0',
+      sourceRefId: null,
+      vars: {},
+      path: '',
+      currentFile: path.join(jsModuleRoot, 'module.lowdefy.yaml'),
+      moduleRoot: jsModuleRoot,
+      packageRoot: jsModuleRoot,
+      refChain: new Set([path.join(jsModuleRoot, 'module.lowdefy.yaml')]),
+      operators,
+      env: process.env,
+      dynamicIdentifiers,
+      shouldStop: null,
+    });
+
+    const node = {
+      _ref: { resolver: 'testBuildRefsResolver.js', path: 'target', vars: { var: 'v1' } },
+    };
+    const res = await resolve(node, ctx);
+
+    expect(buildContext.errors).toEqual([]);
+    // refDef.path was rewritten by the walker against moduleRoot before the
+    // resolver received it. The resolver call confirms the rewritten resolver
+    // path was loaded successfully — if it weren't, the import would have
+    // failed and no result would be returned.
+    expect(res).toEqual({
+      resolved: true,
+      path: path.resolve(jsModuleRoot, 'target'),
+      vars: { var: 'v1' },
+      stage: 'test',
+    });
+  });
+
+  test('module ref rewrites relative transformer against moduleRoot', async () => {
+    const buildContext = createBuildContext();
+    buildContext.modules = {};
+
+    mockReadConfigFile.mockImplementation((filePath) => {
+      if (filePath === path.join(jsModuleRoot, 'target.yaml')) {
+        return 'a: 1';
+      }
+      return null;
+    });
+
+    const ctx = new WalkContext({
+      buildContext,
+      refId: 'test:module.lowdefy.yaml:0',
+      sourceRefId: null,
+      vars: {},
+      path: '',
+      currentFile: path.join(jsModuleRoot, 'module.lowdefy.yaml'),
+      moduleRoot: jsModuleRoot,
+      packageRoot: jsModuleRoot,
+      refChain: new Set([path.join(jsModuleRoot, 'module.lowdefy.yaml')]),
+      operators,
+      env: process.env,
+      dynamicIdentifiers,
+      shouldStop: null,
+    });
+
+    const node = {
+      _ref: {
+        path: 'target.yaml',
+        transformer: 'testBuildRefsTransform.js',
+        vars: { var1: 'v1' },
+      },
+    };
+    const res = await resolve(node, ctx);
+
+    expect(buildContext.errors).toEqual([]);
+    expect(res).toEqual({
+      json: '{"a":1}',
+      add: 43,
+      var: 'v1',
+    });
+  });
+
+  test('module ref loads .js content from moduleRoot', async () => {
+    const buildContext = createBuildContext();
+    buildContext.modules = {};
+
+    const ctx = new WalkContext({
+      buildContext,
+      refId: 'test:module.lowdefy.yaml:0',
+      sourceRefId: null,
+      vars: {},
+      path: '',
+      currentFile: path.join(jsModuleRoot, 'module.lowdefy.yaml'),
+      moduleRoot: jsModuleRoot,
+      packageRoot: jsModuleRoot,
+      refChain: new Set([path.join(jsModuleRoot, 'module.lowdefy.yaml')]),
+      operators,
+      env: process.env,
+      dynamicIdentifiers,
+      shouldStop: null,
+    });
+
+    const node = { _ref: 'testBuildRefsAsyncFunction.js' };
+    const res = await resolve(node, ctx);
+
+    expect(buildContext.errors).toEqual([]);
+    // For .js content refs, getRefContent returns the imported default export
+    // directly — the function itself. Verify it was loaded by calling it.
+    expect(typeof res).toBe('function');
+    await expect(res()).resolves.toEqual({ async: true });
+  });
+
+  test('app-level resolver path is not rewritten (no moduleRoot)', async () => {
+    const buildContext = createBuildContext();
+
+    const ctx = new WalkContext({
+      buildContext,
+      refId: 'test:lowdefy.yaml:0',
+      sourceRefId: null,
+      vars: {},
+      path: '',
+      currentFile: 'lowdefy.yaml',
+      refChain: new Set(['lowdefy.yaml']),
+      operators,
+      env: process.env,
+      dynamicIdentifiers,
+      shouldStop: null,
+    });
+
+    const node = {
+      _ref: { resolver: 'src/test-utils/buildRefs/testBuildRefsResolver.js', path: 'target' },
+    };
+    const res = await resolve(node, ctx);
+
+    expect(buildContext.errors).toEqual([]);
+    expect(res).toEqual({
+      resolved: true,
+      path: 'target',
+      vars: {},
+      stage: 'test',
+    });
+  });
+
+  test('absolute resolver path is honored verbatim inside a module', async () => {
+    const buildContext = createBuildContext();
+    buildContext.modules = {};
+
+    const absResolver = path.resolve(jsModuleRoot, 'testBuildRefsResolver.js');
+
+    const ctx = new WalkContext({
+      buildContext,
+      refId: 'test:module.lowdefy.yaml:0',
+      sourceRefId: null,
+      vars: {},
+      path: '',
+      currentFile: path.join(jsModuleRoot, 'module.lowdefy.yaml'),
+      moduleRoot: jsModuleRoot,
+      packageRoot: jsModuleRoot,
+      refChain: new Set([path.join(jsModuleRoot, 'module.lowdefy.yaml')]),
+      operators,
+      env: process.env,
+      dynamicIdentifiers,
+      shouldStop: null,
+    });
+
+    const node = { _ref: { resolver: absResolver, path: 'target' } };
+    const res = await resolve(node, ctx);
+
+    expect(buildContext.errors).toEqual([]);
+    // refDef.path is also rewritten against moduleRoot for module refs.
+    expect(res).toEqual({
+      resolved: true,
+      path: path.resolve(jsModuleRoot, 'target'),
+      vars: {},
+      stage: 'test',
+    });
+  });
+
+  test('absolute transformer path is honored verbatim inside a module', async () => {
+    const buildContext = createBuildContext();
+    buildContext.modules = {};
+
+    mockReadConfigFile.mockImplementation((filePath) => {
+      if (filePath === path.join(jsModuleRoot, 'target.yaml')) {
+        return 'a: 1';
+      }
+      return null;
+    });
+
+    const absTransformer = path.resolve(jsModuleRoot, 'testBuildRefsTransform.js');
+
+    const ctx = new WalkContext({
+      buildContext,
+      refId: 'test:module.lowdefy.yaml:0',
+      sourceRefId: null,
+      vars: {},
+      path: '',
+      currentFile: path.join(jsModuleRoot, 'module.lowdefy.yaml'),
+      moduleRoot: jsModuleRoot,
+      packageRoot: jsModuleRoot,
+      refChain: new Set([path.join(jsModuleRoot, 'module.lowdefy.yaml')]),
+      operators,
+      env: process.env,
+      dynamicIdentifiers,
+      shouldStop: null,
+    });
+
+    const node = {
+      _ref: { path: 'target.yaml', transformer: absTransformer, vars: { var1: 'v1' } },
+    };
+    const res = await resolve(node, ctx);
+
+    expect(buildContext.errors).toEqual([]);
+    expect(res).toEqual({ json: '{"a":1}', add: 43, var: 'v1' });
+  });
+
+  test('global context.refResolver stays anchored to app config dir, not moduleRoot', async () => {
+    const buildContext = createBuildContext();
+    buildContext.modules = {};
+    // Global default lives on the build context — must resolve from the host
+    // app's config directory regardless of where the consuming ref originates.
+    buildContext.refResolver = 'src/test-utils/buildRefs/testBuildRefsResolver.js';
+
+    // Use a moduleRoot that does NOT contain the resolver file. If the walker
+    // were to (incorrectly) rewrite context.refResolver against moduleRoot,
+    // the loader would fail to find it and the resolver would not run.
+    const someUnrelatedModuleRoot = path.resolve('src/test-utils');
+
+    const ctx = new WalkContext({
+      buildContext,
+      refId: 'test:module.lowdefy.yaml:0',
+      sourceRefId: null,
+      vars: {},
+      path: '',
+      currentFile: path.join(someUnrelatedModuleRoot, 'module.lowdefy.yaml'),
+      moduleRoot: someUnrelatedModuleRoot,
+      packageRoot: someUnrelatedModuleRoot,
+      refChain: new Set([path.join(someUnrelatedModuleRoot, 'module.lowdefy.yaml')]),
+      operators,
+      env: process.env,
+      dynamicIdentifiers,
+      shouldStop: null,
+    });
+
+    const node = { _ref: 'target' };
+    const res = await resolve(node, ctx);
+
+    expect(buildContext.errors).toEqual([]);
+    expect(res).toEqual({
+      resolved: true,
+      path: path.resolve(someUnrelatedModuleRoot, 'target'),
+      vars: {},
+      stage: 'test',
+    });
+  });
+
+  test('module ref resolver escaping the package root throws', async () => {
+    const buildContext = createBuildContext();
+    buildContext.modules = {};
+
+    const ctx = new WalkContext({
+      buildContext,
+      refId: 'test:page.yaml:0',
+      sourceRefId: null,
+      vars: {},
+      path: '',
+      currentFile: '/modules/app/pages/page.yaml',
+      moduleRoot: '/modules/app',
+      packageRoot: '/modules/app',
+      refChain: new Set(['/modules/app/pages/page.yaml']),
+      operators,
+      env: process.env,
+      dynamicIdentifiers,
+      shouldStop: null,
+    });
+
+    const node = { _ref: { resolver: '../escape.js', path: 'target' } };
+    await expect(resolve(node, ctx)).rejects.toThrow(
+      /Module ref resolver ".*escape\.js" escapes the package root\./
+    );
+  });
+
+  test('module ref transformer escaping the package root throws', async () => {
+    const buildContext = createBuildContext();
+    buildContext.modules = {};
+
+    const ctx = new WalkContext({
+      buildContext,
+      refId: 'test:page.yaml:0',
+      sourceRefId: null,
+      vars: {},
+      path: '',
+      currentFile: '/modules/app/pages/page.yaml',
+      moduleRoot: '/modules/app',
+      packageRoot: '/modules/app',
+      refChain: new Set(['/modules/app/pages/page.yaml']),
+      operators,
+      env: process.env,
+      dynamicIdentifiers,
+      shouldStop: null,
+    });
+
+    const node = { _ref: { path: 'target.yaml', transformer: '../escape.js' } };
+    await expect(resolve(node, ctx)).rejects.toThrow(
+      /Module ref transformer ".*escape\.js" escapes the package root\./
+    );
+  });
+
+  test('absolute resolver outside the package root throws', async () => {
+    const buildContext = createBuildContext();
+    buildContext.modules = {};
+
+    const ctx = new WalkContext({
+      buildContext,
+      refId: 'test:page.yaml:0',
+      sourceRefId: null,
+      vars: {},
+      path: '',
+      currentFile: '/modules/app/pages/page.yaml',
+      moduleRoot: '/modules/app',
+      packageRoot: '/modules/app',
+      refChain: new Set(['/modules/app/pages/page.yaml']),
+      operators,
+      env: process.env,
+      dynamicIdentifiers,
+      shouldStop: null,
+    });
+
+    const node = { _ref: { resolver: '/elsewhere/evil.js', path: 'target' } };
+    await expect(resolve(node, ctx)).rejects.toThrow(
+      'Module ref resolver "/elsewhere/evil.js" escapes the package root.'
+    );
+  });
+
+  test('absolute transformer outside the package root throws', async () => {
+    const buildContext = createBuildContext();
+    buildContext.modules = {};
+
+    const ctx = new WalkContext({
+      buildContext,
+      refId: 'test:page.yaml:0',
+      sourceRefId: null,
+      vars: {},
+      path: '',
+      currentFile: '/modules/app/pages/page.yaml',
+      moduleRoot: '/modules/app',
+      packageRoot: '/modules/app',
+      refChain: new Set(['/modules/app/pages/page.yaml']),
+      operators,
+      env: process.env,
+      dynamicIdentifiers,
+      shouldStop: null,
+    });
+
+    const node = { _ref: { path: 'target.yaml', transformer: '/elsewhere/evil.js' } };
+    await expect(resolve(node, ctx)).rejects.toThrow(
+      'Module ref transformer "/elsewhere/evil.js" escapes the package root.'
+    );
+  });
+
+  test('regression: module ref path escape message wording is unchanged', async () => {
+    const buildContext = createBuildContext();
+    buildContext.modules = {};
+
+    const ctx = new WalkContext({
+      buildContext,
+      refId: 'test:page.yaml:0',
+      sourceRefId: null,
+      vars: {},
+      path: '',
+      currentFile: '/modules/app/pages/page.yaml',
+      moduleRoot: '/modules/app',
+      packageRoot: '/modules/app',
+      refChain: new Set(['/modules/app/pages/page.yaml']),
+      operators,
+      env: process.env,
+      dynamicIdentifiers,
+      shouldStop: null,
+    });
+
+    const node = { _ref: '../escape.yaml' };
+    await expect(resolve(node, ctx)).rejects.toThrow(
+      'Module ref path "/modules/escape.yaml" escapes the package root.'
+    );
   });
 });

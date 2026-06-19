@@ -14,6 +14,8 @@
   limitations under the License.
 */
 
+import { UserError } from '@lowdefy/errors';
+
 async function controlThrow(context, routineContext, { control }) {
   const { evaluateOperators } = context;
   const { items } = routineContext;
@@ -23,17 +25,19 @@ async function controlThrow(context, routineContext, { control }) {
     input: control[':throw'],
     items,
     location,
-    steps: routineContext.steps,
     payload: routineContext.payload,
+    state: routineContext.state,
+    steps: routineContext.steps,
   });
   const cause = evaluateOperators({
     input: control[':cause'],
     items,
     location,
-    steps: routineContext.steps,
     payload: routineContext.payload,
+    state: routineContext.state,
+    steps: routineContext.steps,
   });
-  const error = new Error(message, { cause });
+  const error = new UserError(message, { cause });
 
   context.logger.error({
     event: 'error_control_throw',

@@ -49,11 +49,14 @@ import updateServerPackageJson from './build/full/updateServerPackageJson.js';
 import validateConfig from './build/validateConfig.js';
 import writeAgents from './build/writeAgents.js';
 import writeApp from './build/writeApp.js';
+import writeAppMeta from './build/writeAppMeta.js';
 import writeAuth from './build/writeAuth.js';
 import writeConfig from './build/writeConfig.js';
 import writeConnections from './build/writeConnections.js';
 import writeApi from './build/writeApi.js';
 import writeGlobal from './build/writeGlobal.js';
+import codegenI18nLocales from './build/codegenI18nLocales.js';
+import writeI18n from './build/writeI18n.js';
 import writeTheme from './build/writeTheme.js';
 import writeJs from './build/buildJs/writeJs.js';
 import writeLogger from './build/writeLogger.js';
@@ -136,6 +139,7 @@ async function build(options) {
     // Write steps - only if no errors
     await cleanBuildDirectory({ context });
     await writeApp({ components, context });
+    await writeAppMeta({ components, context });
     await writeAuth({ components, context });
     await writeConnections({ components, context });
     await writeAgents({ components, context });
@@ -145,6 +149,8 @@ async function build(options) {
     await writeConfig({ components, context });
     await writeGlobal({ components, context });
     await writeTheme({ components, context });
+    await writeI18n({ components, context });
+    await codegenI18nLocales({ components, context });
     await writeLogger({ components, context });
     await writeMaps({ components, context });
     await writeMenus({ components, context });

@@ -17,7 +17,11 @@
 import { jest } from '@jest/globals';
 
 import testContext from '../test-utils/testContext.js';
-import { resolveLocalManifest, resolveFullManifest } from './registerModules.js';
+import {
+  resolveLocalManifest,
+  resolveFullManifest,
+  validateRequiredVars,
+} from './registerModules.js';
 
 const mockReadConfigFile = jest.fn();
 
@@ -151,33 +155,17 @@ test('resolveLocalManifest throws when module.lowdefy.yaml is not found', async 
   ).rejects.toThrow('Referenced file does not exist');
 });
 
-test('resolveLocalManifest throws when required var is missing', async () => {
-  const context = createTestContext();
-  const files = [
-    {
-      path: '/modules/my-mod/module.lowdefy.yaml',
-      content: `
-vars:
-  apiKey:
-    required: true
-    description: The API key for the service
-pages: []
-`,
+test('validateRequiredVars throws when required var is missing', () => {
+  const varDefs = {
+    apiKey: {
+      required: true,
+      description: 'The API key for the service',
     },
-  ];
-  mockReadConfigFile.mockImplementation(readConfigFileMockImplementation(files));
+  };
 
-  await expect(
-    resolveLocalManifest({
-      entry: { id: 'my-mod', source: 'file:../mod', vars: {} },
-      resolvedPaths: {
-        packageRoot: '/modules/my-mod',
-        moduleRoot: '/modules/my-mod',
-        isLocal: true,
-      },
-      context,
-    })
-  ).rejects.toThrow('requires var "apiKey"');
+  expect(() => validateRequiredVars(varDefs, {}, 'my-mod', 'file:../mod')).toThrow(
+    'requires var "apiKey"'
+  );
 });
 
 test('validateVarTypes catches type mismatch after Phase 2', async () => {
@@ -454,7 +442,7 @@ pages: []
   ).rejects.toThrow('each item in "dependencies" must have a string "id"');
 });
 
-test('resolveLocalManifest parses exports object from manifest', async () => {
+test('resolveLocalManifest silently ignores manifest.exports', async () => {
   const context = createTestContext();
   const files = [
     {
@@ -463,14 +451,6 @@ test('resolveLocalManifest parses exports object from manifest', async () => {
 exports:
   pages:
     - id: company-list
-    - id: company-detail
-  components:
-    - id: company-selector
-      description: Dropdown selector
-  menus:
-    - id: default
-  connections:
-    - id: companies-db
   api:
     - id: save-company
 pages: []
@@ -489,100 +469,8 @@ pages: []
     context,
   });
 
-  expect(context.modules['my-mod'].exports).toEqual({
-    pages: [{ id: 'company-list' }, { id: 'company-detail' }],
-    components: [{ id: 'company-selector', description: 'Dropdown selector' }],
-    menus: [{ id: 'default' }],
-    connections: [{ id: 'companies-db' }],
-    api: [{ id: 'save-company' }],
-  });
-});
-
-test('resolveLocalManifest defaults exports sections to empty arrays when absent', async () => {
-  const context = createTestContext();
-  const files = [
-    {
-      path: '/modules/my-mod/module.lowdefy.yaml',
-      content: `
-pages: []
-`,
-    },
-  ];
-  mockReadConfigFile.mockImplementation(readConfigFileMockImplementation(files));
-
-  await resolveLocalManifest({
-    entry: { id: 'my-mod', source: 'file:../mod', vars: {} },
-    resolvedPaths: {
-      packageRoot: '/modules/my-mod',
-      moduleRoot: '/modules/my-mod',
-      isLocal: true,
-    },
-    context,
-  });
-
-  expect(context.modules['my-mod'].exports).toEqual({
-    pages: [],
-    components: [],
-    menus: [],
-    connections: [],
-    api: [],
-  });
-});
-
-test('resolveLocalManifest throws when exports section item has no string id', async () => {
-  const context = createTestContext();
-  const files = [
-    {
-      path: '/modules/my-mod/module.lowdefy.yaml',
-      content: `
-exports:
-  pages:
-    - description: Missing id
-pages: []
-`,
-    },
-  ];
-  mockReadConfigFile.mockImplementation(readConfigFileMockImplementation(files));
-
-  await expect(
-    resolveLocalManifest({
-      entry: { id: 'my-mod', source: 'file:../mod', vars: {} },
-      resolvedPaths: {
-        packageRoot: '/modules/my-mod',
-        moduleRoot: '/modules/my-mod',
-        isLocal: true,
-      },
-      context,
-    })
-  ).rejects.toThrow('each item in exports.pages must have a string "id"');
-});
-
-test('resolveLocalManifest throws for unknown exports sections', async () => {
-  const context = createTestContext();
-  const files = [
-    {
-      path: '/modules/my-mod/module.lowdefy.yaml',
-      content: `
-exports:
-  widgets:
-    - id: foo
-pages: []
-`,
-    },
-  ];
-  mockReadConfigFile.mockImplementation(readConfigFileMockImplementation(files));
-
-  await expect(
-    resolveLocalManifest({
-      entry: { id: 'my-mod', source: 'file:../mod', vars: {} },
-      resolvedPaths: {
-        packageRoot: '/modules/my-mod',
-        moduleRoot: '/modules/my-mod',
-        isLocal: true,
-      },
-      context,
-    })
-  ).rejects.toThrow('unknown exports section "widgets"');
+  expect(context.modules['my-mod']).toBeDefined();
+  expect(context.modules['my-mod'].exports).toBeUndefined();
 });
 
 test('resolveLocalManifest stores moduleDependencies from entry dependencies', async () => {
@@ -795,39 +683,24 @@ pages: []
   expect(context.modules['my-mod']).toBeDefined();
 });
 
-test('resolveLocalManifest throws for undeclared namespace property', async () => {
-  const context = createTestContext();
-  const files = [
-    {
-      path: '/modules/my-mod/module.lowdefy.yaml',
-      content: `
-vars:
-  ui:
-    type: object
-    properties:
-      theme:
-        type: string
-pages: []
-`,
+test('validateRequiredVars throws for undeclared namespace property', () => {
+  const varDefs = {
+    ui: {
+      type: 'object',
+      properties: {
+        theme: { type: 'string' },
+      },
     },
-  ];
-  mockReadConfigFile.mockImplementation(readConfigFileMockImplementation(files));
+  };
 
-  await expect(
-    resolveLocalManifest({
-      entry: {
-        id: 'my-mod',
-        source: 'file:../mod',
-        vars: { ui: { theme: 'dark', color: 'blue' } },
-      },
-      resolvedPaths: {
-        packageRoot: '/modules/my-mod',
-        moduleRoot: '/modules/my-mod',
-        isLocal: true,
-      },
-      context,
-    })
-  ).rejects.toThrow('undeclared property "color"');
+  expect(() =>
+    validateRequiredVars(
+      varDefs,
+      { ui: { theme: 'dark', color: 'blue' } },
+      'my-mod',
+      'file:../mod'
+    )
+  ).toThrow('undeclared property "color"');
 });
 
 test('resolveFullManifest resolves preserved content in second pass', async () => {

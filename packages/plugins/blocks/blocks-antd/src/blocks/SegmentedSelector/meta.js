@@ -16,6 +16,7 @@
 
 import LabelMeta from '../Label/meta.js';
 import label from '../../schemas/label.js';
+import { data, html, valueKey, primaryKey } from '../../schemas/dataOptions.js';
 import { disabled, inputTitle, sizeSmallDefaultLarge } from '../../schemas/inputProperties.js';
 
 export default {
@@ -34,6 +35,7 @@ export default {
       description: 'Trigger actions when selection is changed.',
       event: { value: 'The selected value.' },
     },
+    onTooltipClick: 'Trigger actions when the tooltip icon is clicked.',
   },
   properties: {
     type: 'object',
@@ -45,6 +47,10 @@ export default {
         description: "Option to fit width to its parent's width.",
       },
       disabled,
+      data,
+      html,
+      valueKey,
+      primaryKey,
       options: {
         default: [],
         oneOf: [
@@ -78,7 +84,6 @@ export default {
               'Options can either be an array of primitive values, or an array of label, value pairs.',
             items: {
               type: 'object',
-              required: ['value'],
               properties: {
                 label: {
                   type: 'string',

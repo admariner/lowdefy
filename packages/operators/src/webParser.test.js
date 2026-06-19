@@ -33,6 +33,7 @@ const context = {
       apiResponses: {},
       basePath: 'basePath',
       inputs: { id: true },
+      lowdefyApp: { app: true },
       lowdefyGlobal: { global: true },
       menus: [{ menus: true }],
       user: { user: true },
@@ -161,9 +162,13 @@ test('operator returns value with ~k present', () => {
             "configured": false,
             "pageId": "home.pageId",
           },
+          "i18n": undefined,
           "input": true,
           "jsMap": undefined,
           "location": "location.1",
+          "lowdefyApp": Object {
+            "app": true,
+          },
           "lowdefyGlobal": Object {
             "global": true,
           },
@@ -220,6 +225,9 @@ test('operator returns value with ~k present', () => {
                   },
                   "inputs": Object {
                     "id": true,
+                  },
+                  "lowdefyApp": Object {
+                    "app": true,
                   },
                   "lowdefyGlobal": Object {
                     "global": true,
@@ -282,6 +290,14 @@ test('operator returns value with ~k present', () => {
     ]
   `);
   expect(res.errors).toEqual([]);
+});
+
+test('forwards lowdefyApp into operator context', () => {
+  const input = { a: { _test: { params: true } } };
+  const parser = new WebParser({ context, operators });
+  parser.parse({ actions, args, arrayIndices, event, input, location });
+  const lastCall = operators._test.mock.calls[operators._test.mock.calls.length - 1][0];
+  expect(lastCall.lowdefyApp).toEqual({ app: true });
 });
 
 test('operator should be object with 1 key', () => {

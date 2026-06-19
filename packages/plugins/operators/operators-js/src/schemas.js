@@ -16,8 +16,10 @@
 
 // Shared operators
 export { default as _and } from './operators/shared/and.schema.js';
+export { default as _app } from './operators/shared/app.schema.js';
 export { default as _args } from './operators/shared/args.schema.js';
 export { default as _array } from './operators/shared/array.schema.js';
+export { default as _boolean } from './operators/shared/boolean.schema.js';
 export { default as _date } from './operators/shared/date.schema.js';
 export { default as _divide } from './operators/shared/divide.schema.js';
 export { default as _eq } from './operators/shared/eq.schema.js';
@@ -29,6 +31,7 @@ export { default as _if_none } from './operators/shared/if_none.schema.js';
 export { default as _if } from './operators/shared/if.schema.js';
 export { default as _intl } from './operators/shared/intl.schema.js';
 export { default as _json } from './operators/shared/json.schema.js';
+export { default as _locale } from './operators/shared/locale.schema.js';
 export { default as _log } from './operators/shared/log.schema.js';
 export { default as _lt } from './operators/shared/lt.schema.js';
 export { default as _lte } from './operators/shared/lte.schema.js';
@@ -47,6 +50,7 @@ export { default as _string } from './operators/shared/string.schema.js';
 export { default as _subtract } from './operators/shared/subtract.schema.js';
 export { default as _sum } from './operators/shared/sum.schema.js';
 export { default as _switch } from './operators/shared/switch.schema.js';
+export { default as _t } from './operators/shared/t.schema.js';
 export { default as _type } from './operators/shared/type.schema.js';
 export { default as _uri } from './operators/shared/uri.schema.js';
 export { default as _user } from './operators/shared/user.schema.js';

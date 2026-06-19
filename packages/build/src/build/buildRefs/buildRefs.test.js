@@ -1136,6 +1136,30 @@ _ref:
     const res = await buildRefs({ context });
     expect(res).toEqual({ async: true });
   });
+
+  test('buildRefs transformer error reports filePath as referencing manifest', async () => {
+    const files = [
+      {
+        path: 'lowdefy.yaml',
+        content: `
+_ref:
+  path: target.yaml
+  transformer: src/test-utils/buildRefs/testBuildRefsErrorResolver.js`,
+      },
+      {
+        path: 'target.yaml',
+        content: 'a: 1',
+      },
+    ];
+    mockReadConfigFile.mockImplementation(readConfigFileMockImplementation(files));
+    await buildRefs({ context });
+    expect(context.errors).toHaveLength(1);
+    expect(context.errors[0].message).toMatch(
+      /Error calling transformer ".*testBuildRefsErrorResolver\.js" from "target\.yaml"\./
+    );
+    // filePath points to the referencing manifest, not the transformer JS file.
+    expect(context.errors[0].filePath).toBe('lowdefy.yaml');
+  });
 });
 
 describe('resolver functions', () => {
@@ -2381,11 +2405,6 @@ size: large`,
           pages: [{ id: 'dashboard' }, { id: 'users-list' }],
           connections: [],
         },
-        exports: {
-          pages: [{ id: 'dashboard' }, { id: 'users-list' }],
-          connections: [],
-          api: [],
-        },
         moduleRoot: '/mod',
         packageRoot: '/mod',
         vars: {},
@@ -2441,11 +2460,6 @@ _ref:
           pages: [{ id: 'dashboard' }, { id: 'users-list' }],
           connections: [],
         },
-        exports: {
-          pages: [{ id: 'dashboard' }, { id: 'users-list' }],
-          connections: [],
-          api: [],
-        },
         moduleRoot: '/mod',
         packageRoot: '/mod',
         vars: {},
@@ -2485,11 +2499,6 @@ _ref:
           ],
           pages: [],
           connections: [{ id: 'user-contacts' }],
-        },
-        exports: {
-          pages: [],
-          connections: [{ id: 'user-contacts' }],
-          api: [],
         },
         moduleRoot: '/mod',
         packageRoot: '/mod',
@@ -2534,11 +2543,6 @@ _ref:
               component: { type: 'Box', endpoint: { _var: 'endpoint' } },
             },
           ],
-          pages: [],
-          connections: [],
-          api: [{ id: 'update-user' }],
-        },
-        exports: {
           pages: [],
           connections: [],
           api: [{ id: 'update-user' }],
@@ -2595,11 +2599,6 @@ _ref:
           pages: [{ id: 'dashboard' }],
           connections: [],
         },
-        exports: {
-          pages: [{ id: 'dashboard' }],
-          connections: [],
-          api: [],
-        },
         moduleRoot: '/mod',
         packageRoot: '/mod',
         vars: {},
@@ -2647,11 +2646,6 @@ _ref:
           pages: [],
           connections: [{ id: 'db' }],
         },
-        exports: {
-          pages: [],
-          connections: [{ id: 'db' }],
-          api: [],
-        },
         moduleRoot: '/mod',
         packageRoot: '/mod',
         vars: {},
@@ -2694,11 +2688,6 @@ _ref:
           components: [{ id: 'page', component: componentContent }],
           pages: [{ id: 'dashboard' }, { id: 'users-list' }],
           connections: [{ id: 'db' }, { id: 'user-contacts' }],
-        },
-        exports: {
-          pages: [{ id: 'dashboard' }, { id: 'users-list' }],
-          connections: [{ id: 'db' }, { id: 'user-contacts' }],
-          api: [],
         },
         moduleRoot: '/mod',
         packageRoot: '/mod',

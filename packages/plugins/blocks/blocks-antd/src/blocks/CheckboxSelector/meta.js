@@ -17,6 +17,7 @@
 import LabelMeta from '../Label/meta.js';
 import label from '../../schemas/label.js';
 import options from '../../schemas/options.js';
+import { data, html, valueKey, primaryKey } from '../../schemas/dataOptions.js';
 import { disabled, inputTitle } from '../../schemas/inputProperties.js';
 
 export default {
@@ -34,6 +35,7 @@ export default {
       description: 'Trigger actions when selection is changed.',
       event: { value: 'The selected value.' },
     },
+    onTooltipClick: 'Trigger actions when the tooltip icon is clicked.',
   },
   properties: {
     type: 'object',
@@ -65,6 +67,10 @@ export default {
         description: "Specifies wrapping of options. Applies when 'direction' is 'horizontal'.",
       },
       options,
+      data,
+      html,
+      valueKey,
+      primaryKey,
       label,
       title: inputTitle,
       theme: {

@@ -101,6 +101,8 @@ async function runTest({ routine, payload = {} }) {
     payload,
     items: {},
     arrayIndices: [],
+    state: {},
+    endpointDepth: 0,
   };
   const res = await runRoutine(context, routineContext, { routine });
   return { res, context, routineContext };

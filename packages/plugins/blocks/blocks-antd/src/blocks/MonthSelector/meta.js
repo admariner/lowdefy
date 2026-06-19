@@ -43,6 +43,7 @@ export default {
       description: 'Trigger actions when selection is changed.',
       event: { value: 'The selected month value.' },
     },
+    onTooltipClick: 'Trigger actions when the tooltip icon is clicked.',
   },
   properties: {
     type: 'object',
@@ -66,11 +67,10 @@ export default {
       disabledDates,
       format: {
         type: 'string',
-        default: 'YYYY-MM',
         description:
-          'Format in which to format the date value, eg. "MMMM YYYY" will format a date value of 1999-12-31 as "December 1999". The format has to conform to dayjs formats.',
+          'Format in which to format the date value, eg. "MMMM YYYY" will format a date value of 1999-12-31 as "December 1999". The format has to conform to dayjs formats. Defaults to the active locale\'s month format, or "YYYY-MM" when no locale is configured.',
       },
-      placeholder: { ...placeholder, default: 'Select Month' },
+      placeholder: { ...placeholder },
       showToday: {
         type: 'boolean',
         default: true,

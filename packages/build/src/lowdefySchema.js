@@ -1169,6 +1169,16 @@ export default {
             type: 'MenuGroup "type" should be a string.',
           },
         },
+        style: {
+          errorMessage: {
+            type: 'MenuGroup "style" should be an object, string, or array.',
+          },
+        },
+        class: {
+          errorMessage: {
+            type: 'MenuGroup "class" should be a string, array, or object.',
+          },
+        },
         properties: {
           type: 'object',
           errorMessage: {
@@ -1193,8 +1203,76 @@ export default {
         },
       },
     },
+    menuDivider: {
+      type: 'object',
+      additionalProperties: false,
+      required: ['id', 'type'],
+      properties: {
+        '~ignoreBuildChecks': {
+          oneOf: [
+            { const: true },
+            {
+              type: 'array',
+              items: {
+                type: 'string',
+                enum: [
+                  'state-refs',
+                  'payload-refs',
+                  'step-refs',
+                  'link-refs',
+                  'request-refs',
+                  'connection-refs',
+                  'types',
+                  'schema',
+                ],
+              },
+            },
+          ],
+        },
+        '~r': {},
+        '~l': {},
+        id: {
+          type: 'string',
+          errorMessage: {
+            type: 'MenuDivider "id" should be a string.',
+          },
+        },
+        type: {
+          type: 'string',
+          errorMessage: {
+            type: 'MenuDivider "type" should be a string.',
+          },
+        },
+        style: {
+          errorMessage: {
+            type: 'MenuDivider "style" should be an object, string, or array.',
+          },
+        },
+        class: {
+          errorMessage: {
+            type: 'MenuDivider "class" should be a string, array, or object.',
+          },
+        },
+        properties: {
+          type: 'object',
+          errorMessage: {
+            type: 'MenuDivider "properties" should be an object.',
+          },
+        },
+      },
+      errorMessage: {
+        type: 'MenuDivider should be an object.',
+        required: {
+          id: 'MenuDivider should have required property "id".',
+          type: 'MenuDivider should have required property "type".',
+        },
+      },
+    },
     menuItem: {
       anyOf: [
+        {
+          $ref: '#/definitions/menuDivider',
+        },
         {
           $ref: '#/definitions/menuGroup',
         },
@@ -1265,6 +1343,16 @@ export default {
           type: 'object',
           errorMessage: {
             type: 'MenuLink "input" should be an object.',
+          },
+        },
+        style: {
+          errorMessage: {
+            type: 'MenuLink "style" should be an object, string, or array.',
+          },
+        },
+        class: {
+          errorMessage: {
+            type: 'MenuLink "class" should be a string, array, or object.',
           },
         },
         properties: {
@@ -1456,6 +1544,21 @@ export default {
         type: 'App "version" should be a string.',
       },
     },
+    slug: {
+      type: 'string',
+      pattern: '^[a-z][a-z0-9]*(-[a-z0-9]+)*$',
+      errorMessage: {
+        type: 'App "slug" should be a string.',
+        pattern:
+          'App "slug" must be kebab-case: lowercase letters and digits, hyphen-separated, starting with a letter, no leading/trailing/consecutive hyphens, no underscores.',
+      },
+    },
+    description: {
+      type: 'string',
+      errorMessage: {
+        type: 'App "description" should be a string.',
+      },
+    },
     app: {
       $ref: '#/definitions/app',
     },
@@ -1511,6 +1614,64 @@ export default {
             'Page id to use as homepage. When visiting home route "/", the router will redirect to this page. If not provided, the first page in default or first menu will be used as the homePageId.',
           errorMessage: {
             type: 'App "config.homePageId" should be a string.',
+          },
+        },
+        i18n: {
+          type: 'object',
+          additionalProperties: false,
+          required: ['defaultLocale', 'locales'],
+          properties: {
+            '~k': {},
+            '~r': {},
+            '~l': {},
+            defaultLocale: {
+              type: 'string',
+              description: 'BCP 47 locale code used when no user preference or browser match is available.',
+            },
+            locales: {
+              type: 'array',
+              minItems: 1,
+              items: {
+                type: 'object',
+                additionalProperties: false,
+                required: ['code'],
+                properties: {
+                  '~k': {},
+                  '~r': {},
+                  '~l': {},
+                  code: {
+                    type: 'string',
+                    description: 'BCP 47 locale code (e.g. "en-US", "de-DE").',
+                  },
+                  label: {
+                    type: 'string',
+                    description: 'Human-readable label for language pickers.',
+                  },
+                  antd: {
+                    type: 'string',
+                    description: 'Ant Design locale module name (e.g. "en_US"). Loaded from antd/locale/{name}.',
+                  },
+                  dayjs: {
+                    type: 'string',
+                    description: 'Dayjs locale id (e.g. "en", "zh-cn").',
+                  },
+                },
+              },
+            },
+            messages: {
+              type: 'object',
+              description: 'Translation messages keyed by locale code. Each locale maps to an object of { key: ICU MessageFormat string }.',
+              additionalProperties: {
+                type: 'object',
+              },
+            },
+          },
+          errorMessage: {
+            type: 'App "config.i18n" should be an object.',
+            required: {
+              defaultLocale: 'App "config.i18n" requires "defaultLocale".',
+              locales: 'App "config.i18n" requires a "locales" array.',
+            },
           },
         },
       },

@@ -338,6 +338,73 @@ test('menus schema warning', () => {
   expect(mockLogWarn).toHaveBeenCalledWith('must NOT have additional properties - "pageId"');
 });
 
+test('valid slug emits no warnings', () => {
+  const cases = ['my-app', 'a', 'a-b-c-1', 'app1', 'a1-b2-c3'];
+  cases.forEach((slug) => {
+    mockLogWarn.mockReset();
+    const components = { lowdefy: '1.0.0', slug };
+    testSchema({ components, context });
+    expect(mockLogWarn).not.toHaveBeenCalled();
+  });
+});
+
+test('omitted slug emits no warnings', () => {
+  const components = { lowdefy: '1.0.0' };
+  testSchema({ components, context });
+  expect(mockLogWarn).not.toHaveBeenCalled();
+});
+
+test('invalid slug emits kebab-case warning', () => {
+  const components = { lowdefy: '1.0.0', slug: 'My-App' };
+  testSchema({ components, context });
+  expect(mockLogWarn).toHaveBeenCalledWith(
+    'App "slug" must be kebab-case: lowercase letters and digits, hyphen-separated, starting with a letter, no leading/trailing/consecutive hyphens, no underscores.'
+  );
+});
+
+test('invalid slugs are rejected', () => {
+  const invalid = [
+    'My-App',
+    'my_app',
+    '-leading',
+    'trailing-',
+    'double--hyphen',
+    '1starts-with-digit',
+    'has space',
+    '',
+  ];
+  invalid.forEach((slug) => {
+    mockLogWarn.mockReset();
+    const components = { lowdefy: '1.0.0', slug };
+    testSchema({ components, context });
+    expect(mockLogWarn).toHaveBeenCalled();
+  });
+});
+
+test('non-string slug emits type warning', () => {
+  const components = { lowdefy: '1.0.0', slug: 42 };
+  testSchema({ components, context });
+  expect(mockLogWarn).toHaveBeenCalledWith('App "slug" should be a string.');
+});
+
+test('description string emits no warnings', () => {
+  const components = { lowdefy: '1.0.0', description: 'A useful app.' };
+  testSchema({ components, context });
+  expect(mockLogWarn).not.toHaveBeenCalled();
+});
+
+test('omitted description emits no warnings', () => {
+  const components = { lowdefy: '1.0.0' };
+  testSchema({ components, context });
+  expect(mockLogWarn).not.toHaveBeenCalled();
+});
+
+test('non-string description emits type warning', () => {
+  const components = { lowdefy: '1.0.0', description: 42 };
+  testSchema({ components, context });
+  expect(mockLogWarn).toHaveBeenCalledWith('App "description" should be a string.');
+});
+
 test('missing lowdefy version schema warning', () => {
   const components = {
     pages: [

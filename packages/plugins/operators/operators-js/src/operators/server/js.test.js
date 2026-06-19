@@ -28,10 +28,14 @@ const map = {
   c3: ({ user }) => {
     return user('u');
   },
+  c4: ({ lowdefyApp }) => {
+    return lowdefyApp('slug');
+  },
 };
 
 test('js default', async () => {
   const lowdefyOperators = {
+    _app: jest.fn(),
     _payload: jest.fn(),
     _secret: jest.fn(),
     _user: jest.fn(),
@@ -44,6 +48,7 @@ test('js default', async () => {
   expect(lowdefyOperators._payload.mock.calls[0][0]['params']).toEqual('p');
   expect(lowdefyOperators._secret.mock.calls[0][0]['params']).toEqual('s');
   expect(lowdefyOperators._user.mock.calls[0][0]['params']).toEqual('u');
+  expect(lowdefyOperators._app.mock.calls[0][0]['params']).toEqual('slug');
 });
 
 test('js throw when invalid javascript function', async () => {

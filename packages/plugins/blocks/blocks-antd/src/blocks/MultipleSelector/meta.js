@@ -17,6 +17,7 @@
 import LabelMeta from '../Label/meta.js';
 import label from '../../schemas/label.js';
 import icon from '../../schemas/icon.js';
+import { data, html, valueKey, primaryKey } from '../../schemas/dataOptions.js';
 import {
   disabled,
   autoFocus,
@@ -51,6 +52,7 @@ export default {
       description: 'Trigger actions when input is changed.',
       event: { value: 'The search input value.' },
     },
+    onTooltipClick: 'Trigger actions when the tooltip icon is clicked.',
   },
   properties: {
     type: 'object',
@@ -80,6 +82,10 @@ export default {
       },
       disabled,
       label,
+      data,
+      html,
+      valueKey,
+      primaryKey,
       options: {
         default: [],
         oneOf: [
@@ -113,7 +119,6 @@ export default {
               'Options can either be an array of primitive values, on an array of label, value pairs.',
             items: {
               type: 'object',
-              required: ['value'],
               properties: {
                 label: {
                   type: 'string',
@@ -157,6 +162,14 @@ export default {
                   description: 'Css style to applied to option.',
                   docs: {
                     displayType: 'yaml',
+                  },
+                },
+                color: {
+                  type: 'string',
+                  description:
+                    'Color applied when this option is selected: drives the tag/pill color in the input and tints the option in the dropdown. An explicit `tag.color` takes precedence.',
+                  docs: {
+                    displayType: 'color',
                   },
                 },
                 tag: {
@@ -230,7 +243,12 @@ export default {
         type: 'string',
         description: 'Multiple selector label title - supports html.',
       },
-      variant,
+      variant: {
+        type: 'string',
+        enum: ['solid', 'outlined', 'filled', 'borderless'],
+        description:
+          'Tag/input variant. `solid` renders filled colored tags; `outlined` renders outlined colored tags. `filled`/`borderless` are the antd input styles.',
+      },
       renderTags: {
         type: 'boolean',
         description:

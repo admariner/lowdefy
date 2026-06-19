@@ -42,6 +42,7 @@ export default {
     },
     onFocus: 'Trigger action when number input gets focus.',
     onPressEnter: 'Trigger actions when input is focused and enter is pressed.',
+    onTooltipClick: 'Trigger actions when the tooltip icon is clicked.',
   },
   properties: {
     type: 'object',
@@ -93,8 +94,8 @@ export default {
       },
       decimalSeparator: {
         type: 'string',
-        default: '.',
-        description: 'Separator between number and decimal places.',
+        description:
+          'Separator between number and decimal places. Defaults to the active locale\'s decimal separator (e.g. "," for de-DE, "." for en-US), or "." when no locale is configured.',
       },
       precision: {
         type: 'integer',

@@ -15,11 +15,13 @@
 - _ref: concepts/modules.yaml
 - _ref: concepts/module-authoring.yaml
 - _ref: concepts/page-and-app-state.yaml
+- _ref: concepts/selectors.yaml
 - _ref: concepts/blocks.yaml
 - _ref: concepts/layout-overview.yaml
 - _ref: concepts/connections-and-requests.yaml
 - _ref: concepts/events-and-actions.yaml
 - _ref: concepts/keyboard-shortcuts.yaml
+- _ref: concepts/i18n.yaml
 - _ref: concepts/operators.yaml
 - _ref: concepts/secrets.yaml
 - _ref: concepts/logger.yaml
@@ -99,6 +101,8 @@
 - _ref: blocks/input/TiptapInput.yaml
 - _ref: blocks/input/TiptapMentionInput.yaml
 - _ref: blocks/input/TitleInput.yaml
+- _ref: blocks/input/TreeInput.yaml
+- _ref: blocks/input/TreeMultipleSelector.yaml
 - _ref: blocks/input/TreeSelector.yaml
 - _ref: blocks/input/WeekSelector.yaml
 
@@ -181,6 +185,7 @@
 
 - _ref: blocks/list/ControlledList.yaml
 - _ref: blocks/list/List.yaml
+- _ref: blocks/list/ListSelector.yaml
 - _ref: blocks/list/MasonryList.yaml
 # - _ref: blocks/list/TimelineList.yaml # TODO:
 
@@ -223,6 +228,7 @@
 - _ref: actions/SetDarkMode.yaml
 - _ref: actions/SetFocus.yaml
 - _ref: actions/SetGlobal.yaml
+- _ref: actions/SetLocale.yaml
 - _ref: actions/SetState.yaml
 - _ref: actions/Throw.yaml
 - _ref: actions/UpdateSession.yaml
@@ -232,9 +238,11 @@
 - _ref: operators/_actions.yaml
 - _ref: operators/_and.yaml
 - _ref: operators/_api.yaml
+- _ref: operators/_app.yaml
 - _ref: operators/_args.yaml
 - _ref: operators/_array.yaml
 - _ref: operators/_base64.yaml
+- _ref: operators/_boolean.yaml
 - _ref: operators/_build.yaml
 - _ref: operators/_change_case.yaml
 - _ref: operators/_date.yaml
@@ -257,6 +265,7 @@
 - _ref: operators/_js.yaml
 - _ref: operators/_json.yaml
 - _ref: operators/_jsonata.yaml
+- _ref: operators/_locale.yaml
 - _ref: operators/_location.yaml
 - _ref: operators/_log.yaml
 - _ref: operators/_lt.yaml
@@ -287,6 +296,7 @@
 - _ref: operators/_subtract.yaml
 - _ref: operators/_sum.yaml
 - _ref: operators/_switch.yaml
+- _ref: operators/_t.yaml
 - _ref: operators/_theme.yaml
 - _ref: operators/_type.yaml
 - _ref: operators/_uri.yaml

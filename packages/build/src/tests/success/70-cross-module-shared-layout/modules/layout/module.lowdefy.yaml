@@ -6,10 +6,6 @@ vars:
     type: string
     default: Default Site
 
-exports:
-  components:
-    - id: page-wrapper
-
 components:
   - id: page-wrapper
     type: Component

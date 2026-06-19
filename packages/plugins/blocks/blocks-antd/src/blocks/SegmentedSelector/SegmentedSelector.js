@@ -20,8 +20,8 @@ import { renderHtml, withBlockDefaults } from '@lowdefy/block-utils';
 import { type } from '@lowdefy/helpers';
 
 import Label from '../Label/Label.js';
-import getValueIndex from '../../getValueIndex.js';
-import getUniqueValues from '../../getUniqueValues.js';
+import getSelectedIndex from '../../getSelectedIndex.js';
+import useSelectorOptions from '../../useSelectorOptions.js';
 import withTheme from '../withTheme.js';
 
 const SegmentedSelector = ({
@@ -37,10 +37,11 @@ const SegmentedSelector = ({
   validation,
   value,
 }) => {
-  const uniqueValueOptions = getUniqueValues(properties.options || []);
+  const uniqueValueOptions = useSelectorOptions({ properties, methods });
   return (
     <Label
       blockId={blockId}
+      methods={methods}
       classNames={classNames}
       components={{ Icon }}
       events={events}
@@ -82,7 +83,7 @@ const SegmentedSelector = ({
             disabled={properties.disabled || loading}
             vertical={properties.vertical}
             shape={properties.shape}
-            value={type.isNone(value) ? undefined : getValueIndex(value, properties.options || [])}
+            value={type.isNone(value) ? undefined : getSelectedIndex(value, uniqueValueOptions, { properties })}
             onChange={(index) => {
               const val = type.isPrimitive(uniqueValueOptions[index])
                 ? uniqueValueOptions[index]

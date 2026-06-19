@@ -3,10 +3,6 @@ name: Layout
 dependencies:
   - id: events
 
-exports:
-  components:
-    - id: page-wrapper
-
 components:
   - id: page-wrapper
     type: Component

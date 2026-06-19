@@ -18,7 +18,7 @@ import { ConfigError } from '@lowdefy/errors';
 
 import getUserJavascriptFunction from './getUserJavascriptFunction.js';
 
-async function runTransformer({ context, input, refDef }) {
+async function runTransformer({ context, input, refDef, referencedFrom }) {
   if (refDef.transformer) {
     const transformerFn = await getUserJavascriptFunction({
       context,
@@ -29,7 +29,7 @@ async function runTransformer({ context, input, refDef }) {
     } catch (error) {
       throw new ConfigError(
         `Error calling transformer "${refDef.transformer}" from "${refDef.path}".`,
-        { cause: error, filePath: refDef.transformer }
+        { cause: error, filePath: referencedFrom, lineNumber: refDef.lineNumber }
       );
     }
   }

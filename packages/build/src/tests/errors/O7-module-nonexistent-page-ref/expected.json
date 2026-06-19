@@ -3,7 +3,7 @@
     {
       "mode": "prod",
       "expectThrow": true,
-      "errorContains": ["does not export page \"nonexistent-page\"", "widget"]
+      "errorContains": ["non-existent page", "widget/nonexistent-page", "widget/main"]
     }
   ]
 }

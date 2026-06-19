@@ -20,6 +20,7 @@ import {
   createAgentUIStream,
   createUIMessageStream,
   createUIMessageStreamResponse,
+  generateText,
   pruneMessages,
   stepCountIs,
   hasToolCall,
@@ -86,7 +87,7 @@ const hookMapping = {
   onStepFinish: 'onStepFinish',
 };
 
-function createHookCallbacks({ hooks, callEndpoint }) {
+function createHookCallbacks({ hooks, callEndpoint, locale }) {
   if (!hooks) return {};
 
   const callbacks = {};
@@ -95,7 +96,7 @@ function createHookCallbacks({ hooks, callEndpoint }) {
     if (!endpointIds || endpointIds.length === 0) continue;
 
     callbacks[sdkKey] = (event) => {
-      const payload = cleanHookEvent(event);
+      const payload = { ...cleanHookEvent(event), locale };
       for (const endpointId of endpointIds) {
         callEndpoint(endpointId, { payload }).catch(() => {});
       }
@@ -122,6 +123,17 @@ function convertDataUrlsToBase64(messages) {
   });
 }
 
+// Concatenate the text parts of the first user message — used as the source
+// for generateTitle.
+function getFirstUserText(messages) {
+  const firstUser = messages.find((msg) => msg.role === 'user');
+  if (!firstUser) return '';
+  return (firstUser.parts ?? [])
+    .filter((part) => part.type === 'text')
+    .map((part) => part.text)
+    .join('');
+}
+
 async function handleAgentChat({ connection, properties, context }) {
   const { agent, messages: rawMessages } = properties;
   const messages = convertDataUrlsToBase64(rawMessages);
@@ -136,9 +148,11 @@ async function handleAgentChat({ connection, properties, context }) {
 
   const model = connection.provider(agent.properties.model);
 
+  const locale = context.i18n?.active;
   const hookCallbacks = createHookCallbacks({
     hooks: agent.hooks,
     callEndpoint: context.callEndpoint,
+    locale,
   });
 
   // Prepend page context to instructions when pageContext is enabled
@@ -207,11 +221,17 @@ async function handleAgentChat({ connection, properties, context }) {
   const timeoutConfig =
     agent.properties.timeout != null ? { timeout: agent.properties.timeout } : {};
 
+  const titleEnabled = agent.properties.generateTitle === true;
+
   const stream = createUIMessageStream({
     execute: async ({ writer }) => {
       const usageAccumulator = createUsageAccumulator();
       const steps = [];
       let agentStream;
+      // The AI SDK delivers the full updated UI message list (input + generated
+      // assistant reply) to the stream-level onFinish. Capture it so onFinish
+      // hooks persist the complete conversation, not just the request input.
+      let capturedMessages;
 
       function collectStep(stepResult) {
         usageAccumulator.add(stepResult);
@@ -222,6 +242,36 @@ async function handleAgentChat({ connection, properties, context }) {
           toolResults: stepResult.toolResults,
           finishReason: stepResult.finishReason,
         });
+      }
+
+      function captureMessages({ messages: finalMessages }) {
+        capturedMessages = finalMessages;
+      }
+
+      // Generate a short conversation title from the first user message,
+      // concurrently with the agent stream. The data-chat-title part fires the
+      // block's onTitleGenerated event. Only on the first turn; failures are
+      // non-fatal.
+      let titlePromise;
+      const isFirstTurn = !messages.some((msg) => msg.role === 'assistant');
+      if (titleEnabled && isFirstTurn) {
+        const firstUserText = getFirstUserText(messages);
+        if (firstUserText) {
+          titlePromise = generateText({
+            model,
+            maxOutputTokens: 20,
+            prompt: `Generate a concise 3-6 word title for a conversation that begins with this message. Reply with only the title, no quotes:\n\n${firstUserText}`,
+          })
+            .then(({ text }) => {
+              const title = text.trim();
+              if (title) {
+                writer.write({ type: 'data-chat-title', data: { title } });
+              }
+            })
+            .catch((error) => {
+              console.warn(`generateTitle failed: ${error.message}`);
+            });
+        }
       }
 
       if (pruneConfig) {
@@ -245,6 +295,7 @@ async function handleAgentChat({ connection, properties, context }) {
         });
         agentStream = result.toUIMessageStream({
           originalMessages: validatedMessages,
+          onFinish: captureMessages,
         });
       } else {
         // createAgentUIStream validates UIMessages, converts to ModelMessages,
@@ -255,6 +306,7 @@ async function handleAgentChat({ connection, properties, context }) {
           uiMessages: messages,
           ...timeoutConfig,
           onStepFinish: collectStep,
+          onFinish: captureMessages,
         });
       }
 
@@ -271,16 +323,21 @@ async function handleAgentChat({ connection, properties, context }) {
       } catch (error) {
         writer.write({ type: 'error', errorText: writer.onError(error) });
       }
+      // Ensure the title (if any) is written before the stream closes.
+      if (titlePromise) {
+        await titlePromise;
+      }
       // Call onFinish hooks — awaited so dataParts can be written to stream.
       if (hasOnFinishHooks) {
         const finishPayload = {
-          messages,
+          messages: capturedMessages ?? messages,
           steps,
           toolResults: steps.flatMap((s) => s.toolResults ?? []),
           finishReason: usageAccumulator.getFinishReason(),
           isAborted: false,
           ...(context.agentContext ?? {}),
           usage: usageAccumulator.usage,
+          locale,
         };
         for (const endpointId of onFinishEndpointIds) {
           try {
