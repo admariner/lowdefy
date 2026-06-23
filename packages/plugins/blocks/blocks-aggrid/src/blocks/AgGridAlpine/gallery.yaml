@@ -1159,3 +1159,104 @@
                 _string.concat:
                   - 'Delete '
                   - _event: row.name
+
+# Selector cells fire an event on change (event-only, like buttons) — the cell does not write to
+# the grid's row data. The app persists the change by updating the data bound to `rowData`. Here
+# each row's value is bound to state (with a `default`) and the event writes the new value back
+# into that state, so the selection sticks.
+- title: Selector cells (single + multiple)
+  fullWidth: true
+  blocks:
+    - id: selector_cell_demo
+      type: AgGridAlpine
+      properties:
+        height: 280
+        defaultColDef:
+          resizable: true
+        columnDefs:
+          - headerName: Task
+            field: name
+            flex: 1
+          - headerName: Priority
+            field: priority
+            width: 200
+            cell:
+              type: selector
+              eventName: onPriorityChange
+              options:
+                - label: Low
+                  value: low
+                  color: green
+                - label: Medium
+                  value: medium
+                  color: orange
+                - label: High
+                  value: high
+                  color: red
+          - headerName: Labels
+            field: labels
+            width: 340
+            cell:
+              type: multipleSelector
+              eventName: onLabelsChange
+              placeholder: Add labels
+              options:
+                - bug
+                - feature
+                - docs
+                - urgent
+        rowData:
+          - id: r1
+            name: Wire main switchboard
+            priority:
+              _state:
+                key: sel_priority.r1
+                default: high
+            labels:
+              _state:
+                key: sel_labels.r1
+                default:
+                  - urgent
+          - id: r2
+            name: HVAC balancing
+            priority:
+              _state:
+                key: sel_priority.r2
+                default: medium
+            labels:
+              _state:
+                key: sel_labels.r2
+                default: []
+          - id: r3
+            name: Utility connections
+            priority:
+              _state:
+                key: sel_priority.r3
+                default: low
+            labels:
+              _state:
+                key: sel_labels.r3
+                default:
+                  - docs
+                  - feature
+      events:
+        onPriorityChange:
+          - id: persist_priority
+            type: SetState
+            params:
+              sel_priority:
+                _object.assign:
+                  - _state: sel_priority
+                  - _object.fromEntries:
+                      - - _event: row.id
+                        - _event: newValue
+        onLabelsChange:
+          - id: persist_labels
+            type: SetState
+            params:
+              sel_labels:
+                _object.assign:
+                  - _state: sel_labels
+                  - _object.fromEntries:
+                      - - _event: row.id
+                        - _event: newValue

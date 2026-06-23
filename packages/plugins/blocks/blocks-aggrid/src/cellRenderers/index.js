@@ -22,6 +22,7 @@ import BooleanCell from './BooleanCell.js';
 import ProgressCell from './ProgressCell.js';
 import NumberCell from './NumberCell.js';
 import ButtonsCell from './ButtonsCell.js';
+import SelectorCell from './SelectorCell.js';
 
 const CELL_RENDERERS = {
   tag: TagCell,
@@ -32,6 +33,8 @@ const CELL_RENDERERS = {
   progress: ProgressCell,
   number: NumberCell,
   buttons: ButtonsCell,
+  selector: SelectorCell,
+  multipleSelector: SelectorCell,
 };
 
 function getCellRenderer(type) {
