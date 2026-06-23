@@ -212,6 +212,9 @@ function createDisplayMeta(blockName) {
                       'buttons',
                       'selector',
                       'multipleSelector',
+                      'switch',
+                      'textInput',
+                      'paragraphInput',
                     ],
                     description: 'The built-in renderer to use.',
                   },
@@ -535,6 +538,72 @@ function createDisplayMeta(blockName) {
                   autoClearSearchValue: {
                     type: 'boolean',
                     description: 'Multiple selector: clear the search box after each selection.',
+                  },
+                  checkedText: {
+                    type: 'string',
+                    description: 'Switch: label shown inside the switch when on.',
+                  },
+                  uncheckedText: {
+                    type: 'string',
+                    description: 'Switch: label shown inside the switch when off.',
+                  },
+                  checkedIcon: {
+                    type: ['string', 'object'],
+                    description: 'Switch: icon shown when on (React-Icon name or Icon block config).',
+                    docs: { displayType: 'icon' },
+                  },
+                  uncheckedIcon: {
+                    type: ['string', 'object'],
+                    description:
+                      'Switch: icon shown when off (React-Icon name or Icon block config).',
+                    docs: { displayType: 'icon' },
+                  },
+                  inputType: {
+                    type: 'string',
+                    description:
+                      'Text input: the HTML input type (e.g. `text`, `email`, `number`, `password`). Named `inputType` to avoid clashing with `cell.type`.',
+                  },
+                  maxLength: {
+                    type: 'number',
+                    description: 'Text input / Paragraph input: maximum number of characters.',
+                  },
+                  showCount: {
+                    type: 'boolean',
+                    description: 'Text input: show the character count.',
+                  },
+                  editable: {
+                    type: 'boolean',
+                    default: true,
+                    description:
+                      'Paragraph input: set false to render read-only text with no edit pencil.',
+                  },
+                  autoSize: {
+                    type: ['boolean', 'object'],
+                    description: 'Paragraph input: auto-size the inline edit textarea.',
+                  },
+                  editTooltip: {
+                    type: ['boolean', 'string'],
+                    description: 'Paragraph input: tooltip on the edit pencil.',
+                  },
+                  copyable: {
+                    type: ['boolean', 'object'],
+                    description: 'Paragraph input: show a copy-to-clipboard button.',
+                  },
+                  ellipsis: {
+                    type: ['boolean', 'object'],
+                    description:
+                      'Paragraph input: truncate with an ellipsis (e.g. `{ rows: 2, expandable: true }`).',
+                  },
+                  code: { type: 'boolean', description: 'Paragraph input: render as inline code.' },
+                  strong: { type: 'boolean', description: 'Paragraph input: bold text.' },
+                  italic: { type: 'boolean', description: 'Paragraph input: italic text.' },
+                  underline: { type: 'boolean', description: 'Paragraph input: underlined text.' },
+                  delete: { type: 'boolean', description: 'Paragraph input: strikethrough text.' },
+                  mark: { type: 'boolean', description: 'Paragraph input: highlighted text.' },
+                  textType: {
+                    type: 'string',
+                    enum: ['secondary', 'success', 'warning', 'danger'],
+                    description: 'Paragraph input: antd Typography semantic colour.',
                   },
                 },
               },

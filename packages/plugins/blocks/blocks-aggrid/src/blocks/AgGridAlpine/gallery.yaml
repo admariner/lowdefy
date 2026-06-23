@@ -1260,3 +1260,98 @@
                   - _object.fromEntries:
                       - - _event: row.id
                         - _event: newValue
+
+# Input cells (switch / textInput / paragraphInput) work like the selector cells: event-only, the
+# app persists the new value into the data bound to `rowData`. Switch fires on toggle; textInput
+# commits on blur / Enter; paragraphInput commits when the inline edit is confirmed.
+- title: Input cells (switch, text, paragraph)
+  fullWidth: true
+  blocks:
+    - id: input_cell_demo
+      type: AgGridAlpine
+      properties:
+        height: 260
+        defaultColDef:
+          resizable: true
+        rowData:
+          - id: t1
+            name:
+              _state:
+                key: inp_name.t1
+                default: Wire main switchboard
+            active:
+              _state:
+                key: inp_active.t1
+                default: true
+            notes:
+              _state:
+                key: inp_notes.t1
+                default: Awaiting sign-off from the project engineer.
+          - id: t2
+            name:
+              _state:
+                key: inp_name.t2
+                default: HVAC balancing
+            active:
+              _state:
+                key: inp_active.t2
+                default: false
+            notes:
+              _state:
+                key: inp_notes.t2
+                default: Waiting on updated ductwork drawings.
+        columnDefs:
+          - headerName: Task
+            field: name
+            width: 260
+            cell:
+              type: textInput
+              eventName: onNameChange
+              placeholder: Task name
+          - headerName: Active
+            field: active
+            width: 110
+            cell:
+              type: switch
+              eventName: onActiveChange
+              checkedText: 'on'
+              uncheckedText: 'off'
+          - headerName: Notes
+            field: notes
+            flex: 1
+            cell:
+              type: paragraphInput
+              eventName: onNotesChange
+              ellipsis:
+                rows: 2
+      events:
+        onNameChange:
+          - id: persist_name
+            type: SetState
+            params:
+              inp_name:
+                _object.assign:
+                  - _state: inp_name
+                  - _object.fromEntries:
+                      - - _event: row.id
+                        - _event: newValue
+        onActiveChange:
+          - id: persist_active
+            type: SetState
+            params:
+              inp_active:
+                _object.assign:
+                  - _state: inp_active
+                  - _object.fromEntries:
+                      - - _event: row.id
+                        - _event: newValue
+        onNotesChange:
+          - id: persist_notes
+            type: SetState
+            params:
+              inp_notes:
+                _object.assign:
+                  - _state: inp_notes
+                  - _object.fromEntries:
+                      - - _event: row.id
+                        - _event: newValue

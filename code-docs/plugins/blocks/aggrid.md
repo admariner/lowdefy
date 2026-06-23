@@ -67,6 +67,9 @@ Define `cell` on a column to opt into a Lowdefy-managed renderer. The build regi
 | `buttons`   | list of antd `Button`s, one event per button  | per-button `eventName:` |
 | `selector`  | antd `Select` (single) per row                 | `eventName:` on change  |
 | `multipleSelector` | antd `Select` (multiple) per row        | `eventName:` on change  |
+| `switch`    | antd `Switch` (boolean) per row                | `eventName:` on toggle  |
+| `textInput` | antd `Input` per row                           | `eventName:` on blur / Enter |
+| `paragraphInput` | antd `Typography.Paragraph` with inline edit | `eventName:` on edit confirm |
 
 \* Avatar emits `onCellLink` only when given a `link` config.
 
@@ -188,6 +191,20 @@ events:
 ```js
 { row: data, value, newValue }   // value = previous cell value; newValue is an array for multipleSelector
 ```
+
+### `cell.type: switch` / `textInput` / `paragraphInput` — input cells
+
+The same event-only model as the selector cells: each renders an antd input bound to the row value, writes back into ag-grid's row node for immediate feedback, and fires the column's `eventName` with `{ row, value, newValue }`. The app persists by updating the data bound to `rowData`. **When** the event fires differs by control:
+
+- `switch` — on every toggle (`newValue` is a boolean). Config: `checkedText`, `uncheckedText`, `checkedIcon`, `uncheckedIcon`, `color`, `size`, `disabled`.
+- `textInput` — on blur / Enter, **not** per keystroke. Typing is held in local state so the cell does not re-render and lose focus mid-edit. Config: `placeholder`, `allowClear`, `maxLength`, `showCount`, `inputType` (HTML input type — named to avoid clashing with `cell.type`), `variant`/`bordered`, `size`, `disabled`.
+- `paragraphInput` — `Typography.Paragraph` with inline editing; commits when the edit is confirmed (blur / Enter). Config: `editable` (false → read-only), `maxLength`, `autoSize`, `editTooltip`, `copyable`, `ellipsis`, and text styling (`code`, `strong`, `italic`, `underline`, `delete`, `mark`, `textType`).
+
+```js
+{ row: data, value, newValue }   // newValue: boolean (switch) | string (textInput / paragraphInput)
+```
+
+> `textInput`/`paragraphInput` commit once (on blur/confirm) rather than per keystroke — committing per keystroke would re-render the grid, remount the cell, and lose input focus.
 
 ## Components Plumbing
 
