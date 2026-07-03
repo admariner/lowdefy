@@ -6,6 +6,11 @@
   color: var(--ant-color-link);
 }
 
+:global(.tiptap-mention-group) {
+  box-decoration-break: clone;
+  font-weight: 600;
+}
+
 :global(.tiptap-mention-items) {
   background: var(--ant-color-bg-container);
   border-radius: var(--ant-border-radius, 8px);

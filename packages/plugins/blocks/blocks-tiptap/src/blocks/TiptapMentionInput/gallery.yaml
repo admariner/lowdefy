@@ -219,6 +219,60 @@
               tag:
                 section: Roles
 
+- title: Group mentions
+  fullWidth: true
+  blocks:
+    - id: tiptap_mention_groups
+      type: TiptapMentionInput
+      properties:
+        title: Mention people or groups
+        placeholder: 'Type @ — groups render as coloured chips, people as links.'
+        mentions:
+          # devs colour comes from this central map; finance overrides via tag.color
+          groupColors:
+            devs: '#13c2c2'
+          getHref:
+            _function:
+              # people carry value.contact_id and link to a profile;
+              # groups have no contact_id → null href → chip renders as <span>
+              __if:
+                test:
+                  __type:
+                    type: string
+                    on:
+                      __args: 0.value.contact_id
+                then:
+                  __string.concat:
+                    - '/contacts?_id='
+                    - __args: 0.value.contact_id
+                else: null
+          options:
+            - label: Alice
+              value:
+                contact_id: user_1
+                name: Alice
+              tag:
+                section: People
+            - label: Bob
+              value:
+                contact_id: user_2
+                name: Bob
+              tag:
+                section: People
+            - label: Finance
+              value:
+                role: finance-admin
+              tag:
+                section: Roles
+                group: finance
+                color: '#722ed1'
+            - label: Developers
+              value:
+                role: developer
+              tag:
+                section: Roles
+                group: devs
+
 - title: Minimal — tables and images disabled
   fullWidth: true
   blocks:

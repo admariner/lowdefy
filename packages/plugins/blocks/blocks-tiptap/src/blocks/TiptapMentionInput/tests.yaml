@@ -64,3 +64,28 @@
             _id: role_finance
           tag:
             section: Roles
+- id: properties.mentions.groupColors with group chips
+  type: TiptapMentionInput
+  properties:
+    mentions:
+      groupColors:
+        devs: '#13c2c2'
+      options:
+        - label: Alice
+          value:
+            _id: user_1
+          tag:
+            section: People
+        - label: Finance
+          value:
+            role: finance-admin
+          tag:
+            section: Roles
+            group: finance
+            color: '#722ed1'
+        - label: Developers
+          value:
+            role: developer
+          tag:
+            section: Roles
+            group: devs

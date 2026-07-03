@@ -57,21 +57,30 @@ const TiptapMentionInput = ({
   const mentionExtension = Mention.configure({
     HTMLAttributes: { class: 'tiptap-mention' },
     renderHTML({ options, node }) {
-      const label = mentionLabel(node.attrs.id);
-      if (type.isFunction(properties.mentions?.getHref)) {
+      const id = node.attrs.id;
+      const label = mentionLabel(id);
+      const group = id?.tag?.group;
+      const modifier = {};
+      if (!type.isNone(group)) {
+        modifier.class = 'tiptap-mention-group';
+        modifier['data-mention-group'] = group;
+      }
+      // per-option tag.color overrides the central groupColors map
+      const color = id?.tag?.color ?? properties.mentions?.groupColors?.[group];
+      if (!type.isNone(color)) {
+        modifier.style = `color: ${color}`;
+      }
+      const href = type.isFunction(properties.mentions?.getHref)
+        ? properties.mentions.getHref(id)
+        : undefined;
+      if (!type.isNone(href)) {
         return [
           'a',
-          mergeAttributes(
-            {
-              href: properties.mentions.getHref(node.attrs.id),
-              'data-id': node.attrs.id?._id,
-            },
-            options.HTMLAttributes
-          ),
+          mergeAttributes({ href, 'data-id': id?._id }, options.HTMLAttributes, modifier),
           `${char}${label}`,
         ];
       }
-      return ['span', mergeAttributes(options.HTMLAttributes), `${char}${label}`];
+      return ['span', mergeAttributes(options.HTMLAttributes, modifier), `${char}${label}`];
     },
     renderText({ node }) {
       return `${char}${mentionLabel(node.attrs.id)}`;
