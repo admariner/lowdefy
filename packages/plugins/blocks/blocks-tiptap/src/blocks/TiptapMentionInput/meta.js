@@ -135,6 +135,31 @@ export default {
               'Optional function (_function operator) that receives a selected mention id and returns an href. When provided, mentions render as <a> tags.',
             docs: { displayType: 'yaml' },
           },
+          limit: {
+            type: 'integer',
+            minimum: 1,
+            default: 5,
+            description:
+              'Maximum suggestions shown — per section when options declare sections, otherwise across the flat list.',
+          },
+          groupColors: {
+            type: 'object',
+            additionalProperties: { type: 'string' },
+            description:
+              "Map of group key → CSS colour applied to that group's mention chips. Overridden per option by tag.color.",
+          },
+          groupMembers: {
+            type: 'object',
+            additionalProperties: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: { name: { type: 'string' }, email: { type: 'string' } },
+              },
+            },
+            description:
+              "Map of group key → array of { name, email } shown in a hover popover on that group's chips (live editor only).",
+          },
         },
       },
       mentionsRequestId: {
