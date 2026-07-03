@@ -52,6 +52,7 @@ const TiptapMentionInput = ({
   const uploadEnabled = !type.isNone(properties.s3PostPolicyRequestId);
   const char = properties.mentions?.char ?? '@';
   const allowSpaces = properties.mentions?.allowSpaces !== false;
+  const limit = properties.mentions?.limit ?? 5;
 
   const mentionExtension = Mention.configure({
     HTMLAttributes: { class: 'tiptap-mention' },
@@ -75,7 +76,7 @@ const TiptapMentionInput = ({
     renderText({ node }) {
       return `${char}${mentionLabel(node.attrs.id)}`;
     },
-    suggestion: suggestion({ methods, char, allowSpaces }),
+    suggestion: suggestion({ methods, char, allowSpaces, limit }),
   });
 
   const extensions = buildExtensions({

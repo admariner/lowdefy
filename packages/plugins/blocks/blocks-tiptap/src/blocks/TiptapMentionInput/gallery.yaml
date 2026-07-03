@@ -177,6 +177,48 @@
         title: Read only
         disabled: true
 
+- title: Sectioned menu
+  fullWidth: true
+  blocks:
+    - id: tiptap_mention_sectioned
+      type: TiptapMentionInput
+      properties:
+        title: Mention people or roles
+        placeholder: 'Type @ — options are grouped, each section capped at 3.'
+        mentions:
+          limit: 3
+          options:
+            - label: Alice
+              value:
+                _id: user_1
+              tag:
+                section: People
+            - label: Bob
+              value:
+                _id: user_2
+              tag:
+                section: People
+            - label: Carol
+              value:
+                _id: user_3
+              tag:
+                section: People
+            - label: Dave
+              value:
+                _id: user_4
+              tag:
+                section: People
+            - label: Finance
+              value:
+                _id: role_finance
+              tag:
+                section: Roles
+            - label: Developers
+              value:
+                _id: role_devs
+              tag:
+                section: Roles
+
 - title: Minimal — tables and images disabled
   fullWidth: true
   blocks:
