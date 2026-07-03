@@ -231,6 +231,18 @@
           # devs colour comes from this central map; finance overrides via tag.color
           groupColors:
             devs: '#13c2c2'
+          # shown on hover of a group chip, keyed by tag.group
+          groupMembers:
+            finance:
+              - name: Jane Doe
+                email: jane@example.com
+              - name: John Smith
+                email: john@example.com
+            devs:
+              - name: Ada Lovelace
+                email: ada@example.com
+              - name: Alan Turing
+                email: alan@example.com
           getHref:
             _function:
               # people carry value.contact_id and link to a profile;

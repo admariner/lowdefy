@@ -28,6 +28,7 @@ import buildExtensions from '../utils/buildExtensions.js';
 import computeHeightStyle from '../utils/computeHeightStyle.js';
 import statusClass from '../utils/statusClass.js';
 import suggestion from './suggestion.js';
+import useGroupMembersPopover from './useGroupMembersPopover.js';
 import useTiptapMentionState from './useTiptapMentionState.js';
 
 import './style.module.css';
@@ -112,6 +113,8 @@ const TiptapMentionInput = ({
       methods.triggerEvent({ name: 'onChange' });
     },
   });
+
+  useGroupMembersPopover({ editor, properties });
 
   useEffect(() => {
     if (editor) {
