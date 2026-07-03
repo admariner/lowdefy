@@ -142,12 +142,6 @@ export default {
             description:
               'Maximum suggestions shown — per section when options declare sections, otherwise across the flat list.',
           },
-          groupColors: {
-            type: 'object',
-            additionalProperties: { type: 'string' },
-            description:
-              "Map of group key → CSS colour applied to that group's mention chips. Overridden per option by tag.color.",
-          },
           groupMembers: {
             type: 'object',
             additionalProperties: {

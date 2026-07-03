@@ -228,10 +228,7 @@
         title: Mention people or groups
         placeholder: 'Type @ — groups render as coloured chips, people as links.'
         mentions:
-          # devs colour comes from this central map; finance overrides via tag.color
-          groupColors:
-            devs: '#13c2c2'
-          # shown on hover of a group chip, keyed by tag.group
+          # shown on hover of a group chip, keyed by tag.group; may load from a request
           groupMembers:
             finance:
               - name: Jane Doe
@@ -243,32 +240,21 @@
                 email: ada@example.com
               - name: Alan Turing
                 email: alan@example.com
+          # people carry value.href → <a>; groups omit it → nullish → <span>
           getHref:
             _function:
-              # people carry value.contact_id and link to a profile;
-              # groups have no contact_id → null href → chip renders as <span>
-              __if:
-                test:
-                  __type:
-                    type: string
-                    on:
-                      __args: 0.value.contact_id
-                then:
-                  __string.concat:
-                    - '/contacts?_id='
-                    - __args: 0.value.contact_id
-                else: null
+              __args: 0.value.href
           options:
             - label: Alice
               value:
-                contact_id: user_1
                 name: Alice
+                href: '/contacts?_id=user_1'
               tag:
                 section: People
             - label: Bob
               value:
-                contact_id: user_2
                 name: Bob
+                href: '/contacts?_id=user_2'
               tag:
                 section: People
             - label: Finance
@@ -284,6 +270,7 @@
               tag:
                 section: Roles
                 group: devs
+                color: '#13c2c2'
 
 - title: Minimal — tables and images disabled
   fullWidth: true

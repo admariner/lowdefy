@@ -3,7 +3,7 @@
 Beyond the flat mention list, `TiptapMentionInput` can treat some mention options as **groups** — an app-defined kind such as a role, a team, a queue, or a saved segment. A group mention:
 
 - sits under its own heading in the suggestion menu (`tag.section`),
-- renders as a distinctly coloured chip (`tag.color` / `mentions.groupColors`), and
+- renders as a distinctly coloured chip (`tag.color`), and
 - shows the group's current members in a hover popover in the live editor (`mentions.groupMembers`).
 
 The block hardcodes no group. Your app decides which groups exist, what they are called, how they are coloured, and who belongs to them — the block only reflects that data onto the chip and the menu.
@@ -25,7 +25,7 @@ The `tag` fields are not listed in the properties table above, because `options`
 | `tag.title`   | Chip text — `@Finance` renders from `tag.title: Finance`. Falls back to `label`.                                    |
 | `tag.section` | Menu heading this option sits under. Options without a section render flat, with no heading.                        |
 | `tag.group`   | Marks this option a **group** chip. An opaque, app-defined string — it becomes the chip class, the `data-mention-group` attribute, and the hover lookup key. |
-| `tag.color`   | Chip colour for this option. Overrides `mentions.groupColors` for the option's group.                               |
+| `tag.color`   | Chip colour for this option (any CSS colour). Inlined on the chip, so it travels with the saved HTML.                |
 
 An individual-person option simply omits `section`, `group`, and `color`, and renders exactly as before.
 
@@ -35,20 +35,21 @@ Sections and groups are **orthogonal**: a section is a menu heading, a group is 
 
 `limit` (integer, default `5`) caps how many suggestions the menu shows. When at least one visible option declares a `tag.section`, the cap is applied **per section**, so a large "People" section can't crowd every "Roles" option out of the list. When no option declares a section, the same limit caps the flat list, matching the pre-group behaviour.
 
-### `mentions.groupColors` — static, available at mount
+### Group chip colour
 
-`groupColors` is a `{ '<group>': '<cssColor>' }` map that colours every chip of a given group in one place:
+A group chip's colour comes from `tag.color` on the option — any CSS colour string:
 
 ```yaml
-mentions:
-  groupColors:
-    finance: '#722ed1'
-    devs: '#13c2c2'
+options:
+  - label: Finance
+    value: { role: finance-admin }
+    tag: { section: Roles, group: finance, color: '#722ed1' }
+  - label: Developers
+    value: { role: developer }
+    tag: { section: Roles, group: devs, color: '#13c2c2' }
 ```
 
-The resolved colour is written as an inline `style` on the chip, so it travels with the saved HTML — a group chip looks right anywhere the stored content is rendered, with no per-app stylesheet.
-
-> **`groupColors` must be static config available when the block mounts.** It is read once, where the mention extension is created, and is **not** refreshed afterwards. A `groupColors` map loaded from a request that resolves after the block mounts will produce uncoloured chips. Supply it as static config (a colour palette is naturally static). For any colour that arrives dynamically, use per-option `tag.color` instead — it rides on the selected option, so it is always current. The same mount-time capture applies to `mentions.limit` and `mentions.char`.
+The colour is written as an inline `style` on the chip, so it travels with the saved HTML — a group chip looks right anywhere the stored content is rendered, with no per-app stylesheet. Because `tag.color` rides on the selected option, it is always current even when options load from a request. If you prefer to control colour from CSS instead, omit `tag.color` and target `.tiptap-mention-group[data-mention-group="finance"]` in your own stylesheet.
 
 ### `mentions.groupMembers` — may be async
 
@@ -63,7 +64,7 @@ mentions:
       - { name: Ada Lovelace, email: ada@example.com }
 ```
 
-Unlike `groupColors`, `groupMembers` **may be loaded from a request** — it is read live, at hover time, so it does not need to be present at mount. This asymmetry is intentional: colour is captured once when the editor is created, member lists are looked up on each hover.
+`groupMembers` **may be loaded from a request** — it is read live, at hover time, so it does not need to be present when the block mounts. (This is the one piece of group data read on each hover rather than captured up front.)
 
 Hover is scoped to the live editor only. If the group has no entry in `groupMembers`, no popover shows.
 
@@ -90,7 +91,7 @@ A group chip renders as:
 
 ### Worked example
 
-A mixed `options` array — people with no group alongside group options carrying `tag.section`, `tag.group`, and optionally `tag.color` — a `groupColors` map, a `groupMembers` map, and a `getHref` that returns `null` for groups:
+A mixed `options` array — people alongside group options carrying `tag.section`, `tag.group`, and `tag.color` — a `groupMembers` map, and a `getHref` that returns a link for people and nothing for groups:
 
 ```yaml
 - id: comment
@@ -99,52 +100,39 @@ A mixed `options` array — people with no group alongside group options carryin
     mentions:
       char: '@'
       limit: 8 # per-section result cap
+      # people carry value.href → <a>; groups omit it → nullish → <span>
       getHref:
         _function:
-          # people carry value.contact_id and link to a profile;
-          # groups don't → null href → chip renders as a <span>
-          __if:
-            test:
-              __type:
-                type: string
-                on:
-                  __args: 0.value.contact_id
-            then:
-              __string.concat: ['/contacts?_id=', __args: 0.value.contact_id]
-            else: null
+          __args: 0.value.href
       options:
         - label: Jane Doe # person — no tag.group, links to a profile
           value:
             contact_id: c_001
+            href: '/contacts?_id=c_001'
           tag:
-            title: Jane Doe
             section: People
         - label: Ada Lovelace
           value:
             contact_id: c_002
+            href: '/contacts?_id=c_002'
           tag:
-            title: Ada Lovelace
             section: People
-        - label: Finance # group — no profile link, coloured chip, hover members
+        - label: Finance # group — no href, coloured chip, hover members
           value:
             type: role
             role: finance-admin
           tag:
-            title: Finance
             section: Roles
             group: finance
-            color: '#722ed1' # overrides groupColors.finance for this option
+            color: '#722ed1'
         - label: Developers
           value:
             type: role
             role: developers
           tag:
-            title: Developers
             section: Roles
             group: devs
-      groupColors: # colour each group once; tag.color overrides per option
-        finance: '#722ed1'
-        devs: '#13c2c2'
+            color: '#13c2c2'
       groupMembers: # shown on chip hover in the live editor; may come from a request
         finance:
           - { name: Jane Doe, email: jane@example.com }
@@ -152,4 +140,4 @@ A mixed `options` array — people with no group alongside group options carryin
           - { name: Ada Lovelace, email: ada@example.com }
 ```
 
-`options` and `groupMembers` are typically populated from requests (`_request: mention_options`, `_request: group_members`). How that data is built, and how the stored `value` is later expanded to notification recipients, are entirely app-side — the block only records the mention.
+`options` and `groupMembers` are typically populated from requests (`_request: mention_options`, `_request: group_members`). How that data is built, and how the stored `value` is later expanded to notification recipients, are entirely app-side — the block only records the mention. If a group's colour is itself dynamic, it rides safely on `tag.color` because that value is stored on the selected option.

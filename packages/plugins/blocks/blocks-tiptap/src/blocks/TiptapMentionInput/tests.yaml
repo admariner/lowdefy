@@ -64,12 +64,10 @@
             _id: role_finance
           tag:
             section: Roles
-- id: properties.mentions.groupColors with group chips
+- id: properties.mentions group chips with tag.color
   type: TiptapMentionInput
   properties:
     mentions:
-      groupColors:
-        devs: '#13c2c2'
       options:
         - label: Alice
           value:
@@ -89,3 +87,4 @@
           tag:
             section: Roles
             group: devs
+            color: '#13c2c2'

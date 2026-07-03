@@ -66,8 +66,7 @@ const TiptapMentionInput = ({
         modifier.class = 'tiptap-mention-group';
         modifier['data-mention-group'] = group;
       }
-      // per-option tag.color overrides the central groupColors map
-      const color = id?.tag?.color ?? properties.mentions?.groupColors?.[group];
+      const color = id?.tag?.color;
       if (!type.isNone(color)) {
         modifier.style = `color: ${color}`;
       }
