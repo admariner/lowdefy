@@ -77,22 +77,39 @@ function suggestion({ methods, char = '@', allowSpaces = true, limit = 5 }) {
         },
 
         onUpdate(props) {
-          component.updateProps(props);
+          component?.updateProps(props);
           if (!props.clientRect) return;
-          popup[0].setProps({ getReferenceClientRect: props.clientRect });
+          popup?.[0]?.setProps({ getReferenceClientRect: props.clientRect });
         },
 
         onKeyDown(props) {
           if (props.event.key === 'Escape') {
-            popup[0].hide();
+            popup?.[0]?.hide();
             return true;
           }
-          return component.ref?.onKeyDown(props);
+          return component?.ref?.onKeyDown(props) ?? false;
         },
 
         onExit() {
-          popup[0].destroy();
-          component.destroy();
+          // Tear down in this order — React portal first, tippy popup after —
+          // to avoid "NotFoundError: Failed to execute 'removeChild'" when the
+          // user navigates away (e.g. clicks another item) while the mention
+          // popup is open. MentionList is rendered as a React portal into
+          // component.element, which tippy relocates into document.body.
+          // Destroying tippy first detaches that container out from under
+          // React's portal teardown; destroying the component first lets React
+          // remove the MentionList DOM cleanly while the container is still
+          // attached. The tippy teardown is then deferred to a microtask so it
+          // never runs synchronously inside React's own unmount commit.
+          component?.destroy();
+          component = undefined;
+          const instance = popup?.[0];
+          popup = undefined;
+          if (instance && !instance.state.isDestroyed) {
+            queueMicrotask(() => {
+              if (!instance.state.isDestroyed) instance.destroy();
+            });
+          }
         },
       };
     },
