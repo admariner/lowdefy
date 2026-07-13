@@ -14,6 +14,8 @@
   limitations under the License.
 */
 
-import createInputMeta from '../../createInputMeta.js';
+function itemSection(item) {
+  return item?.tag?.section;
+}
 
-export default createInputMeta('AgGridInputBalham');
+export default itemSection;
