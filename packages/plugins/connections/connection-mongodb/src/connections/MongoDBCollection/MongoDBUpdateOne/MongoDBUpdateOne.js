@@ -28,7 +28,7 @@ async function MongodbUpdateOne({
   requestId,
 }) {
   const deserializedRequest = deserialize(request);
-  const { filter, update, options } = deserializedRequest;
+  const { filter, update, options, disableNoMatchError } = deserializedRequest;
   const { collection, logCollection } = await getCollection({ connection });
   let response;
   if (logCollection) {
@@ -51,6 +51,10 @@ async function MongodbUpdateOne({
       upsertedId,
       upsertedCount: upsertedId ? 1 : 0,
     };
+    // Throw before writing the log record so a no-match update never logs.
+    if (!disableNoMatchError && !options?.upsert && matched === 0 && !upsertedId) {
+      throw new Error('No matching record to update.');
+    }
     await logCollection.insertOne({
       args: { filter, update, options },
       blockId,
@@ -66,6 +70,9 @@ async function MongodbUpdateOne({
     });
   } else {
     response = await collection.updateOne(filter, update, options);
+    if (!disableNoMatchError && !options?.upsert && response.matchedCount === 0) {
+      throw new Error('No matching record to update.');
+    }
   }
   return serialize(response);
 }
