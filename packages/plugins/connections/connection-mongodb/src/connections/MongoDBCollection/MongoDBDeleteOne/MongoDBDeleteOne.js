@@ -21,7 +21,7 @@ import schema from './schema.js';
 async function MongodbDeleteOne({ connection, request }) {
   const deserializedRequest = deserialize(request);
   const { filter, options } = deserializedRequest;
-  const collection = await getCollection({ connection });
+  const { collection } = await getCollection({ connection });
   const response = await collection.deleteOne(filter, options);
   return serialize(response);
 }

@@ -21,7 +21,7 @@ import schema from './schema.js';
 async function MongodbInsertMany({ connection, request }) {
   const deserializedRequest = deserialize(request);
   const { docs, options } = deserializedRequest;
-  const collection = await getCollection({ connection });
+  const { collection } = await getCollection({ connection });
   const response = await collection.insertMany(docs, options);
   const { acknowledged, insertedCount } = serialize(response);
   return { acknowledged, insertedCount };

@@ -21,7 +21,7 @@ import schema from './schema.js';
 async function MongodbUpdateMany({ connection, request }) {
   const deserializedRequest = deserialize(request);
   const { filter, update, options } = deserializedRequest;
-  const collection = await getCollection({ connection });
+  const { collection } = await getCollection({ connection });
   const response = await collection.updateMany(filter, update, options);
   const { modifiedCount, upsertedId, upsertedCount, matchedCount } = serialize(response);
   return { modifiedCount, upsertedId, upsertedCount, matchedCount };

@@ -21,7 +21,7 @@ import schema from './schema.js';
 async function MongodbInsertOne({ connection, request }) {
   const deserializedRequest = deserialize(request);
   const { doc, options } = deserializedRequest;
-  const collection = await getCollection({ connection });
+  const { collection } = await getCollection({ connection });
   const response = await collection.insertOne(doc, options);
   const { acknowledged, insertedId } = serialize(response);
   return { acknowledged, insertedId };
