@@ -31,7 +31,7 @@ import { getFileCardType, getFileCardIcon } from './fileCardUtils.js';
 import DrawerWrapper from './DrawerWrapper.js';
 import createLowdefyChatTransport from './LowdefyChatTransport.js';
 import MessageList from './MessageList.js';
-import useAgentEvents from './useAgentEvents.js';
+import useAgentEvents, { collectExternalEventIds } from './useAgentEvents.js';
 import WelcomeScreen from './WelcomeScreen.js';
 
 function AgentChat({ blockId, components: { Icon }, methods, pageId, properties }) {
@@ -182,6 +182,10 @@ function AgentChat({ blockId, components: { Icon }, methods, pageId, properties 
   // Compare by count + last ID to avoid re-syncing on every Lowdefy re-render
   // (operators like _state create new array references even when data hasn't changed).
   const prevExternalRef = useRef({ count: 0, lastId: null });
+  // Event-dedup ids of externally loaded messages. Restored history must not
+  // replay onToolCall / onToolResult / onUserMessage / onTitleGenerated side
+  // effects — useAgentEvents suppresses ids in this ref.
+  const externalIdsRef = useRef(null);
   useEffect(() => {
     if (type.isUndefined(externalMessages)) return;
     const msgs = externalMessages ?? [];
@@ -189,6 +193,7 @@ function AgentChat({ blockId, components: { Icon }, methods, pageId, properties 
     const lastId = count > 0 ? msgs[count - 1]?.id : null;
     if (count !== prevExternalRef.current.count || lastId !== prevExternalRef.current.lastId) {
       prevExternalRef.current = { count, lastId };
+      externalIdsRef.current = collectExternalEventIds(msgs);
       setMessages(msgs);
     }
   }, [externalMessages, setMessages]);
@@ -199,7 +204,9 @@ function AgentChat({ blockId, components: { Icon }, methods, pageId, properties 
       regenerate(args?.messageId ? { messageId: args.messageId } : undefined);
     });
     methods.registerMethod('setMessages', (args) => {
-      setMessages(args?.messages ?? []);
+      const msgs = args?.messages ?? [];
+      externalIdsRef.current = collectExternalEventIds(msgs);
+      setMessages(msgs);
     });
     methods.registerMethod('sendMessage', (args) => {
       if (args?.text) {
@@ -251,6 +258,7 @@ function AgentChat({ blockId, components: { Icon }, methods, pageId, properties 
     methods,
     finishMetaRef,
     conversationId: effectiveConversationId,
+    externalIdsRef,
   });
 
   const isEmpty = messages.length === 0;
