@@ -347,6 +347,9 @@
             - id: MongoDBAdapter
               type: MenuLink
               pageId: MongoDBAdapter
+            - id: MultiAppMongoDBAdapter
+              type: MenuLink
+              pageId: MultiAppMongoDBAdapter
         - id: auth_callback_reference
           type: MenuGroup
           properties:
