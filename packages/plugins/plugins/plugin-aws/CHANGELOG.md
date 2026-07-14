@@ -1,5 +1,14 @@
 # Change Log
 
+## 5.5.0
+
+### Patch Changes
+
+- @lowdefy/blocks-antd@5.5.0
+- @lowdefy/block-utils@5.5.0
+- @lowdefy/errors@5.5.0
+- @lowdefy/helpers@5.5.0
+
 ## 5.4.0
 
 ### Patch Changes

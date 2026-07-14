@@ -1,5 +1,12 @@
 # @lowdefy/operators-dayjs
 
+## 5.5.0
+
+### Patch Changes
+
+- @lowdefy/operators@5.5.0
+- @lowdefy/helpers@5.5.0
+
 ## 5.4.0
 
 ### Patch Changes
