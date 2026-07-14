@@ -23,12 +23,15 @@ export default {
     'MongoDBDeleteOne',
     'MongoDBFind',
     'MongoDBFindOne',
+    'MongoDBInsertConsecutiveId',
     'MongoDBInsertMany',
+    'MongoDBInsertManyConsecutiveIds',
     'MongoDBInsertOne',
     'MongoDBUpdateMany',
     'MongoDBUpdateOne',
+    'MongoDBVersionedUpdateOne',
   ],
   auth: {
-    adapters: ['MongoDBAdapter'],
+    adapters: ['MongoDBAdapter', 'MultiAppMongoDBAdapter'],
   },
 };
