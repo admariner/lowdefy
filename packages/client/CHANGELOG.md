@@ -1,5 +1,16 @@
 # Change Log
 
+## 5.5.0
+
+### Patch Changes
+
+- @lowdefy/engine@5.5.0
+- @lowdefy/layout@5.5.0
+- @lowdefy/block-utils@5.5.0
+- @lowdefy/errors@5.5.0
+- @lowdefy/helpers@5.5.0
+- @lowdefy/logger@5.5.0
+
 ## 5.4.0
 
 ### Minor Changes

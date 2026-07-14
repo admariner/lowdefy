@@ -1,5 +1,11 @@
 # @lowdefy/connection-ai-gateway
 
+## 5.5.0
+
+### Patch Changes
+
+- @lowdefy/ai-utils@5.5.0
+
 ## 5.4.0
 
 ### Patch Changes
