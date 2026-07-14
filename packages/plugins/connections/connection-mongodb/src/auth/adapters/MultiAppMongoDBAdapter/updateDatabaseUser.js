@@ -14,24 +14,12 @@
   limitations under the License.
 */
 
-export default {
-  connections: ['MongoDBCollection'],
-  requests: [
-    'MongoDBAggregation',
-    'MongoDBBulkWrite',
-    'MongoDBDeleteMany',
-    'MongoDBDeleteOne',
-    'MongoDBFind',
-    'MongoDBFindOne',
-    'MongoDBInsertConsecutiveId',
-    'MongoDBInsertMany',
-    'MongoDBInsertManyConsecutiveIds',
-    'MongoDBInsertOne',
-    'MongoDBUpdateMany',
-    'MongoDBUpdateOne',
-    'MongoDBVersionedUpdateOne',
-  ],
-  auth: {
-    adapters: ['MongoDBAdapter', 'MultiAppMongoDBAdapter'],
-  },
-};
+async function updateDatabaseUser({ adapterUserData, collectionNames, mongoClient }) {
+  const { emailVerified: email_verified, id, image } = adapterUserData;
+  await mongoClient
+    .db()
+    .collection(collectionNames.contacts)
+    .updateOne({ _id: id }, { $set: { email_verified, image } });
+}
+
+export default updateDatabaseUser;
