@@ -1,5 +1,11 @@
 # Change Log
 
+## 5.5.1
+
+### Patch Changes
+
+- @lowdefy/nunjucks@5.5.1
+
 ## 5.5.0
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # Change Log
 
+## 5.5.1
+
+### Patch Changes
+
+- @lowdefy/helpers@5.5.1
+
 ## 5.5.0
 
 ### Minor Changes
