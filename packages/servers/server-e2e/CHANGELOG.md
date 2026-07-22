@@ -1,5 +1,31 @@
 # @lowdefy/server-e2e
 
+## 5.5.1
+
+### Patch Changes
+
+- Updated dependencies [59cae71]
+  - @lowdefy/blocks-antd@5.5.1
+  - @lowdefy/blocks-tiptap@5.5.1
+  - @lowdefy/api@5.5.1
+  - @lowdefy/client@5.5.1
+  - @lowdefy/layout@5.5.1
+  - @lowdefy/actions-core@5.5.1
+  - @lowdefy/blocks-antd-x@5.5.1
+  - @lowdefy/blocks-basic@5.5.1
+  - @lowdefy/blocks-loaders@5.5.1
+  - @lowdefy/blocks-markdown@5.5.1
+  - @lowdefy/connection-axios-http@5.5.1
+  - @lowdefy/connection-mongodb@5.5.1
+  - @lowdefy/operators-js@5.5.1
+  - @lowdefy/operators-nunjucks@5.5.1
+  - @lowdefy/operators-uuid@5.5.1
+  - @lowdefy/block-utils@5.5.1
+  - @lowdefy/errors@5.5.1
+  - @lowdefy/helpers@5.5.1
+  - @lowdefy/logger@5.5.1
+  - @lowdefy/node-utils@5.5.1
+
 ## 5.5.0
 
 ### Patch Changes

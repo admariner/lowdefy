@@ -1,5 +1,14 @@
 # Change Log
 
+## 5.5.1
+
+### Patch Changes
+
+- Updated dependencies [59cae71]
+  - @lowdefy/blocks-antd@5.5.1
+  - @lowdefy/block-utils@5.5.1
+  - @lowdefy/helpers@5.5.1
+
 ## 5.5.0
 
 ### Minor Changes

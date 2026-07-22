@@ -1,5 +1,13 @@
 # Change Log
 
+## 5.5.1
+
+### Patch Changes
+
+- @lowdefy/operators@5.5.1
+- @lowdefy/helpers@5.5.1
+- @lowdefy/nunjucks@5.5.1
+
 ## 5.5.0
 
 ### Patch Changes
